@@ -15,7 +15,8 @@ let service = axios.create({
 })
 
 // 设置 post 默认 Content-Type
-service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+//service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+service.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 
 // 添加请求拦截器
 service.interceptors.request.use(
