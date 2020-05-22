@@ -16,7 +16,7 @@ let service = axios.create({
 
 // 设置 post 默认 Content-Type
 //service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-service.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
+service.defaults.headers.post['Content-Type'] = 'application/json';
 
 // 添加请求拦截器
 service.interceptors.request.use(
@@ -24,8 +24,8 @@ service.interceptors.request.use(
         //判断请求方式是否为POST，进行转换格式
         console.log(config.data)
         config.method === 'post'
-            ? config.data = qs.stringify({...config.data})
-            : config.params = {...config.params};
+            ? config.data = JSON.stringify({...config.data})
+            : config.params = {...config.params}; 
         // 请求发送前进行处理
         return config
     },

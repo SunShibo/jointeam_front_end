@@ -16,7 +16,19 @@ export default new Router({
 			meta: {
 				title: '首页'
 			},
-/* 			children: [{
+ 			children: [
+				{
+					path: '/home/statistics',
+					name: 'statistics',
+					component: resolve => require(['../components/page/system/statistics.vue'], resolve),
+					meta: {
+						title: '数据统计',
+						permission: true,
+						index: 'statistics'
+					}
+				}
+				
+			/*{
 				path: '/home/statistics',
 				name: 'statistics',
 				component: resolve => require(['../components/page/system/statistics.vue'], resolve),
@@ -138,7 +150,8 @@ export default new Router({
 						index: 'param'
 					}
 				},
-			] */
+				*/
+			] 
 		},
 		{
 			path: '/login',

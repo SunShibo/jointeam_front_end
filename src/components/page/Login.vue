@@ -62,7 +62,7 @@
                         sessionStorage.setItem('me_u', JSON.stringify(res.data.menu));
                         //判断菜单第一个元素是否有二级页面
                         const href = res.data.menu[0].pid!=0 ? res.data.menu[0].index : res.data.menu[0].ch[0].index;
-                        console.log(href)
+                        alert(href)
                         this.$router.push({name: href});//跳转
                     }
                 });
