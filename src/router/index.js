@@ -5,9 +5,9 @@ Vue.use(Router);
 
 export default new Router({
 	routes: [{
-		path: '/',
-		redirect: '/login'
-	},
+			path: '/',
+			redirect: '/login'
+		},
 		{
 			path: '/home',
 			name: 'home',
@@ -16,32 +16,141 @@ export default new Router({
 			meta: {
 				title: '首页'
 			},
- 			children: [
-				{
+			children: [{
 					path: '/home/statistics',
 					name: 'statistics',
-					component: resolve => require(['../components/page/system/statistics.vue'], resolve),
+					component: resolve => require(['../components/page/statistics/statistics.vue'], resolve),
 					meta: {
 						title: '数据统计',
 						permission: true,
 						index: 'statistics'
 					}
-				}
-				
-			/*{
-				path: '/home/statistics',
-				name: 'statistics',
-				component: resolve => require(['../components/page/system/statistics.vue'], resolve),
-				meta: {
-					title: '数据统计',
-					permission: true,
-					index: 'statistics'
-				}
-			},
+				},
+				{
+					path: '/home/feedback',
+					name: 'feedback',
+					component: resolve => require(['../components/page/feedback/feedback.vue'], resolve),
+					meta: {
+						title: '意见反馈',
+						permission: true,
+						index: 'feedback'
+					}
+				},
+				{
+					path: '/home/task',
+					name: 'task',
+					component: resolve => require(['../components/page/statistics/task.vue'], resolve),
+					meta: {
+						title: '今日任务',
+						permission: true,
+						index: 'task'
+					}
+				},
+				{
+					path: '/home/analyze',
+					name: 'analyze',
+					component: resolve => require(['../components/page/statistics/analyze.vue'], resolve),
+					meta: {
+						title: '数据分析',
+						permission: true,
+						index: 'analyze'
+					}
+				},
+
+				{
+					path: '/home/team',
+					name: 'team',
+					component: resolve => require(['../components/page/team/team.vue'], resolve),
+					meta: {
+						title: '员工列表',
+						permission: true,
+						index: 'team'
+					}
+				},
+				{
+					path: '/home/project',
+					name: 'project',
+					component: resolve => require(['../components/page/project/project.vue'], resolve),
+					meta: {
+						title: '项目',
+						permission: true,
+						index: 'project'
+					}
+				},
+				{
+					path: '/home/proinfo',
+					name: 'proinfo',
+					component: resolve => require(['../components/page/project/proinfo.vue'], resolve),
+					meta: {
+						title: '项目详情',
+						permission: true,
+						index: 'proinfo'
+					}
+				},
+				{
+					path: '/home/servetype',
+					name: 'servetype',
+					component: resolve => require(['../components/page/serve/servetype.vue'], resolve),
+					meta: {
+						title: '服务类型',
+						permission: true,
+						index: 'servetype'
+					}
+				},
+				{
+					path: '/home/serveinfo',
+					name: 'serveinfo',
+					component: resolve => require(['../components/page/serve/serveinfo.vue'], resolve),
+					meta: {
+						title: '服务详情',
+						permission: true,
+						index: 'serveinfo'
+					}
+				},
+				{
+					path: '/home/client',
+					name: 'client',
+					component: resolve => require(['../components/page/serve/client.vue'], resolve),
+					meta: {
+						title: '客户成功',
+						permission: true,
+						index: 'client'
+					}
+				},
+				{
+					path: '/home/politics',
+					name: 'politics',
+					component: resolve => require(['../components/page/information/politics.vue'], resolve),
+					meta: {
+						title: '政治解读',
+						permission: true,
+						index: 'politics'
+					}
+				},
+				{
+					path: '/home/information',
+					name: 'information',
+					component: resolve => require(['../components/page/information/information.vue'], resolve),
+					meta: {
+						title: '行业资讯',
+						permission: true,
+						index: 'information'
+					}
+				},
+				{
+					path: '/home/banner',
+					name: 'banner',
+					component: resolve => require(['../components/page/banner/banner.vue'], resolve),
+					meta: {
+						title: 'Banner列表',
+						permission: true,
+						index: 'banner'
+					}
+				},
 				{
 					path: '/home/admin',
 					name: 'admin',
-					component: resolve => require(['../components/page/system/admin.vue'], resolve),
+					component: resolve => require(['../components/page/sys/admin.vue'], resolve),
 					meta: {
 						title: '管理员设置',
 						permission: true,
@@ -51,7 +160,7 @@ export default new Router({
 				{
 					path: '/home/role',
 					name: 'role',
-					component: resolve => require(['../components/page/system/role.vue'], resolve),
+					component: resolve => require(['../components/page/sys/role.vue'], resolve),
 					meta: {
 						title: '角色设置',
 						permission: true,
@@ -59,99 +168,46 @@ export default new Router({
 					}
 				},
 				{
+					path: '/home/templatetype',
+					name: 'templatetype',
+					component: resolve => require(['../components/page/template/templatetype.vue'], resolve),
+					meta: {
+						title: '模板分类',
+						permission: true,
+						index: 'templatetype'
+					}
+				},
+				{
+					path: '/home/template',
+					name: 'template',
+					component: resolve => require(['../components/page/template/template.vue'], resolve),
+					meta: {
+						title: '模板配置',
+						permission: true,
+						index: 'template'
+					}
+				},
+				{
+					path: '/home/organization',
+					name: 'organization',
+					component: resolve => require(['../components/page/user/organization.vue'], resolve),
+					meta: {
+						title: '机构列表',
+						permission: true,
+						index: 'organization'
+					}
+				},
+				{
 					path: '/home/user',
 					name: 'user',
 					component: resolve => require(['../components/page/user/user.vue'], resolve),
 					meta: {
-						title: '用户管理',
+						title: '用户列表',
 						permission: true,
 						index: 'user'
 					}
 				},
-				{
-					path: '/home/course',
-					name: 'course',
-					component: resolve => require(['../components/page/course/course.vue'], resolve),
-					meta: {
-						title: '课程列表',
-						permission: true,
-						index: 'course'
-					}
-				},
-				{
-					path: '/home/order',
-					name: 'order',
-					component: resolve => require(['../components/page/order/order.vue'], resolve),
-					meta: {
-						title: '订单列表',
-						permission: true,
-						index: 'order'
-					}
-				},
-				{
-					path: '/home/close',
-					name: 'close',
-					component: resolve => require(['../components/page/order/close.vue'], resolve),
-					meta: {
-						title: '结算订单',
-						permission: true,
-						index: 'close'
-					}
-				},
-
-
-				{
-					path: '/home/coach',
-					name: 'coach',
-					component: resolve => require(['../components/page/coach/coach.vue'], resolve),
-					meta: {
-						title: '教练列表',
-						permission: true,
-						index: 'coach'
-					}
-				},
-				{
-					path: '/home/feedback',
-					name: 'feedback',
-					component: resolve => require(['../components/page/system/feedback.vue'], resolve),
-					meta: {
-						title: '反馈列表',
-						permission: true,
-						index: 'feedback'
-					}
-				},
-				{
-					path: '/home/coordinate',
-					name: 'coordinate',
-					component: resolve => require(['../components/page/config/site.vue'], resolve),
-					meta: {
-						title: '坐标配置',
-						permission: true,
-						index: 'coordinate'
-					}
-				},
-				{
-					path: '/home/dictionaries',
-					name: 'dictionaries',
-					component: resolve => require(['../components/page/config/dictionaries.vue'], resolve),
-					meta: {
-						title: '字典配置',
-						permission: true,
-						index: 'dictionaries'
-					}
-				},
-				{
-					path: '/home/param',
-					name: 'param',
-					component: resolve => require(['../components/page/config/param.vue'], resolve),
-					meta: {
-						title: '参数配置',
-						permission: true,
-						index: 'param'
-					}
-				},
-				*/
-			] 
+			]
 		},
 		{
 			path: '/login',

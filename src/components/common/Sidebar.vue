@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar">
-        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
-                 text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
+        <!--background-color="#324157" text-color="#bfcbd9" active-text-color="#20a0ff"-->
+        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse"  unique-opened router>
             <template v-for="(item,index) in items">
                 <template v-if="item.ch.length!=0">
                     <el-submenu :index="item.index" :key="index">
@@ -62,6 +62,8 @@
 </script>
 
 <style scoped>
+    @import "../../assets/css/color-main.css";
+
     .sidebar {
         display: block;
         position: absolute;
