@@ -63,6 +63,11 @@
 
 <style scoped>
     @import "../../assets/css/color-main.css";
+	
+	*{
+	    color: #000000!important;
+	}
+	
 
     .sidebar {
         display: block;

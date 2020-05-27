@@ -91,7 +91,7 @@
 					<quill-editor ref="newEditor" width="75%" height="700px" v-model="form.content" :options="editorOption"></quill-editor>
 				</el-form-item>
 
-				<el-form-item label-width="100px" label="排列顺序" prop="sort" :rules="[{ required: true, message: '该项不能为空', trigger: 'change' },{type: 'number', message: '排列顺序必须为数字值'}]">
+				<el-form-item label-width="100px" label="排列顺序" prop="sort" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{type: 'number', message: '排列顺序必须为数字值',trigger: 'change' }]">
 					<el-input v-model.number="Sort"></el-input>
 				</el-form-item>
 			</el-form>

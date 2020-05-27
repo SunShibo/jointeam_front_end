@@ -189,4 +189,9 @@
     .el-dropdown-menu__item {
         text-align: center;
     }
+	
+	*{
+	    color: #000000!important;
+	}
+	
 </style>
