@@ -29,14 +29,15 @@
                                 <img :src="scope.row.image" style="min-width: 300px;">
                             </a>
                             <img slot="reference" :src="scope.row.image"
-                                 style="min-width: 120px;height: 70px; cursor:pointer">
+                                 style="min-width: 80px;height: 80px; cursor:pointer">
                         </el-popover>
                     </template>
                 </el-table-column>
                 <el-table-column prop="skip" label="跳转方式" align="center" :formatter="skip"></el-table-column>
                 <el-table-column prop="skipPath" label="跳转路径" align="center"></el-table-column>
                 <el-table-column prop="sort" label="排序" align="center"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间" align="center"  :formatter="timeFormatter"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" align="center"
+                                 :formatter="timeFormatter"></el-table-column>
                 <el-table-column label="操作" width="280" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -47,7 +48,7 @@
                         </el-button>
 
                         <el-popconfirm
-                                title="这是一段内容确定删除吗？"
+                                title="确认删除此banner吗？"
                                 @onConfirm="handleDelete(scope.$index, scope.row)"
                         >
                             <el-button slot="reference"
@@ -61,34 +62,39 @@
             </el-table>
         </div>
 
-        <el-dialog title="添加/编辑" :visible.sync="dialogFormVisible" :before-close="beforeClose">
-            <el-form>
-                <el-select v-model="form.skip" placeholder="请选择跳转类型"  @change="change">
-                    <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-form-item label="跳转路径" v-if="!path" >
-                    <el-input v-model="form.skipPath"  type="number" size="mini" class="inputform"></el-input>
+        <el-dialog title="添加/编辑" :visible.sync="dialogFormVisible" :before-close="beforeClose" :close-on-click-modal="closeOnClickModal">
+            <el-form  ref="courseform" :model="form" :rules="rules" >
+                <el-form-item label="跳转类型"  prop="skip" >
+                    <el-select v-model="form.skip" placeholder="请选择跳转类型" @change="change">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="跳转路径" v-if="path" >
+                <el-form-item label="跳转路径" v-if="!path" prop="skipPath">
+                    <el-input v-model="form.skipPath" type="number" size="mini" class="inputform"></el-input>
+                </el-form-item>
+                <el-form-item label="跳转路径" v-if="path"  prop="skipPath">
                     <el-input v-model="form.skipPath" class="inputform"></el-input>
                 </el-form-item>
+                <el-form-item label="排序编码"   prop="sort">
+                    <el-input v-model="form.sort" class="inputform" type="number"></el-input>
+                </el-form-item>
                 <el-form-item label="图片">
-                    <upLoad idName="banner"
+                    <upLoad
                             :fileList="fileList"
                             :onUpLoadSuccess="onUpLoadSuccess"
                             :onUpLoadError="onUpLoadError"
                             :filesNumber="1"
-                            :showFileList="false"></upLoad>
+                            :showFileList="true" ></upLoad>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="loadData">确 定</el-button>
+                <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -104,15 +110,15 @@
         data() {
             return {
                 tableData: [],
-                path:false,
+                path: false,
                 multipleSelection: '',
                 dialogFormVisible: false,
-                form:{
-                    id:'',
-                    skip:'',//跳转方式
-                    skipPath:'',// 跳转路径 或 id
-                    image:'',
-                    sort:'',
+                form: {
+                    id: '',
+                    skip: '',//跳转方式
+                    skipPath: '',// 跳转路径 或 id
+                    image: '',
+                    sort: '',
                 },
                 tid: 0,
                 id: 0,
@@ -135,21 +141,39 @@
                     label: '客户成功'
                 }],
                 value: ''
+                ,
+                //检测规则
+                rules: {
+                    skip: [{
+                        required: true,
+                        message: '请选择跳转方式',
+                        trigger: 'blur'
+                    }],
+                    skipPath: [{
+                        required: true,
+                        message: '请选择跳转位置',
+                        trigger: 'blur'
+                    }],
+                    sort: [{
+                        required: true,
+                        message: '请填写排序码',
+                        trigger: 'blur'
+                    }],
+                }
             }
-
         },
         created() {
             this.getData();
         },
         methods: {
-            change(value){
-                if(value!='page'){
-                    this.path=false;
-                }else {
-                    this.path=true;
+            change(value) {
+                if (value != 'page') {
+                    this.path = false;
+                } else {
+                    this.path = true;
                 }
             },
-            timeFormatter(row){
+            timeFormatter(row) {
                 var date = new Date(row.createTime);
                 var YY = date.getFullYear() + '-';
                 var MM = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
@@ -157,7 +181,7 @@
                 var hh = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
                 var mm = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
                 var ss = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
-                return YY + MM + DD +" "+hh + mm + ss;
+                return YY + MM + DD + " " + hh + mm + ss;
             },
             skip(row) {
                 if (row.skip == 'page') {
@@ -176,30 +200,45 @@
                     return "客户成功";
                 }
             },
-            loadData() {
-                if (this.uploadUrl && this.id) {//修改
-                    this.$axios.post(
-                        '/banner/updBan',
-                        {id: this.id, tId: this.tid, img: this.uploadUrl}
-                    ).then(res => {
-                        if (res.success) {
-                            this.$message.success('修改成功');
-                            this.fileList = [];
-                            this.getData()
-                        }
-                    })
-                } else {//添加
-                    this.$axios.post(
-                        '/banner/addBan',
-                        {tId: this.tid, img: this.uploadUrl}
-                    ).then(res => {
-                        if (res.success) {
-                            this.$message.success('上传成功');
-                            this.fileList = []
-                            this.getData()
-                        }
-                    })
+            saveEdit(formName) {
+                if(this.form.image=='' || this.form.image==null){
+                    this.$message.error("未添加图片");
+                    return false;
                 }
+
+                this.$refs.courseform.validate(valid => {
+                    if (valid) {
+                        /* 添加 */
+                        if (this.form.id == '' || this.form.id == null) {
+                            let fd = JSON.parse(JSON.stringify(this.form));
+                            delete fd.id;
+                            this.$axios.post('/banner/addBanner', fd).then(res => {
+                                if (!res.success) {
+                                    this.$message.success(res.errMsg);
+                                    return;
+                                }
+                                this.$message.success(`操作成功`);
+                                this.getData();
+                                this.dialogFormVisible = false;
+                            });
+                        } else {
+                            /* 更新 */
+                            this.$axios.post('/banner/updateBanner', this.form).then(res => {
+                                if (!res.success) {
+                                    this.$message.success(res.errMsg);
+                                    return;
+                                }
+                                this.$message.success(`操作成功`);
+                                this.getData();
+                                this.dialogFormVisible = false;
+                            });
+                        }
+                        this.active = 0;
+                    } else {
+                        console.error('error submit!!');
+                        return false;
+                    }
+                });
             },
 
             /**
@@ -207,9 +246,10 @@
              */
             onUpLoadSuccess(uploadUrl) {
                 console.log(uploadUrl)
-                this.uploadUrl = uploadUrl;
+                this.fileList=[];
+                this.fileList.push({name:uploadUrl,url:uploadUrl});
+                this.form.image = uploadUrl;
             },
-
             /**
              * 上传失败后的回调
              */
@@ -219,6 +259,7 @@
             },
 
             handleSelectionChange(val) {
+                console.log(val);
                 this.multipleSelection = val;
             },
 
@@ -226,7 +267,15 @@
              * 添加banner
              */
             addBanner() {
-                this.dialogFormVisible = true
+                this.form={
+                        id: '',
+                        skip: '',//跳转方式
+                        skipPath: '',// 跳转路径 或 id
+                        image: '',
+                        sort: '',
+                };
+                this.fileList=[];
+                this.dialogFormVisible = true;
             },
             /**
              * 编辑
@@ -234,8 +283,15 @@
              * @param row
              */
             handleEdit(index, row) {
-                this.id = row.id, this.tid = row.tid, this.uploadUrl = row.img;
-                this.dialogFormVisible = true
+                this.form=row;
+                if (row.skip != 'page') {
+                    this.path = false;
+                } else {
+                    this.path = true;
+                }
+                this.fileList=[];
+                this.fileList.push({name:row.image,url:row.image});
+                this.dialogFormVisible = true ;
             },
 
             /**
@@ -245,7 +301,7 @@
              */
             handleDelete(index, row) {
                 this.$axios.post(
-                    '/banner/delBan',
+                    '/banner/delBannerById',
                     {id: row.id}
                 ).then(res => {
                     if (res.success) {
@@ -274,8 +330,10 @@
     .table {
         margin-top: 1%;
     }
-    .inputform{
-        width: 50%;
+
+    .inputform {
+        width: 30%;
+        line-height: 40%;
 
     }
 
