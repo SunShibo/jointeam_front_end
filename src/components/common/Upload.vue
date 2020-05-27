@@ -113,7 +113,7 @@
         data(){
             return {
                 region: 'oss-cn-beijing',
-                bucket: 'staminadrill',
+                bucket: 'zjtc-bucket-01',
                 percentage: 0,
                 url: '/sequence/getStsOss',
                 ClientObj: null,
@@ -185,7 +185,7 @@
                 try {
                     let vm = this;
                     vm.disabled = true;
-                    const client = Client(this.dataObj), file = option.file, relativePath = 'https://staminadrill.oss-cn-beijing.aliyuncs.com/';
+                    const client = Client(this.dataObj), file = option.file, relativePath = 'https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/';
                     //随机命名
                     const random_name = this.random_string(6) + '_' + new Date().getTime() + '.' + file.name.split('.').pop();
                     // 分片上传文件
@@ -227,7 +227,7 @@
             // 随机生成文件名
             random_string(len) {
                 len = len || 32;
-                let chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz12345678', maxPos = chars.length, pwd = '';
+                let chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz12345678', maxPos = chars.length, pwd = 'wxapp/';
                 for (let i = 0; i < len; i++) {
                     pwd += chars.charAt(Math.floor(Math.random() * maxPos));
                 }
