@@ -11,50 +11,104 @@
 				<el-date-picker :editable="false" v-model="selectTimeData" type="datetimerange" range-separator="至"
 				 start-placeholder="开始日期" end-placeholder="结束日期">
 				</el-date-picker>
-
 				<el-button type="primary" icon="search" @click="search">搜索</el-button>
-				<el-button type="primary" icon="add">新增</el-button>
+				<el-button type="primary" icon="add" @click="addInfo">新增</el-button>
+				<el-button type="primary" icon="search" @click="reset">重置</el-button>
 			</div>
 			<!-- 信息展示 -->
-			<el-table :data="tableData" border class="table" ref="multipleTable">
-				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="title" label="标题"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="source" label="来源"></el-table-column>
-				<el-table-column width="120" height="60" prop="image" label="封面图">
-					<template slot-scope="scope">
-						<img :src="scope.row.image" width="50" height="50" />
-					</template>
-				</el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="lable" label="标签"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="content" label="内容"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="status" label="状态"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="createTime" label="创建时间"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="updateTime" label="更新时间"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="createUserId" label="创建用户的id"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="updateUserId" label="更新用户的id"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="sort" label="排列顺序"></el-table-column>
-			</el-table>
+					<el-table :data="tableData" border class="table" ref="multipleTable">
+						<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
+						<el-table-column :show-overflow-tooltip="true" width="140" prop="title" label="标题"></el-table-column>
+						<el-table-column :show-overflow-tooltip="true" width="140" prop="source" label="来源"></el-table-column>
+						<el-table-column width="120" height="60" prop="image" label="封面图">
+							<template slot-scope="scope">
+								<img :src="scope.row.image" width="50" height="50" />
+							</template>
+						</el-table-column>
+						<el-table-column :show-overflow-tooltip="true" width="140" prop="label" label="标签"></el-table-column>
+						<el-table-column :show-overflow-tooltip="true" width="140" prop="content" label="内容"></el-table-column>
+						<el-table-column :show-overflow-tooltip="true" width="140" prop="status" label="封禁状态"></el-table-column>
+						<el-table-column :show-overflow-tooltip="true" width="140" prop="createTime" label="创建时间" :formatter="formatCreateTime(scope.row,"createTime")"></el-table-column>
+						<el-table-column :show-overflow-tooltip="true" width="140" prop="updateTime" label="更新时间" :formatter="formatCreateTime"></el-table-column>
+
+						<el-table-column :show-overflow-tooltip="true" width="140" prop="sort" label="排列顺序"></el-table-column>
+					</el-table>
+
 			<div class="pagination">
 				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
 				 :page-sizes="pageSizes" :page-size="PageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount"></el-pagination>
 			</div>
 		</div>
+
+		<el-dialog title="新增/编辑资讯" :visible.sync="addInfoVisible" :close-on-click-modal="closeOnClickModal">
+			<el-form ref="infoform" :model="form" label-width="50px">
+				<el-form-item label-width="100px" label="标题" prop="title" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+					<el-input v-model="form.title"></el-input>
+				</el-form-item>
+				<el-form-item label-width="100px" label="来源" prop="source" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+					<el-input v-model="form.source"></el-input>
+				</el-form-item>
+
+				<div class="grid-content bg-purple">
+					<el-form-item label-width="100px" label="封面图" prop="image" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="imgsuccess1" :onUpLoadRemove="imgRemove1"
+						 :onUpLoadError="onUpLoadError" :multiple="true" :drag="true" :show-file-list="true" accept="image/*" :fileList="imagedatelist"
+						 :filesNumber="1">
+						</upload>
+					</el-form-item>
+				</div>
+
+				<el-form-item label-width="100px" label="标签" prop="label" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+					<el-input v-model="form.label"></el-input>
+				</el-form-item>
+
+				<el-form-item label="文章内容" :rules="[{required: true, message: '该项不能为空', trigger: 'change'}]" prop="content">
+					<!--富文本-->
+					<!-- 文件上传input 将它隐藏-->
+					<quill-editor ref="newEditor" width="75%" height="700px" v-model="form.content" :options="editorOption"></quill-editor>
+				</el-form-item>
+
+				<el-form-item label-width="100px" label="排列顺序" prop="Sort" :rules="[{ required: true, message: '该项不能为空', trigger: 'change' }]">
+					<el-input v-model="form.Sort"></el-input>
+				</el-form-item>
+			</el-form>
+			<span slot="footer" class="dialog-footer">
+				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveCoachEdit('form')">确
+					定</el-button>
+				<el-button @click="addInfoVisible = false">取 消</el-button>
+			</span>
+		</el-dialog>
 	</div>
 </template>
 <script>
 	import menu from '../../common/menu';
 	import upload from '../../common/Upload.vue';
+	import 'quill/dist/quill.core.css';
+	import 'quill/dist/quill.snow.css';
+	import 'quill/dist/quill.bubble.css';
+	import {
+		quillEditor
+	} from 'vue-quill-editor';
 
 	export default {
 		name: 'infomation',
 		components: {
+			quillEditor,
 			upload
 		},
 		data() {
 			return {
+				editorOption: { //富文本参数
+					placeholder: '开始编辑...'
+				},
+
+				imagedatelist: [],
+
 				loading: true,
 
 				selectTimeData: [],
+
+				addInfoVisible: false,
 
 				// 总数据
 				tableData: [],
@@ -88,6 +142,33 @@
 			}
 		},
 		methods: {
+			formatCreateTime(row,type) {
+				var time;
+				switch(type){
+					case "createTime": 
+						time = new Date(row.createTime).format("yyyy-MM-dd");
+						break;
+					case "updateTime":
+						time = new Date(row.updateTime).format("yyyy-MM-dd");
+						break;
+				}
+				return time;
+			},
+			
+			formatUpdateTime(row){
+				return new Date(row.updateTime).format("yyyy-MM-dd");
+			},
+
+			saveCoachEdit() {
+				console.log(this.form.content);
+				console.log(this.form.Sort);
+			},
+
+			addInfo() {
+				this.form = {};
+				this.addInfoVisible = true;
+			},
+
 			// 获取 easy-mock 的模拟数据
 			getData() {
 				this.loading = true;
@@ -116,6 +197,13 @@
 			search() {
 				this.getData();
 			},
+
+			reset() {
+				this.selectTimeData = [];
+				this.infoName = "";
+				this.search();
+			},
+
 
 
 
@@ -251,6 +339,4 @@
 		margin-left: 10px;
 		vertical-align: bottom;
 	}
-
-	
 </style>
