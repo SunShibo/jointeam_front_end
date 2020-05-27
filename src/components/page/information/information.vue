@@ -16,24 +16,42 @@
 				<el-button type="primary" icon="search" @click="reset">重置</el-button>
 			</div>
 			<!-- 信息展示 -->
-					<el-table :data="tableData" border class="table" ref="multipleTable">
-						<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="title" label="标题"></el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="source" label="来源"></el-table-column>
-						<el-table-column width="120" height="60" prop="image" label="封面图">
-							<template slot-scope="scope">
-								<img :src="scope.row.image" width="50" height="50" />
-							</template>
-						</el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="label" label="标签"></el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="content" label="内容"></el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="status" label="封禁状态"></el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="createTime" label="创建时间" :formatter="formatCreateTime(scope.row,"createTime")"></el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="updateTime" label="更新时间" :formatter="formatCreateTime"></el-table-column>
-
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="sort" label="排列顺序"></el-table-column>
-					</el-table>
-
+			<el-table :data="tableData" border class="table" ref="multipleTable">
+				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" width="140" prop="title" align="center" label="标题"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" width="140" prop="introduction" align="center" label="简介"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" width="140" prop="source" align="center" label="来源"></el-table-column>
+				<el-table-column width="120" height="60" align="center" prop="image" label="封面图">
+					<template slot-scope="scope">
+					    <el-popover placement="top-start" trigger="click"> <!--trigger属性值：hover、click、focus 和 manual-->
+					        <a :href="scope.row.scope" target="_blank" title="查看最大化图片">
+					            <img :src="scope.row.image" style="min-width: 300px;height: 200px; cursor:pointer;">
+					        </a>
+					        <img slot="reference" :src="scope.row.image"
+					             style="min-width: 80px;height: 80px; cursor:pointer">
+					    </el-popover>
+					</template>
+				</el-table-column>
+				<el-table-column :show-overflow-tooltip="true" align="center" width="140" prop="label" label="标签"></el-table-column>
+				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" width="140" prop="createTime" label="创建时间"></el-table-column>
+				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" width="140" prop="updateTime" label="更新时间"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" align="center" width="75" prop="sort" label="排列顺序"></el-table-column>
+				<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
+					<template slot-scope="scp">
+						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">查看详情(修改)</el-button>
+						<el-popconfirm
+                                title="确认删除此banner吗？"
+                                @onConfirm="handleDelete(scp.$index, scp.row)"
+                        >
+                            <el-button slot="reference"
+                                       type="text"
+                                       icon="el-icon-delete"
+                                       style="color: #ff4d51!important">删除
+                            </el-button>
+                        </el-popconfirm>
+					</template>
+				</el-table-column>
+			</el-table>
 			<div class="pagination">
 				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
 				 :page-sizes="pageSizes" :page-size="PageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount"></el-pagination>
@@ -45,6 +63,10 @@
 				<el-form-item label-width="100px" label="标题" prop="title" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
 					<el-input v-model="form.title"></el-input>
 				</el-form-item>
+				<el-form-item label-width="100px" label="简介" prop="introduction" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+					<el-input v-model="form.introduction"></el-input>
+				</el-form-item>
+				
 				<el-form-item label-width="100px" label="来源" prop="source" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
 					<el-input v-model="form.source"></el-input>
 				</el-form-item>
@@ -61,19 +83,20 @@
 				<el-form-item label-width="100px" label="标签" prop="label" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
 					<el-input v-model="form.label"></el-input>
 				</el-form-item>
-
+				<span style="padding-left: 100px;">多个标签请用逗号隔开</span>
+				<br />
 				<el-form-item label="文章内容" :rules="[{required: true, message: '该项不能为空', trigger: 'change'}]" prop="content">
 					<!--富文本-->
 					<!-- 文件上传input 将它隐藏-->
 					<quill-editor ref="newEditor" width="75%" height="700px" v-model="form.content" :options="editorOption"></quill-editor>
 				</el-form-item>
 
-				<el-form-item label-width="100px" label="排列顺序" prop="Sort" :rules="[{ required: true, message: '该项不能为空', trigger: 'change' }]">
-					<el-input v-model="form.Sort"></el-input>
+				<el-form-item label-width="100px" label="排列顺序" prop="sort" :rules="[{ required: true, message: '该项不能为空', trigger: 'change' },{type: 'number', message: '排列顺序必须为数字值'}]">
+					<el-input v-model.number="Sort"></el-input>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
-				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveCoachEdit('form')">确
+				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveEdit('form')">确
 					定</el-button>
 				<el-button @click="addInfoVisible = false">取 消</el-button>
 			</span>
@@ -98,6 +121,9 @@
 		},
 		data() {
 			return {
+				
+				Sort: "",
+				
 				editorOption: { //富文本参数
 					placeholder: '开始编辑...'
 				},
@@ -130,6 +156,12 @@
 				count: 0,
 			};
 		},
+		watch:{
+			Sort(vel,old){
+				this.form["Sort"] = vel;
+			}
+		},
+		
 		created() {
 			this.getData();
 		},
@@ -142,30 +174,116 @@
 			}
 		},
 		methods: {
-			formatCreateTime(row,type) {
-				var time;
-				switch(type){
-					case "createTime": 
-						time = new Date(row.createTime).format("yyyy-MM-dd");
-						break;
-					case "updateTime":
-						time = new Date(row.updateTime).format("yyyy-MM-dd");
-						break;
-				}
-				return time;
+			handleDelete(index, row) {
+			    this.$axios.post(
+			        '/industry/delIndustryById',
+			        {id: row.id}
+			    ).then(res => {
+			        if (res.success) {
+			            this.$message.success('删除成功')
+			            this.getData();
+			        }
+			    })
 			},
 			
-			formatUpdateTime(row){
-				return new Date(row.updateTime).format("yyyy-MM-dd");
+			saveEdit() {
+				this.loading = true;
+				this.$refs.infoform.validate(valid => {
+					if (valid) {
+						/* 添加 */
+						const subData = this.form;
+						if (this.form.id == '' || this.form.id == null) {
+							this.form = {
+								title: subData.title,
+								introduction: subData.introduction,
+								source: subData.source,
+								image: subData.image,
+								label: subData.label,
+								content: subData.content,
+								status: subData.status,
+								sort: this.Sort,
+							};
+							let fd = JSON.parse(JSON.stringify(this.form));
+							delete fd.id;
+							this.$axios.post('/industry/addIndustry', fd).then(res => {
+								if (!res.success) {
+									this.$message.success(res.errMsg);
+									this.loading = false;
+									return;
+								}
+								this.$message.success(`操作成功`);
+								this.getData();
+								this.form = {};
+								this.loading = false;
+								this.addInfoVisible = false;
+							});
+							this.loading = false;
+						} else {
+							/* 更新 */
+							this.form = {
+								id: subData.id,
+								title: subData.title,
+								introduction: subData.introduction,
+								introduction: subData.introduction,
+								source: subData.source,
+								image: subData.image,
+								label: subData.label,
+								content: subData.content,
+								status: subData.status,
+								sort: this.Sort,
+							};
+							this.loading = true;
+							let fd = JSON.parse(JSON.stringify(this.form));
+							this.$axios.post('/industry/updateIndustryById', fd).then(res => {
+								if (!res.success) {
+									this.$message.success(res.errMsg);
+									this.loading = false;
+									return;
+								}
+								this.$message.success(`操作成功`);
+								this.form = {};
+								this.getData();
+								this.addInfoVisible = false;
+							});
+							this.loading = false;
+						}
+					} else {
+						console.error('error submit!!');
+						return false;
+					}
+				});
+			},
+			handleEdit(index,row){
+				this.form = row;
+				this.Sort = row.sort;
+				this.form["Sort"] = this.Sort;
+				this.idx = index;
+				this.imagedatelist = [];
+				this.imagedatelist.push({name:row.image,url:row.image});
+				this.addInfoVisible = true;
+			},
+			
+			formatRowData(row, column) {
+				var returnData;
+				switch (column.property) {
+					case "createTime":
+						returnData = new Date(row.createTime).format("yyyy-MM-dd");
+						break;
+					case "updateTime":
+						returnData = new Date(row.updateTime).format("yyyy-MM-dd");
+						break;
+				}
+				return returnData;
 			},
 
-			saveCoachEdit() {
-				console.log(this.form.content);
-				console.log(this.form.Sort);
+			formatUpdateTime(row) {
+				return new Date(row.updateTime).format("yyyy-MM-dd");
 			},
 
 			addInfo() {
 				this.form = {};
+				this.Sort = "",
+				this.imagedatelist = [];
 				this.addInfoVisible = true;
 			},
 
@@ -203,19 +321,6 @@
 				this.infoName = "";
 				this.search();
 			},
-
-
-
-
-
-
-
-
-
-
-
-
-
 			showInput() {
 				this.inputVisible = true;
 				this.$nextTick(_ => {
@@ -254,7 +359,7 @@
 			},
 			imgsuccess1(url) {
 				this.$message('图片上传成功');
-				this.form.headPic = url;
+				this.form.image = url;
 			},
 			imgRemove1() {
 				this.$message('图片删除成功');
