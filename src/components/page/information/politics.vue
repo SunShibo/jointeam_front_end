@@ -267,17 +267,17 @@
 				var returnData;
 				switch (column.property) {
 					case "createTime":
-						returnData = new Date(row.createTime).format("yyyy-MM-dd");
+						returnData = new Date(row.createTime).format("yyyy/MM/dd");
 						break;
 					case "updateTime":
-						returnData = new Date(row.updateTime).format("yyyy-MM-dd");
+						returnData = new Date(row.updateTime).format("yyyy/MM/dd");
 						break;
 				}
 				return returnData;
 			},
 
 			formatUpdateTime(row) {
-				return new Date(row.updateTime).format("yyyy-MM-dd");
+				return new Date(row.updateTime).format("yyyy/MM/dd");
 			},
 
 			addInfo() {
@@ -294,8 +294,8 @@
 				var startTime = null;
 				var endTime = null;
 				if (this.selectTimeData[0] == [] || this.selectTimeData[0] == null) {} else {
-					startTime = new Date(this.selectTimeData[0]).format("yyyy-MM-dd");
-					endTime = new Date(this.selectTimeData[1]).format("yyyy-MM-dd");
+					startTime = new Date(this.selectTimeData[0]).format("yyyy/MM/dd");
+					endTime = new Date(this.selectTimeData[1]).format("yyyy/MM/dd");
 				}
 				this.$axios
 					.post('/politics/selectPolitics', {
