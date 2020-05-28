@@ -238,16 +238,11 @@
 					},
 					{
 						id: 1,
-						name: "未开始",
-						ename: "notStart"
-					},
-					{
-						id: 2,
 						name: "进行中",
 						ename: "having"
 					},
 					{
-						id: 3,
+						id: 2,
 						name: "已结束",
 						ename: "finished"
 					}
@@ -255,16 +250,11 @@
 				statusOptions1: [
 					{
 						id: 1,
-						name: "未开始",
-						ename: "notStart"
-					},
-					{
-						id: 2,
 						name: "进行中",
 						ename: "having"
 					},
 					{
-						id: 3,
+						id: 2,
 						name: "已结束",
 						ename: "finished"
 					}

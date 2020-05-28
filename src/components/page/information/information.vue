@@ -17,7 +17,7 @@
 			</div>
 			<!-- 信息展示 -->
 			<el-table :data="tableData" border class="table" ref="multipleTable">
-				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" label="序号" prop="id" align="center" width="50"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="title" align="center" label="标题"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="introduction" align="center" label="简介"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="source" align="center" label="来源"></el-table-column>
@@ -40,7 +40,7 @@
 					<template slot-scope="scp">
 						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">查看详情(修改)</el-button>
 						<el-popconfirm
-                                title="确认删除此banner吗？"
+                                title="确认删除此资讯吗？"
                                 @onConfirm="handleDelete(scp.$index, scp.row)"
                         >
                             <el-button slot="reference"
