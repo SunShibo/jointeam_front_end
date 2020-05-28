@@ -9,7 +9,7 @@
     </div>
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="s_name" placeholder="名称" class="handle-input mr10"></el-input>
+        <el-input v-model="s_name" placeholder="机构名称"  style="margin-right: 2%;width: 10%"></el-input>
         <el-button type="primary" icon="search" @click="search">搜索</el-button>
         <el-button type="primary" icon="search" @click="add">添加</el-button>
       </div>
@@ -21,16 +21,13 @@
               v-loading="$store.state.requestLoading"
       >
         <el-table-column type="index" label="序号" align="center" sortable width="50"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" width="130" prop="introduce" label="头像"  align="center">
-          <template slot-scope="scope">
-            <img :src="scope.row.head" width="60" height="60"/>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="姓名" align="center"></el-table-column>
-        <el-table-column prop="phone" label="手机号" align="center"></el-table-column>
-        <el-table-column prop="teamName" label="团队名称" align="center"></el-table-column>
-        <el-table-column prop="position" label="职位" align="center"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间" align="center"
+        <el-table-column prop="unitName" label="机构名称" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="type" label="机构类型" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="phone" label="联系电话" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="mail" label="联系邮箱" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="address" label="地址" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="remark" label="备注" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" align="center"  :show-overflow-tooltip="true"
                          :formatter="formatDate"></el-table-column>
         <el-table-column label="操作" width="280" align="center">
           <template slot-scope="scope">
@@ -70,25 +67,23 @@
     <el-dialog title="添加/编辑" :visible.sync="dialogFormVisible"
                :close-on-click-modal="closeOnClickModal">
       <el-form ref="courseform" :model="form" :rules="rules">
-        <el-form-item label="姓名：" prop="name">
-          <el-input v-model="form.name" size="mini" class="inputform"></el-input>
+        <el-form-item label="机构名称" prop="unitName" >
+          <el-input v-model="form.unitName" size="mini" class="inputform"></el-input>
         </el-form-item>
-        <el-form-item label="手机号" prop="phone">
-          <el-input v-model="form.phone" size="mini" class="inputform"></el-input>
+        <el-form-item label="机构类型" prop="type">
+          <el-input v-model="form.type" size="mini" class="inputform"></el-input>
         </el-form-item>
-        <el-form-item label="团队名"  prop="teamName">
-          <el-input v-model="form.teamName" class="inputform"></el-input>
+        <el-form-item label="联系电话"  prop="phone">
+          <el-input v-model="form.phone" class="inputform"></el-input>
         </el-form-item>
-        <el-form-item label="职位：" prop="position">
-          <el-input v-model="form.position" class="inputform" ></el-input>
+        <el-form-item label="联系邮箱" prop="mail" style="margin-left: 1%">
+          <el-input v-model="form.mail" class="inputform" ></el-input>
         </el-form-item>
-        <el-form-item label="头像">
-          <upLoad  id-name="team"
-                   :fileList="fileList"
-                   :onUpLoadSuccess="onUpLoadSuccess"
-                   :onUpLoadError="onUpLoadError"
-                   :filesNumber="1"
-                   :showFileList="true"></upLoad>
+        <el-form-item label="联系地址" prop="address" style="margin-left: 1%">
+          <el-input v-model="form.address" class="inputform" ></el-input>
+        </el-form-item>
+        <el-form-item label="备注信息" prop="remark" style="margin-left: 1%">
+          <el-input v-model="form.remark" class="inputform" ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -108,15 +103,15 @@
     name: 'user',
     data() {
       return {
-        fileList: [],
         dialogFormVisible: false,
         form: {
           id: '',
-          name: '',
-          teamName: '',
-          position: '',
+          unitName: '',
+          remark: '',
+          address: '',
           phone: '',
-          head: '',
+          mail: '',
+          type: '',
           status: 'yes',
         },
         // 总数据
@@ -134,19 +129,19 @@
         count: 0,
         //检测规则
         rules: {
-          name: [{
+          unitName: [{
             required: true,
-            message: '请写加姓名',
+            message: '请填写机构名称',
             trigger: 'blur'
           }],
           phone: [{
             required: true,
-            message: '请选写加手机号',
+            message: '请选写联系电话',
             trigger: 'blur'
           }],
-          teamName: [{
+          type: [{
             required: true,
-            message: '请填团队名称',
+            message: '请填写类型',
             trigger: 'blur'
           }],
           position: [{
@@ -163,9 +158,6 @@
     computed: {
       data() {
         return this.tableData;
-      },
-      total() {
-        return this.count;
       }
     },
     methods: {
@@ -188,10 +180,9 @@
       // 获取 easy-mock 的模拟数据
       getData() {
         this.loading = true;
-        this.$axios.post("/backServer/query", {
+        this.$axios.post("/organ/query", {
           pageNo: this.currentPage,
           pageSize: this.PageSize,
-          phone: this.s_phone,
           name: this.s_name,
         }).then(res => {
           this.tableData = res.data.records;
@@ -212,40 +203,20 @@
         var ss = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
         return YY + MM + DD + " " + hh + mm + ss;
       },
-      /**
-       * 上传成功后的回调
-       */
-      onUpLoadSuccess(uploadUrl) {
-        console.log(uploadUrl)
-        this.fileList = [];
-        this.fileList.push({name: uploadUrl, url: uploadUrl});
-        this.form.head = uploadUrl;
-      },
-      /**
-       * 上传失败后的回调
-       */
-      onUpLoadError(err) {
-        console.log(err)
-        this.$message.error('上传失败')
-      },
+
       add() {
         this.form = {
           id: '',
-          name: '',
-          teamName: '',
-          position: '',
+          unitName: '',
+          remark: '',
+          address: '',
           phone: '',
-          head: '',
+          mail: '',
           status: 'yes',
         };
-        this.fileList = [];
         this.dialogFormVisible = true;
       },
       saveEdit(formName) {
-        if(this.form.head=='' || this.form.head==null){
-          this.$message.error("未添加图片");
-          return false;
-        }
 
         this.$refs.courseform.validate(valid => {
           if (valid) {
@@ -253,7 +224,7 @@
             if (this.form.id == '' || this.form.id == null) {
               let fd = JSON.parse(JSON.stringify(this.form));
               delete fd.id;
-              this.$axios.post('/staff/insertStaff', fd).then(res => {
+              this.$axios.post('/organ/add', fd).then(res => {
                 if (!res.success) {
                   this.$message.success(res.errMsg);
                   return;
@@ -264,7 +235,7 @@
               });
             } else {
               /* 更新 */
-              this.$axios.post('/staff/updateStaff', this.form).then(res => {
+              this.$axios.post('/organ/update', this.form).then(res => {
                 if (!res.success) {
                   this.$message.success(res.errMsg);
                   return;
@@ -283,13 +254,10 @@
       },
       upd(row){
         this.form=row;
-        this.fileList = [];
-        this.fileList.push({name:row.head,url:row.head})
         this.dialogFormVisible = true;
       },
       del(row){
-
-        this.$axios.post('/staff/updateStatusById', {id:row.id}).then(res => {
+        this.$axios.post('/organ/delete', {id:row.id}).then(res => {
           if (!res.success) {
             this.$message.success(res.errMsg);
             return;

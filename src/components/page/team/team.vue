@@ -106,7 +106,7 @@
 
     export default {
         components: {upLoad},
-        name: 'user',
+        name: 'team',
         data() {
             return {
                 fileList: [],
