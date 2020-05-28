@@ -3,15 +3,15 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades">用户管理</i>
+          <i class="el-icon-lx-cascades">机构管理</i>
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="s_name" placeholder="用户名" class="handle-input mr10"></el-input>
-        <el-input v-model="s_phone" placeholder="手机号" class="querySize"></el-input>
+        <el-input v-model="s_name" placeholder="名称" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="search" @click="search">搜索</el-button>
+        <el-button type="primary" icon="search" @click="add">添加</el-button>
       </div>
       <el-table
               :data="tableData"
@@ -21,33 +21,35 @@
               v-loading="$store.state.requestLoading"
       >
         <el-table-column type="index" label="序号" align="center" sortable width="50"></el-table-column>
-          <el-table-column :show-overflow-tooltip="true" width="130" prop="introduce" label="头像">
-              <template slot-scope="scope">
-                  <img :src="scope.row.headPic" width="100" height="100" />
-              </template>
-          </el-table-column>
-        <el-table-column prop="name" label="用户名" align="center"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" width="130" prop="introduce" label="头像"  align="center">
+          <template slot-scope="scope">
+            <img :src="scope.row.head" width="60" height="60"/>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="姓名" align="center"></el-table-column>
         <el-table-column prop="phone" label="手机号" align="center"></el-table-column>
-        <el-table-column prop="sex" label="性别" align="center"></el-table-column>
-        <el-table-column prop="createTime" label="注册时间"  align="center" :formatter="formatDate"></el-table-column>
-        <el-table-column prop="birthday" label="生日" align="center" :formatter="formatBir"></el-table-column>
+        <el-table-column prop="teamName" label="团队名称" align="center"></el-table-column>
+        <el-table-column prop="position" label="职位" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" align="center"
+                         :formatter="formatDate"></el-table-column>
         <el-table-column label="操作" width="280" align="center">
           <template slot-scope="scope">
             <el-button
                     type="text"
                     icon="el-icon-edit"
-                    @click="queryPatriarch( scope.row)"
-            >查看家长信息</el-button>
-              <el-button
-                      type="text"
-                      icon="el-icon-edit"
-                      @click="queryStudent(scope.row)"
-              >查看学员信息</el-button>
-              <el-button
-                      type="text"
-                      icon="el-icon-edit"
-                      @click="queryAddress(scope.row)"
-              >查看地址</el-button>
+                    @click="upd( scope.row)"
+            >编辑
+            </el-button>
+            <el-popconfirm
+                    title="确认删除此调数据吗？"
+                    @onConfirm="del(scope.row)"
+            >
+              <el-button slot="reference"
+                         type="text"
+                         icon="el-icon-delete"
+                         style="color: #ff4d51">删除
+              </el-button>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
@@ -65,109 +67,93 @@
       </div>
     </div>
 
-    <!-- 家长信息 -->
-    <el-dialog title="查看家长信息" :visible.sync="visible" width="50%">
-      <div>
-        <el-table
-                :data="patriarch"
-                border
-                class="table"
-                ref="multipleTable"
-                v-loading="$store.state.requestLoading"
-        >
-          <el-table-column type="index" label="序号" align="center" sortable width="50"></el-table-column>
-          <el-table-column prop="name" label="姓名" align="center" ></el-table-column>
-          <el-table-column prop="phone" label="手机号"></el-table-column>
-          <el-table-column prop="createTime" label="注册时间" :formatter="formatDate"></el-table-column>
-        </el-table>
+    <el-dialog title="添加/编辑" :visible.sync="dialogFormVisible"
+               :close-on-click-modal="closeOnClickModal">
+      <el-form ref="courseform" :model="form" :rules="rules">
+        <el-form-item label="姓名：" prop="name">
+          <el-input v-model="form.name" size="mini" class="inputform"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="phone">
+          <el-input v-model="form.phone" size="mini" class="inputform"></el-input>
+        </el-form-item>
+        <el-form-item label="团队名"  prop="teamName">
+          <el-input v-model="form.teamName" class="inputform"></el-input>
+        </el-form-item>
+        <el-form-item label="职位：" prop="position">
+          <el-input v-model="form.position" class="inputform" ></el-input>
+        </el-form-item>
+        <el-form-item label="头像">
+          <upLoad  id-name="team"
+                   :fileList="fileList"
+                   :onUpLoadSuccess="onUpLoadSuccess"
+                   :onUpLoadError="onUpLoadError"
+                   :filesNumber="1"
+                   :showFileList="true"></upLoad>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click=" visible = false">确 定</el-button>
-      </span>
     </el-dialog>
 
-
-    <!-- 学员信息 -->
-    <el-dialog title="查看学员信息" :visible.sync="student" width="50%">
-      <div>
-        <el-table
-                :data="studentData"
-                class="table"
-                ref="multipleTable"
-                v-loading="$store.state.requestLoading"
-        >
-          <el-table-column type="index" label="序号" align="center" sortable width="50"></el-table-column>
-          <el-table-column :show-overflow-tooltip="true" width="130" prop="introduce" label="头像">
-            <template slot-scope="scope">
-              <img :src="scope.row.pic" width="100" height="100" />
-            </template>
-          </el-table-column>
-          <el-table-column prop="studentName" label="姓名" align="center" ></el-table-column>
-          <el-table-column prop="studentSex" label="性别"></el-table-column>
-          <el-table-column prop="birthday" label="生日" :formatter="formatBir"></el-table-column>
-        </el-table>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click=" student = false">确 定</el-button>
-      </span>
-    </el-dialog>
-
-
-    <!-- 地址信息 -->
-    <el-dialog title="查看地址" :visible.sync="address" width="50%">
-      <div>
-        <el-table
-                :data="addressData"
-                class="table"
-                ref="multipleTable"
-                v-loading="$store.state.requestLoading"
-        >
-          <el-table-column type="index" label="序号" align="center" sortable width="50"></el-table-column>
-          <el-table-column prop="communityName" label="名称" align="center" ></el-table-column>
-          <el-table-column prop="addressInfo" label="详细地址" :show-overflow-tooltip="true"  align="center" ></el-table-column>
-          <el-table-column prop="isDefault" label="是否默认" :formatter="addStatus" align="center" ></el-table-column>
-          <el-table-column prop="remark" label="备注"></el-table-column>
-          <el-table-column prop="createTime" label="创建时间" :formatter="formatDate"></el-table-column>
-        </el-table>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click=" address = false">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-  import menu from '../../common/menu'
+  import upLoad from '../../common/Upload'
+
   export default {
+    components: {upLoad},
     name: 'user',
     data() {
       return {
-		 loading: true,
-		  
-        address:false,
-        addressData:[],
-        student:false,
-        studentData:[],
-          visible:false,
+        fileList: [],
+        dialogFormVisible: false,
+        form: {
+          id: '',
+          name: '',
+          teamName: '',
+          position: '',
+          phone: '',
+          head: '',
+          status: 'yes',
+        },
         // 总数据
-        tableData:[],
+        tableData: [],
         // 默认显示第几页
-        currentPage:1,
+        currentPage: 1,
         // 总条数，根据接口获取数据长度(注意：这里不能为空)
-        totalCount:0,
+        totalCount: 0,
         // 个数选择器（可修改）
-        pageSizes:[10,20,50,100],
+        pageSizes: [10, 20, 50, 100],
         // 默认每页显示的条数（可修改）
-        PageSize:10,
-        s_name:"",
-        s_phone:"",
-        patriarch:[],
+        PageSize: 10,
+        s_name: "",
+        s_phone: "",
         count: 0,
+        //检测规则
         rules: {
-          email: [
-            { required: true, message: "请输入邮箱", trigger: "blur" }
-          ]
+          name: [{
+            required: true,
+            message: '请写加姓名',
+            trigger: 'blur'
+          }],
+          phone: [{
+            required: true,
+            message: '请选写加手机号',
+            trigger: 'blur'
+          }],
+          teamName: [{
+            required: true,
+            message: '请填团队名称',
+            trigger: 'blur'
+          }],
+          position: [{
+            required: true,
+            message: '请填职位',
+            trigger: 'blur'
+          }],
         }
       };
     },
@@ -186,79 +172,132 @@
       // 每页显示的条数
       handleSizeChange(val) {
         // 改变每页显示的条数
-        this.PageSize=val
+        this.PageSize = val
         // 点击每页显示的条数时，显示第一页
-        this.getData(val,1)
+        this.getData(val, 1)
         // 注意：在改变每页显示的条数时，要将页码显示到第一页
-        this.currentPage=1
+        this.currentPage = 1
       },
       // 显示第几页
       handleCurrentChange(val) {
         // 改变默认的页数
-        this.currentPage=val
+        this.currentPage = val
         // 切换页码时，要获取每页显示的条数
-        this.getData(this.PageSize,(val)*(this.pageSize))
+        this.getData(this.PageSize, (val) * (this.pageSize))
       },
-
       // 获取 easy-mock 的模拟数据
       getData() {
-		  this.loading = true;
-        this.$axios.post("/userInfo/queryUserInfo", {
-          pageNo:this.currentPage,
-          pageSize:this.PageSize,
-          phone:this.s_phone,
-          name:this.s_name,
+        this.loading = true;
+        this.$axios.post("/backServer/query", {
+          pageNo: this.currentPage,
+          pageSize: this.PageSize,
+          phone: this.s_phone,
+          name: this.s_name,
         }).then(res => {
           this.tableData = res.data.records;
           this.totalCount = res.data.total;
         });
-		this.loading = false;
+        this.loading = false;
       },
       search() {
         this.getData();
       },
       formatDate(row) {
-        let time = new Date(row.createTime);
-        return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + " " + time.getHours() + ":" + time
-                .getMinutes() + ":" + time.getSeconds();
+        var date = new Date(row.createTime);
+        var YY = date.getFullYear() + '-';
+        var MM = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+        var DD = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate());
+        var hh = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+        var mm = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
+        var ss = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+        return YY + MM + DD + " " + hh + mm + ss;
       },
-      formatBir(row){
-        let time = new Date(row.birthday);
-        return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() ;
+      /**
+       * 上传成功后的回调
+       */
+      onUpLoadSuccess(uploadUrl) {
+        console.log(uploadUrl)
+        this.fileList = [];
+        this.fileList.push({name: uploadUrl, url: uploadUrl});
+        this.form.head = uploadUrl;
       },
-      queryPatriarch(row){
-		  this.loading = true;
-        this.$axios.post("/userContact/queryContectByUserId", {
-          userId:row.id,
-        }).then(res => {
-          this.patriarch = res.data;
+      /**
+       * 上传失败后的回调
+       */
+      onUpLoadError(err) {
+        console.log(err)
+        this.$message.error('上传失败')
+      },
+      add() {
+        this.form = {
+          id: '',
+          name: '',
+          teamName: '',
+          position: '',
+          phone: '',
+          head: '',
+          status: 'yes',
+        };
+        this.fileList = [];
+        this.dialogFormVisible = true;
+      },
+      saveEdit(formName) {
+        if(this.form.head=='' || this.form.head==null){
+          this.$message.error("未添加图片");
+          return false;
+        }
+
+        this.$refs.courseform.validate(valid => {
+          if (valid) {
+            /* 添加 */
+            if (this.form.id == '' || this.form.id == null) {
+              let fd = JSON.parse(JSON.stringify(this.form));
+              delete fd.id;
+              this.$axios.post('/staff/insertStaff', fd).then(res => {
+                if (!res.success) {
+                  this.$message.success(res.errMsg);
+                  return;
+                }
+                this.$message.success(`操作成功`);
+                this.getData();
+                this.dialogFormVisible = false;
+              });
+            } else {
+              /* 更新 */
+              this.$axios.post('/staff/updateStaff', this.form).then(res => {
+                if (!res.success) {
+                  this.$message.success(res.errMsg);
+                  return;
+                }
+                this.$message.success(`操作成功`);
+                this.getData();
+                this.dialogFormVisible = false;
+              });
+            }
+            this.active = 0;
+          } else {
+            console.error('error submit!!');
+            return false;
+          }
         });
-		this.loading = false;
-        this.visible=true;
       },
-      queryStudent(row){
-		  this.loading = true;
-        this.$axios.post("/studentBack/query", {
-          userId:row.id,
-        }).then(res => {
-          this.studentData = res.data;
+      upd(row){
+        this.form=row;
+        this.fileList = [];
+        this.fileList.push({name:row.head,url:row.head})
+        this.dialogFormVisible = true;
+      },
+      del(row){
+
+        this.$axios.post('/staff/updateStatusById', {id:row.id}).then(res => {
+          if (!res.success) {
+            this.$message.success(res.errMsg);
+            return;
+          }
+          this.$message.success(`操作成功`);
+          this.getData();
+          this.dialogFormVisible = false;
         });
-		this.loading = false;
-        this.student=true;
-      },
-      queryAddress(row){
-		  this.loading = true;
-        this.$axios.post("/address/queryAddressByUserId", {
-          userId:row.id,
-        }).then(res => {
-          this.addressData = res.data;
-          console.log(res.data);
-        });
-		this.loading = false;
-        this.address=true;
-      },
-      addStatus(row){
-        return row.isDefault=='yes'?"是":"否";
       }
     }
   };
@@ -277,20 +316,25 @@
     width: 100px;
     display: inline-block;
   }
+
   .del-dialog-cnt {
     font-size: 16px;
     text-align: center;
   }
+
   .table {
     width: 100%;
     font-size: 14px;
   }
-  .red {
-    color: #ff0000;
+
+  .inputform {
+    width: 30%;
+    line-height: 40%;
+
   }
   .querySize {
-   width: 200px;
-   margin-left: 10px;
-   margin-right: 10px;
+    width: 200px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 </style>

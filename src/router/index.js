@@ -168,6 +168,16 @@ export default new Router({
 					}
 				},
 				{
+					path: '/home/keyvalue',
+					name: 'keyvalue',
+					component: resolve => require(['../components/page/sys/keyvalue.vue'], resolve),
+					meta: {
+						title: '其他设置',
+						permission: true,
+						index: 'keyvalue'
+					}
+				},
+				{
 					path: '/home/templatetype',
 					name: 'templatetype',
 					component: resolve => require(['../components/page/template/templatetype.vue'], resolve),

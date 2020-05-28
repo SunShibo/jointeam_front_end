@@ -22,11 +22,11 @@
                     v-loading="$store.state.requestLoading"
             >
                 <el-table-column type="index" label="序号" align="center" sortable width="50"></el-table-column>
-                <el-table-column label="Banner">
+                <el-table-column label="Banner"  align="center">
                     <template slot-scope="scope">
                         <el-popover placement="top-start" trigger="click"> <!--trigger属性值：hover、click、focus 和 manual-->
                             <a :href="scope.row.scope" target="_blank" title="查看最大化图片">
-                                <img :src="scope.row.image" style="min-width: 300px;">
+                                <img :src="scope.row.image" style="min-width: 300px; height: 200px;">
                             </a>
                             <img slot="reference" :src="scope.row.image"
                                  style="min-width: 80px;height: 80px; cursor:pointer">
@@ -84,7 +84,7 @@
                     <el-input v-model="form.sort" class="inputform" type="number"></el-input>
                 </el-form-item>
                 <el-form-item label="图片">
-                    <upLoad
+                    <upLoad  id-name="banner"
                             :fileList="fileList"
                             :onUpLoadSuccess="onUpLoadSuccess"
                             :onUpLoadError="onUpLoadError"
