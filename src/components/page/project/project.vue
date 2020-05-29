@@ -33,7 +33,7 @@
 			</div>
 			<!-- 信息展示 -->
 			<el-table :data="tableData" border class="table" ref="multipleTable">
-				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" sortable width="50"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"
 				 label="客户"></el-table-column>
@@ -80,7 +80,7 @@
 				<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
 					<template slot-scope="scp">
 						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">修改项目</el-button>
-						<el-button type="text" icon="el-icon-edit" @click="handeEdit(scp.$index, scp.row)">查看项目详情</el-button>
+						<el-button type="text" icon="el-icon-edit" @click="gotoProInfo(scp.$index, scp.row)">查看项目详情</el-button>
 						<el-button type="text" icon="el-icon-download" @click="downloadFile(scp.$index, scp.row)">下载附件</el-button>
 						
 						<el-popconfirm title="确认删除此项目吗？" @onConfirm="handleDelete(scp.$index, scp.row)">
@@ -259,7 +259,7 @@
 						ename: "finished"
 					}
 				],
-
+				
 				userInfoId: "",
 				staffInfoId: "",
 
@@ -318,14 +318,13 @@
 			}
 		},
 		methods: {
-			go() {
+			gotoProInfo(index,row){
 				this.$router.push({
-					name: 'proinfo',
-					params: {
-						editType: "12"
-					}
+					name: 'proinfo'
 				});
+				
 			},
+			
 			
 			downloadFile(index,row){
 				if(row.file == ""||row.file == null){

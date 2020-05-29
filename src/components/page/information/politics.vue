@@ -17,7 +17,7 @@
 			</div>
 			<!-- 信息展示 -->
 			<el-table :data="tableData" border class="table" ref="multipleTable">
-				<el-table-column :show-overflow-tooltip="true" label="序号" align="center" prop="id" width="50"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" label="编号" align="center" prop="id" width="50"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="title" align="center" label="标题"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="introduction" align="center" label="简介"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="source" align="center" label="来源"></el-table-column>

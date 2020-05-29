@@ -38,6 +38,8 @@
 			closeTags(index) {
 				const delItem = this.tagsList.splice(index, 1)[0];
 				const item = this.tagsList[index] ? this.tagsList[index] : this.tagsList[index - 1];
+				
+				
 				if (item) {
 					delItem.path === this.$route.fullPath && this.$router.push(item.path);
 				} else {
@@ -58,6 +60,7 @@
 			},
 			// 设置标签
 			setTags(route) {
+				
 				const isExist = this.tagsList.some(item => {
 					return item.path === route.fullPath;
 				})
@@ -92,7 +95,6 @@
 			// 监听关闭当前页面的标签页
 			bus.$on('close_current_tags', () => {
 				for (let i = 0, len = this.tagsList.length; i < len; i++) {
-					const item = this.tagsList[i];
 					if (item.path === this.$route.fullPath) {
 						if (i < len - 1) {
 							this.$router.push(this.tagsList[i + 1].path);
