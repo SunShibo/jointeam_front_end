@@ -37,3 +37,13 @@ Date.prototype.format = function(fmt) {
 	return fmt;
 
 }
+
+var sDay = "";
+Date.prototype.startDay = function(fmt,timeStatus) {
+	if(timeStatus == "set"){
+		sDay = fmt;
+		return "";
+	}else{
+		return sDay;
+	}
+}
