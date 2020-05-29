@@ -44,7 +44,7 @@
                                 @click="handleEdit(scope.row)"
                         >编辑
                         </el-button>
-
+                        <el-button type="text" icon="el-icon-download" @click="downloadFile(scope.row)">下载附件</el-button>
                         <el-popconfirm
                                 title="确认删除此数据吗？"
                                 @onConfirm="handleDelete(scope.row)"
@@ -276,6 +276,16 @@
             onUpLoadError(err) {
                 this.$message.error('上传失败')
             },
+
+            downloadFile(row){
+                if(row.path == ""||row.path == null){
+                    this.$message.error("没有文件");
+                }else{
+                    window.location.href=row.path;
+                }
+
+            },
+
         }
     }
     ;
