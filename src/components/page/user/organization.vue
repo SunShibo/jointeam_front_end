@@ -226,7 +226,7 @@
               delete fd.id;
               this.$axios.post('/organ/add', fd).then(res => {
                 if (!res.success) {
-                  this.$message.success(res.errMsg);
+                  this.$message.error(res.errMsg);
                   return;
                 }
                 this.$message.success(`操作成功`);
@@ -237,7 +237,7 @@
               /* 更新 */
               this.$axios.post('/organ/update', this.form).then(res => {
                 if (!res.success) {
-                  this.$message.success(res.errMsg);
+                  this.$message.error(res.errMsg);
                   return;
                 }
                 this.$message.success(`操作成功`);
@@ -259,7 +259,7 @@
       del(row){
         this.$axios.post('/organ/delete', {id:row.id}).then(res => {
           if (!res.success) {
-            this.$message.success(res.errMsg);
+            this.$message.error(res.errMsg);
             return;
           }
           this.$message.success(`操作成功`);

@@ -133,7 +133,7 @@
                 let fd = JSON.parse(JSON.stringify(this.form));
                 this.$axios.post("/syskv/update", fd).then(res => {
                     if (!res.success) {
-                        this.$message.success(res.errMsg);
+                        this.$message.error(res.errMsg);
                         return;
                     }
                     this.$message.success(`操作成功`);

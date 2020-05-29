@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 用户列表
+                    <i class="el-icon-lx-cascades">Bnner管理</i>
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -214,7 +214,7 @@
                             delete fd.id;
                             this.$axios.post('/banner/addBanner', fd).then(res => {
                                 if (!res.success) {
-                                    this.$message.success(res.errMsg);
+                                    this.$message.error(res.errMsg);
                                     return;
                                 }
                                 this.$message.success(`操作成功`);
@@ -225,7 +225,7 @@
                             /* 更新 */
                             this.$axios.post('/banner/updateBanner', this.form).then(res => {
                                 if (!res.success) {
-                                    this.$message.success(res.errMsg);
+                                    this.$message.error(res.errMsg);
                                     return;
                                 }
                                 this.$message.success(`操作成功`);

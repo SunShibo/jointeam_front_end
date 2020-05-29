@@ -272,11 +272,7 @@
             search() {
                 this.getData();
             },
-            formatDate(row) {
-                let time = new Date(row.createTime);
-                return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + " " + time.getHours() + ":" + time
-                    .getMinutes() + ":" + time.getSeconds();
-            },
+
             /**
              * 上传成功后的回调
              */
@@ -339,7 +335,7 @@
                             delete fd.id;
                             this.$axios.post('/backUser/add', fd).then(res => {
                                 if (!res.success) {
-                                    this.$message.success(res.errMsg);
+                                    this.$message.error(res.errMsg);
                                     return;
                                 }
                                 this.$message.success(`操作成功`);
@@ -350,7 +346,7 @@
                             /* 更新 */
                             this.$axios.post('/backUser/update', this.form).then(res => {
                                 if (!res.success) {
-                                    this.$message.success(res.errMsg);
+                                    this.$message.error(res.errMsg);
                                     return;
                                 }
                                 this.$message.success(`操作成功`);
@@ -368,7 +364,7 @@
                 /* 更新 */
                 this.$axios.post('/backUser/delete',{id:row.id} ).then(res => {
                     if (!res.success) {
-                        this.$message.success(res.errMsg);
+                        this.$message.error(res.errMsg);
                         return;
                     }
                     this.$message.success(`操作成功`);
