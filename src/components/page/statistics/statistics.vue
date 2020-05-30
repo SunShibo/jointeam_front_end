@@ -255,8 +255,8 @@
 						let arr = Object.entries(this.tableData);
 						var i = "".getCName(arr);
 						i.forEach((item, index, value) => {
-							this.forEachData += '<div data-v-8b9d66c2 class="el-col el-col-4" style="padding-right: 12px;padding-top:12px">';
-							this.forEachData += '<div data-v-8b9d66c2 class="grid-content bg-purple-light">';
+							this.forEachData += '<div data-v-8b9d66c2 class="el-col el-col-4" style="padding-right: 12px;padding-top:12px;text-align: center;">';
+							this.forEachData += '<div data-v-8b9d66c2 class="grid-content bg-purple-light" style="background: #e5e9f2;" >';
 							this.forEachData += '<span data-v-8b9d66c2 class="smallFont">' + item[0] + '</span>';
 							this.forEachData += "<br data-v-8b9d66c2 />";
 							if (item[1] == null || item[1] == "null") {
