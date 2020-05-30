@@ -259,7 +259,7 @@
 							this.forEachData += '<div data-v-8b9d66c2 class="grid-content bg-purple-light" style="background: #e5e9f2;" >';
 							this.forEachData += '<span data-v-8b9d66c2 class="smallFont">' + item[0] + '</span>';
 							this.forEachData += "<br data-v-8b9d66c2 />";
-							if (item[1] == null || item[1] == "null") {
+							if (item[1] == null || item[1] == "null") { 
 								this.forEachData += '<span data-v-8b9d66c2 class="hugeFont">暂无数据</span>';
 							} else {
 								this.forEachData += '<span data-v-8b9d66c2 class="hugeFont">' + item[1] + '</span>';
