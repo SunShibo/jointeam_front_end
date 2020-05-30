@@ -19,6 +19,7 @@
 			 v-loading="$store.state.requestLoading">
 				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="80" prop="read" label="是否已读"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" prop="title" label="标题"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" prop="content" label="反馈内容"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" prop="createTime" label="反馈时间" :formatter="formatDate"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="80" prop="name" label="用户姓名" :formatter="formatNameInfo"></el-table-column>
@@ -39,7 +40,8 @@
 		<el-dialog title="查看反馈信息" :visible.sync="readVisible" width="75%" :close-on-click-modal="closeOnClickModal">
 			<span v-show="fname!=''">{{fname}}:</span>
 			<span v-show="fname==''">匿名用户:</span>
-
+			<h6>{{ftitlt}}</h6>
+			<br />
 			<span>{{fcontent}}</span>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="readVisible = false">关闭</el-button>
@@ -72,6 +74,7 @@
 				fname: "",
 
 				fcontent: "",
+				ftitlt:'',
 
 				datelist: [],
 				//辅助元素定位
@@ -146,6 +149,7 @@
 					this.changeFeedbackStatus(row.id);
 				}
 				row.status == "no" ? this.fname = "" : this.fname = row.name;
+				this.ftitlt = row.title;
 				this.fcontent = row.content;
 				this.readVisible = true;
 			},
