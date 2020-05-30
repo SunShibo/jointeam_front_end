@@ -1,12 +1,12 @@
 var data = {
-	"payOrderNumber": "总订单数",
-	"paymentAmount": "丢失订单数",
-	"userNumber": "总用户",
-	"asd":"阿斯顿",
-	"qwe":"请问",
-	"g":"个",
-	"xx":"信息",
-	"cc":"储存",
+	"finishedCount": "已完成数量",
+	"projectCount": "项目总数量",
+	"paidMoney": "已付金额",
+	"havingCount":"已完成的项目数",
+	"balancePay":"剩余尾款",
+	"rentalMoney":"项目总金额",
+	"deferredMoney":"项目延期金额",
+	"deferredCount":"已延期数量",
 }
 
 var arrEName = Object.keys(data);

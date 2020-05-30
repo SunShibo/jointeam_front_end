@@ -4,12 +4,12 @@
 			<el-col>
 				<el-card class="box-card" shadow="hover">
 					<div slot="header" class="clearfix">
-						<span>总览 / 更新时间  :  {{nowTime}}</span>
+						<span>总览 / 更新时间 : {{nowTime}}</span>
 					</div>
 
 					<!-- 信息展示框-->
 					<div>
-						<el-row v-html="forEachData">
+						<el-row :key="menuKey" v-html="forEachData">
 
 						</el-row>
 					</div>
@@ -18,16 +18,16 @@
 		</el-row>
 		<!-- Echarts -->
 		<el-row>
-			<el-col :span="12">
-				<el-card class="box-card" shadow="hover">
+			<el-col :span="24">
+				<el-card class="box-card" shadow="hover" style="width: 100%;">
 					<div slot="header" class="clearfix">
 						<span>项目分析</span>
 					</div>
 					<div id="analysisChart" style="width: 100%;height:400px;"></div>
 				</el-card>
 			</el-col>
-			<el-col :span="12">
-				<el-card class="box-card" shadow="hover">
+			<el-col :span="24">
+				<el-card class="box-card" shadow="hover" style="width: 100%;">
 					<div slot="header" class="clearfix">
 						<span>销售分析</span>
 					</div>
@@ -45,33 +45,74 @@
 		name: 'statistics',
 		data() {
 			return {
+				indexs: '',
+
+				menuKey: 0,
+				tableData: [],
 				nowTime: '',
 				forEachData: '',
-				testData: {
-					"payOrderNumber": 3,
-					"paymentAmount": 3,
-					"userNumber": 17,
-					"asd": null,
-					"qwe": 23,
-					"g": 11,
-					"xx": 12,
-					"cc": 13,
-				},
+				testData: {},
+				
+				
+				analysis:[],
+				analysisName:[],
+				analysisData:[],
+				
+				
+				itemAnalysis:[],
+				itemAnalysisName:[],
+				itemAnalysisData:[],
 			}
 		},
+
 		mounted() {
-			this.drawLine();
+			this.insertAllHTMLCode();
+			this.getAnalysisData();
 		},
 		created() {
 			this.getNowTime();
-			this.insertAllHTMLCode();
 		},
 		filters: {
 			format: (date) => {
 				return new Date(date).format("yyyy年MM月dd日 hh:mm:ss");
 			}
 		},
+
 		methods: {
+			getAnalysisData(){
+				this.$axios
+					.post('/dataStats/salesAnalysis', {})
+					.then(res => {
+						if(!res.success)
+							this.$message.error("加载数据失败");
+						this.analysis = res.data;
+						
+						this.analysisName = Object.keys(res.data);
+						this.analysisName.splice(-1,1);
+						
+						this.analysisData = Object.values(res.data);
+						this.analysisData.splice(-1,1);
+						
+						this.gatItemAnalysisData();
+						
+						this.drowsellChart();
+					});
+			},
+			
+			gatItemAnalysisData(){
+				this.$axios
+					.post('/dataStats/itemAnalysis', {})
+					.then(res => {
+						if(!res.success)
+							this.$message.error("加载数据失败");
+						this.itemAnalysis = res.data;
+						
+						this.itemAnalysisName = Object.keys(res.data);
+						
+						this.itemAnalysisData = Object.values(res.data);
+						this.drawLine();
+					});
+			},
 			//获取现在的时间
 			getNowTime() {
 				this.nowTime = new Date().format("yyyy年MM月dd日 hh:mm:ss");
@@ -79,18 +120,18 @@
 			//mounted后在用Echarts在card里画线
 			drawLine() {
 				let analysisChart = this.$echarts.init(document.getElementById('analysisChart'));
-				let sellChart = this.$echarts.init(document.getElementById('sellChart'));
+				
 				// 绘制图表
 				analysisChart.setOption({
 					title: {
-						text: '折线图堆叠'
+						text: new Date().format("yyyy")
 					},
 					tooltip: {
 						trigger: 'axis'
 					},
 					legend: {
-						data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
-					},
+						data: this.itemAnalysisName
+					}, 
 					grid: {
 						left: '3%',
 						right: '4%',
@@ -105,28 +146,35 @@
 					xAxis: {
 						type: 'category',
 						boundaryGap: false,
-						data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+						data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月','八月','九月','十月','十一月','十二月']
 					},
 					yAxis: {
 						type: 'value'
 					},
 					series: [{
-							name: '邮件营销',
+							name: this.itemAnalysisName[0],
 							type: 'line',
-							stack: '总量',
-							data: [120, 132, 101, 134, 90, 230, 210]
+							data: this.itemAnalysisData[0]
 						},
 						{
-							name: '联盟广告',
+							name: this.itemAnalysisName[1],
 							type: 'line',
-							stack: '总量',
-							data: [220, 182, 191, 234, 290, 330, 310]
+							data: this.itemAnalysisData[1]
+						},
+						{
+							name: this.itemAnalysisName[2],
+							type: 'line',
+							data: this.itemAnalysisData[2]
 						},
 					]
 				});
+			},
+			
+			drowsellChart(){
+				let sellChart = this.$echarts.init(document.getElementById('sellChart'));
 				sellChart.setOption({
 					title: {
-						text: '堆叠区域图'
+						text: new Date().format("yyyy")
 					},
 					tooltip: {
 						trigger: 'axis',
@@ -138,7 +186,7 @@
 						}
 					},
 					legend: {
-						data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+						data: this.analysisName
 					},
 					grid: {
 						left: '3%',
@@ -154,29 +202,26 @@
 					xAxis: [{
 						type: 'category',
 						boundaryGap: false,
-						data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+						data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月','八月','九月','十月','十一月','十二月']
 					}],
 					yAxis: {
 						type: 'value'
 					},
 					series: [{
-							name: '邮件营销',
+							name: this.analysisName[0],
 							type: 'line',
-							stack: '总量',
 							areaStyle: {},
-							data: [120, 132, 101, 134, 90, 230, 210]
+							data: this.analysisData[0]
 						},
 						{
-							name: '联盟广告',
+							name: this.analysisName[1],
 							type: 'line',
-							stack: '总量',
 							areaStyle: {},
-							data: [220, 182, 191, 234, 290, 330, 310]
+							data: this.analysisData[1]
 						},
 						{
-							name: '搜索引擎',
+							name: this.analysisName[2],
 							type: 'line',
-							stack: '总量',
 							label: {
 								normal: {
 									show: true,
@@ -184,39 +229,52 @@
 								}
 							},
 							areaStyle: {},
-							data: [820, 932, 901, 934, 1290, 1330, 1320]
+							data: this.analysisData[2]
 						}
 					]
 				});
-
-
 			},
+			/* getData() {
+				this.loading = true;
+				this.$axios
+					.post('/dataStats/dataStatsAll', {})
+					.then(res => {
+						
+						this.tableData = res.data;
+					});
+				this.loading = false;
+			}, */
+
 			//循环遍历数据后进行汉化
 			insertAllHTMLCode() {
-				let arr = Object.entries(this.testData);
-
-				var i = "".getCName(arr);
-
-				i.forEach((item, index, value) => {
-					this.forEachData += '<div data-v-8b9d66c2 class="el-col el-col-4" style="padding-right: 12px;padding-top:12px">';
-					this.forEachData += '<div data-v-8b9d66c2 class="grid-content bg-purple-light">';
-					this.forEachData += '<span data-v-8b9d66c2 class="smallFont">' + item[0] + '</span>';
-					this.forEachData += "<br data-v-8b9d66c2 />";
-					if (item[1] == null || item[1] == "null") {
-						this.forEachData += '<span data-v-8b9d66c2 class="hugeFont">暂无数据</span>';
-					} else {
-						this.forEachData += '<span data-v-8b9d66c2 class="hugeFont">' + item[1] + '</span>';
-					}
-					this.forEachData += '</div data-v-8b9d66c2>';
-					this.forEachData += '</div data-v-8b9d66c2>';
-				});
+				this.loading = true;
+				this.$axios
+					.post('/dataStats/dataStatsAll', {})
+					.then(res => {
+						this.tableData = res.data;
+						let arr = Object.entries(this.tableData);
+						var i = "".getCName(arr);
+						i.forEach((item, index, value) => {
+							this.forEachData += '<div data-v-8b9d66c2 class="el-col el-col-4" style="padding-right: 12px;padding-top:12px">';
+							this.forEachData += '<div data-v-8b9d66c2 class="grid-content bg-purple-light">';
+							this.forEachData += '<span data-v-8b9d66c2 class="smallFont">' + item[0] + '</span>';
+							this.forEachData += "<br data-v-8b9d66c2 />";
+							if (item[1] == null || item[1] == "null") {
+								this.forEachData += '<span data-v-8b9d66c2 class="hugeFont">暂无数据</span>';
+							} else {
+								this.forEachData += '<span data-v-8b9d66c2 class="hugeFont">' + item[1] + '</span>';
+							}
+							this.forEachData += '</div data-v-8b9d66c2>';
+							this.forEachData += '</div data-v-8b9d66c2>';
+						});
+					});
+				this.loading = false;
 			},
 		}
 	}
 </script>
 
 <style scoped>
-	
 	.el-row {
 		margin-bottom: 20px;
 
