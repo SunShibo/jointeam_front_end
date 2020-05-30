@@ -30,6 +30,8 @@
 								<el-card>
 									<h4>{{item.title}}({{item.completionStatus | formatCompletionStatus}})</h4>
 									<p>负责人:{{item.staffName}} &nbsp;&nbsp;{{item.staffPhone}} &nbsp;&nbsp;&nbsp;&nbsp; 负责内容:{{item.content}}</p>
+
+									<br />
 									<span>备注:</span>
 									<span v-if="item.remark!=null&&item.remark!=''">{{item.remark}}</span>
 									<span v-else>无</span>
@@ -52,6 +54,7 @@
 					</el-breadcrumb>
 				</div>
 
+
 				<div class="container">
 					<div class="handle-box">
 						<!-- <el-input v-model="pjcName" placeholder="项目名称" class="handle-input mr10"></el-input>
@@ -64,11 +67,9 @@
 							<el-select v-model="infoStatus" placeholder="请选择状态">
 								<el-option v-for="item in infoStatusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 							</el-select>
-						</template>
+						</template> -->
 
-						<el-button type="primary" icon="search" @click="search">搜索</el-button>
-						<el-button type="primary" icon="add" @click="addPjc">新增</el-button>
-						<el-button type="primary" icon="search" @click="reset">重置</el-button> -->
+						<el-button v-if="pjcId!=null&&pjcId!=''" type="primary" icon="add" @click="addInfo">新增项目流程</el-button>
 					</div>
 					<!-- 信息展示 -->
 					<el-table max-height="600px" :data="tableData" border class="table" ref="multipleTable">
@@ -81,7 +82,8 @@
 						<el-table-column :formatter="formatRowData" sortable :show-overflow-tooltip="true" width="140" prop="completionStatus"
 						 align="center" label="完成状态"></el-table-column>
 						<el-table-column :show-overflow-tooltip="true" width="140" prop="content" align="center" label="内容"></el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="remark" align="center" label="备注"></el-table-column>
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="remark" align="center"
+						 label="备注"></el-table-column>
 						<el-table-column width="120" height="60" align="center" pro0o-pp="image" label="封面图">
 							<template slot-scope="scope">
 								<el-popover placement="top-start" trigger="click">
@@ -120,7 +122,6 @@
 						 :page-sizes="pageSizes" :page-size="PageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount"></el-pagination>
 					</div>
 				</div>
-
 			</el-card>
 		</div>
 
@@ -136,14 +137,14 @@
 					<el-input v-model="form.content"></el-input>
 				</el-form-item>
 
-				<el-form-item label-width="100px" label="备注" prop="remark" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+				<el-form-item label-width="100px" label="备注" prop="remark">
 					<el-input v-model="form.remark"></el-input>
 				</el-form-item>
 
 				<el-form-item label-width="100px" label="流程日期" prop="date" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
 					<template>
 						<div class="block">
-							<el-date-picker v-model="form.date" type="datetime" placeholder="选择流程日期" :picker-options="pickerOptions0">
+							<el-date-picker :key="startDay" v-model="form.date" type="date" placeholder="选择流程日期" :picker-options="pickerOptions0">
 							</el-date-picker>
 						</div>
 					</template>
@@ -169,15 +170,76 @@
 				<el-form-item label-width="120px" label="完成状态" prop="completionStatus" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
 					<template>
 						<el-select v-model="form.completionStatus" placeholder="请选择状态">
-							<el-option v-for="item in infoStatusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
+							<el-option v-for="item in infoStatusOptionss" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 						</el-select>
 					</template>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
-				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveProjectEdit('form')">确
+				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveInfoEdit('form')">确
 					定</el-button>
 				<el-button @click="editPjcInfoVisible = false">取 消</el-button>
+			</span>
+		</el-dialog>
+
+
+
+		<el-dialog title="新增图片" :visible.sync="infoimgVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+			<el-form ref="imgform" :model="form" label-width="50px">
+				<div class="grid-content bg-purple">
+					<el-form-item label-width="100px" label="详细照片" prop="image" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="imgsuccess2" :onUpLoadRemove="imgRemove2"
+						 :onUpLoadError="onUpLoadError" :multiple="true" :drag="true" :show-file-list="true" accept="image/*" :fileList="formimglist"
+						 :filesNumber="1">
+						</upload>
+					</el-form-item>
+				</div>
+			</el-form>
+			<span slot="footer" class="dialog-footer">
+				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveImg('form')">确
+					定</el-button>
+				<el-button @click="infoimgVisible = false">取 消</el-button>
+			</span>
+		</el-dialog>
+
+		<!-- 多图 -->
+		<el-dialog title="编辑项目流程图片" :visible.sync="imgVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+			<template>
+				<el-carousel :interval="4000" type="card" height="200px">
+					<el-carousel-item v-for="item in imagelist" :key="item.id">
+						<el-image class="medium" style="height: 200px;width: 550px;" :src="item.image" :fit="item.image"></el-image>
+					</el-carousel-item>
+				</el-carousel>
+			</template>
+
+			<el-button v-if="pjcId!=null&&pjcId!=''" type="primary" icon="add" @click="addimg">新增详细照片</el-button>
+			<el-table max-height="600px" :data="imagelist" border class="table" ref="multipleTable">
+				<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" sortable width="50"></el-table-column>
+				<el-table-column width="120" height="60" align="center" pro0o-pp="image" label="详细照片">
+					<template slot-scope="scope">
+						<el-popover placement="top-start" trigger="click">
+							<!--trigger属性值：hover、click、focus 和 manual-->
+							<a :href="scope.row.scope" target="_blank" title="查看最大化图片">
+								<img :src="scope.row.image" style="min-width: 300px;width: 200px; height: 200px; cursor:pointer;">
+							</a>
+							<img slot="reference" :src="scope.row.image" style="min-width: 80px;height: 80px; cursor:pointer">
+						</el-popover>
+					</template>
+				</el-table-column>
+
+				<el-table-column header-align="center" align="center" width="160" label="操作">
+					<template slot-scope="scp">
+						<el-popconfirm title="确认删除此图片吗？" @onConfirm="handleInfoImgDelete(scp.$index, scp.row)">
+							<el-button slot="reference" type="text" icon="el-icon-delete" style="color: #ff4d51!important">删除
+							</el-button>
+						</el-popconfirm>
+					</template>
+				</el-table-column>
+			</el-table>
+			<span slot="footer" class="dialog-footer">
+				<el-button type="primary" :loading="$store.state.requestLoading" @click="imgVisible = false">确
+					定</el-button>
+				<el-button @click="imgVisible = false">取 消</el-button>
 			</span>
 		</el-dialog>
 	</div>
@@ -185,6 +247,8 @@
 <script>
 	import menu from '../../common/menu';
 	import upload from '../../common/Upload.vue';
+	import arrUtil from '../../../utils/arrUtil.js';
+	
 	import 'quill/dist/quill.core.css';
 	import 'quill/dist/quill.snow.css';
 	import 'quill/dist/quill.bubble.css';
@@ -200,13 +264,23 @@
 		},
 		data() {
 			return {
+				infoimgVisible: false,
+
 				pickerOptions0: {
 					disabledDate(time) {
 						// 在科学计数法中，为了使公式简便，可以用带“E”的格式表示。例如1.03乘10的8次方，可简写为“1.03e8”的形式
 						// 一天是24*60*60*1000 = 86400000 = 8.64e7
-						return time.getTime() < new Date().startDay(new Date,"get");
+						return time.getTime() < new Date().startDay(new Date, "get") - 8.64e7;
 					},
 				},
+
+
+				formimglist: [],
+				imgVisible: false,
+
+				imagelist: [],
+
+				startDay: "",
 
 				pjcId: "",
 
@@ -258,6 +332,25 @@
 					}
 				],
 
+				infoStatusOptionss: [{
+						id: 0,
+						name: "未开始",
+						ename: "notStart"
+					},
+					{
+						id: 1,
+						name: "进行中",
+						ename: "having"
+					},
+					{
+						id: 2,
+						name: "已结束",
+						ename: "finished"
+					}
+				],
+
+
+
 				adminInfo: [],
 				imagedatelist: [],
 				loading: false,
@@ -279,6 +372,10 @@
 				//提交表单
 				form: {},
 				count: 0,
+
+				postinfoid: "",
+				
+				formImgListArr:[],
 			};
 		},
 
@@ -310,12 +407,16 @@
 			},
 			pjcId(vel) {
 				this.getData();
+			},
+			startDay(vel) {
+				this.reset();
 			}
 		},
 
 		created() {
 			this.getPjcInfo();
 			this.getStaffInfo();
+			this.getAdminInfo();
 			this.getData();
 		},
 		computed: {
@@ -327,9 +428,164 @@
 			}
 		},
 		methods: {
+			handleInfoImgDelete(index,row){
+				this.$axios.post(
+					'/projectInfoImg/delPictureById', {
+						id: row.id
+					}
+				).then(res => {
+					if (res.success) {
+						this.$message.success('删除成功')
+						this.$axios.post(
+							'/projectInfoImg/selectAllByInfoId', {
+								infoId: this.postinfoid
+							}
+						).then(res => {
+							if (res.success) {
+								this.imagelist = res.data;
+								this.formimglist = [];
+							} else {
+								this.$message.error("获取图片错误,请重试");
+							}
+						})
+					}
+				})
+			},
+			
+			saveImg() {
+				this.loading = true;
+				const subData = this.form;
+				subData["infoId"] = this.postinfoid;
+				subData["image"] = this.formImgListArr;
+				let fd = JSON.parse(JSON.stringify(subData));
+				delete fd.id;
+				this.$axios.post('/projectInfoImg/addPictureByInfoId', fd).then(res => {
+					if (!res.success) {
+						this.$message.success(res.errMsg);
+						this.loading = false;
+						return;
+					}
+					this.$message.success(`添加成功`);
+					this.$axios.post(
+						'/projectInfoImg/selectAllByInfoId', {
+							infoId: this.postinfoid
+						}
+					).then(res => {
+						if (res.success) {
+							this.imagelist = res.data;
+							this.formimglist = [];
+						} else {
+							this.$message.error("获取图片错误,请重试");
+						}
+					})
+					this.form = {};
+					this.loading = false;
+					this.infoimgVisible = false;
+				});
+				this.loading = false;
+			},
+
+			addimg() {
+				this.formImgListArr = [];
+				this.infoimgVisible = true;
+			},
+
+			handleEditImg(index, row) {
+				this.formImgListArr = [];
+				this.$axios.post(
+					'/projectInfoImg/selectAllByInfoId', {
+						infoId: row.id
+					}
+				).then(res => {
+					if (res.success) {
+						this.imagelist = res.data;
+						this.postinfoid = row.id;
+						this.imgVisible = true;
+					} else {
+						this.$message.error("获取图片错误,请重试");
+					}
+				})
+			},
+
+
+			reset() {
+				this.$forceUpdate;
+			},
+
+
+			saveInfoEdit() {
+				this.loading = true;
+				this.$refs.pjcInfoform.validate(valid => {
+					if (valid) {
+						/* 添加 */
+						const subData = this.form;
+						subData.date = new Date(this.form.date).format("yyyy/MM/dd");
+						subData["projectId"] = this.pjcId;
+						if (this.form.id == '' || this.form.id == null) {
+							let fd = JSON.parse(JSON.stringify(subData));
+							delete fd.id;
+							this.$axios.post('/projectInfo/addProjectInfo', fd).then(res => {
+								if (!res.success) {
+									this.$message.success(res.errMsg);
+									this.loading = false;
+									return;
+								}
+								this.$message.success(`添加成功`);
+								this.getData();
+								this.form = {};
+								this.loading = false;
+								this.editPjcInfoVisible = false;
+							});
+							this.loading = false;
+						} else {
+							/* 更新 */
+							this.loading = true;
+							let fd = JSON.parse(JSON.stringify(subData));
+							this.$axios.post('/projectInfo/upProjectInfo', fd).then(res => {
+								if (!res.success) {
+									this.$message.success(res.errMsg);
+									this.loading = false;
+									return;
+								}
+								this.$message.success(`修改成功`);
+								this.form = {};
+								this.getData();
+								this.loading = false;
+								this.editPjcInfoVisible = false;
+							});
+							this.loading = false;
+						}
+					} else {
+						console.error('error submit!!');
+						return false;
+					}
+				});
+			},
+			handleEdit(index, row) {
+				this.form = row;
+				new Date().startDay(new Date, "reset");
+				this.startDay = null;
+				this.idx = index;
+				this.imagedatelist = [];
+				this.imagedatelist.push({
+					name: row.image,
+					url: row.image
+				});
+				this.editPjcInfoVisible = true;
+			},
+
+			addInfo() {
+				new Date().startDay(new Date, "reset");
+				this.startDay = null;
+				this.$forceUpdate;
+				this.form = {};
+				this.imagedatelist = [];
+				this.editPjcInfoVisible = true;
+			},
 
 			handleAdd(index, row) {
-				new Date().startDay(row.date,"set");
+				new Date().startDay(row.date, "set");
+				this.startDay = row.date;
 				this.form = {};
 				this.imagedatelist = [];
 				this.editPjcInfoVisible = true;
@@ -374,6 +630,13 @@
 								break;
 						}
 						break;
+					case "remark":
+						if (row.remark == "" || row.remark == null) {
+							returnData = "无备注";
+						} else {
+							returnData = row.remark;
+						}
+						break;
 
 					case "createTime":
 						returnData = new Date(row.createTime).format("yyyy/MM/dd hh:mm:ss");
@@ -381,7 +644,6 @@
 					case "updateTime":
 						returnData = new Date(row.updateTime).format("yyyy/MM/dd hh:mm:ss");
 						break;
-
 					case "createUserId":
 						this.adminInfo.forEach((item, index, value) => {
 							var username = item.id;
@@ -390,7 +652,6 @@
 							}
 						});
 						break;
-
 					case "updateUserId":
 						this.adminInfo.forEach((item, index, value) => {
 							var username = item.id;
@@ -399,7 +660,6 @@
 							}
 						});
 						break;
-
 				}
 				return returnData;
 			},
@@ -524,6 +784,14 @@
 			imgRemove1() {
 				this.$message('图片删除成功');
 			},
+
+			imgsuccess2(url) {
+				this.$message('图片上传成功');
+				this.formImgListArr.push(url);
+			},
+			imgRemove2() {
+				this.$message('图片删除成功');
+			},
 		}
 	};
 </script>
@@ -625,5 +893,21 @@
 		width: 90px;
 		margin-left: 10px;
 		vertical-align: bottom;
+	}
+
+	.el-carousel__item h3 {
+		color: #475669;
+		font-size: 14px;
+		opacity: 0.75;
+		line-height: 200px;
+		margin: 0;
+	}
+
+	.el-carousel__item:nth-child(2n) {
+		background-color: #99a9bf;
+	}
+
+	.el-carousel__item:nth-child(2n+1) {
+		background-color: #d3dce6;
 	}
 </style>

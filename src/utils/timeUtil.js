@@ -43,7 +43,10 @@ Date.prototype.startDay = function(fmt,timeStatus) {
 	if(timeStatus == "set"){
 		sDay = fmt;
 		return "";
-	}else{
+	}else if(timeStatus == "get"){
 		return sDay;
+	}else{
+		sDay = null;
+		return "";
 	}
 }
