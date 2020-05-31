@@ -363,7 +363,10 @@
 						/* 添加 */
 						const subData = this.form;
 						subData.startTime = new Date(this.form.startTime).format("yyyy/MM/dd hh:mm:ss");
-						subData.endTime = new Date(this.form.endTime).format("yyyy/MM/dd hh:mm:ss");
+						if(subData.endTime==null||subData.endTime==""||subData.endTime==[]){}else{
+							subData.endTime = new Date(this.form.endTime).format("yyyy/MM/dd hh:mm:ss");
+						}
+						
 						subData.predictEndTime = new Date(this.form.predictEndTime).format("yyyy/MM/dd hh:mm:ss");
 						if (this.form.id == '' || this.form.id == null) {
 							let fd = JSON.parse(JSON.stringify(subData));
