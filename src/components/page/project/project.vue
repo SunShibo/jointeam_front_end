@@ -72,7 +72,8 @@
 				 label="总额"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="paid" align="center"
 				 label="已付金额"></el-table-column>
-				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="file" align="center" label="附件路径"></el-table-column>
+				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="file" align="center"
+				 label="附件路径"></el-table-column>
 				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" width="140" prop="createTime"
 				 label="创建时间"></el-table-column>
 				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" width="140" prop="updateTime"
@@ -82,7 +83,7 @@
 						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">修改项目</el-button>
 						<el-button type="text" icon="el-icon-edit" @click="gotoProInfo(scp.$index, scp.row)">查看项目详情</el-button>
 						<el-button type="text" icon="el-icon-download" @click="downloadFile(scp.$index, scp.row)">下载附件</el-button>
-						
+
 						<el-popconfirm title="确认删除此项目吗？" @onConfirm="handleDelete(scp.$index, scp.row)">
 							<el-button slot="reference" type="text" icon="el-icon-delete" style="color: #ff4d51!important">删除
 							</el-button>
@@ -120,37 +121,22 @@
 
 
 				<el-form-item label-width="120px" label="开始时间" prop="startTime" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
-					 <div class="block">
-					    <el-date-picker
-					      v-model="form.startTime"
-					      align="right"
-					      type="date"
-					      placeholder="选择日期"
-						  format="yyyy/MM/dd">
-					    </el-date-picker>
-					  </div>
+					<div class="block">
+						<el-date-picker v-model="form.startTime" align="right" type="date" placeholder="选择日期" format="yyyy/MM/dd">
+						</el-date-picker>
+					</div>
 				</el-form-item>
 				<el-form-item label-width="120px" label="预计结束时间" prop="predictEndTime" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
-					 <div class="block">
-					    <el-date-picker
-					      v-model="form.predictEndTime"
-					      align="right"
-					      type="date"
-					      placeholder="选择日期"
-						  format="yyyy/MM/dd">
-					    </el-date-picker>
-					  </div>
+					<div class="block">
+						<el-date-picker v-model="form.predictEndTime" align="right" type="date" placeholder="选择日期" format="yyyy/MM/dd">
+						</el-date-picker>
+					</div>
 				</el-form-item>
 				<el-form-item label-width="120px" label="结束时间" prop="endTime">
-					 <div class="block">
-					    <el-date-picker
-					      v-model="form.endTime"
-					      align="right"
-					      type="date"
-					      placeholder="选择日期"
-						  format="yyyy/MM/dd">
-					    </el-date-picker>
-					  </div>
+					<div class="block">
+						<el-date-picker v-model="form.endTime" align="right" type="date" placeholder="选择日期" format="yyyy/MM/dd">
+						</el-date-picker>
+					</div>
 				</el-form-item>
 
 
@@ -161,7 +147,7 @@
 						</el-select>
 					</template>
 				</el-form-item>
-				
+
 				<div class="grid-content bg-purple">
 					<el-form-item label-width="100px" label="项目缩略图" prop="image" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
 						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="imgsuccess1" :onUpLoadRemove="imgRemove1"
@@ -170,15 +156,15 @@
 						</upload>
 					</el-form-item>
 				</div>
-				
+
 				<el-form-item label-width="100px" label="总额" prop="rental" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{type: 'number', message: '排列顺序必须为数字值',trigger: 'change' }]">
 					<el-input v-model.number="form.rental"></el-input>
 				</el-form-item>
-				
+
 				<el-form-item label-width="100px" label="已付金额" prop="paid" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{type: 'number', message: '排列顺序必须为数字值',trigger: 'change' }]">
 					<el-input v-model.number="form.paid"></el-input>
 				</el-form-item>
-				
+
 				<div class="grid-content bg-purple">
 					<el-form-item label-width="100px" label="附件" prop="file">
 						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="filesuccess" :onUpLoadRemove="fileRemove"
@@ -187,15 +173,13 @@
 						</upload>
 					</el-form-item>
 				</div>
-				
+
 				<el-form-item label-width="100px" label="完成百分比 默认为0" prop="percentage">
 					<template>
-					  <div class="block">
-					    <el-slider
-					      v-model="form.percentage"
-					      show-input>
-					    </el-slider>
-					  </div>
+						<div class="block">
+							<el-slider v-model="form.percentage" show-input>
+							</el-slider>
+						</div>
 					</template>
 				</el-form-item>
 			</el-form>
@@ -247,8 +231,7 @@
 						ename: "finished"
 					}
 				],
-				statusOptions1: [
-					{
+				statusOptions1: [{
 						id: 1,
 						name: "进行中",
 						ename: "having"
@@ -259,7 +242,7 @@
 						ename: "finished"
 					}
 				],
-				
+
 				userInfoId: "",
 				staffInfoId: "",
 
@@ -274,7 +257,7 @@
 				},
 
 				imagedatelist: [],
-				
+
 				filedatelist: [],
 
 				loading: true,
@@ -304,6 +287,7 @@
 				count: 0,
 			};
 		},
+
 		created() {
 			this.getData();
 			this.getUserInfo();
@@ -318,23 +302,23 @@
 			}
 		},
 		methods: {
-			gotoProInfo(index,row){
+			gotoProInfo(index, row) {
 				this.$router.push({
 					name: 'proinfo'
 				});
-				
+
 			},
-			
-			
-			downloadFile(index,row){
-				if(row.file == ""||row.file == null){
+
+
+			downloadFile(index, row) {
+				if (row.file == "" || row.file == null) {
 					this.$message.error("所选项目未上传附件");
-				}else{
-					window.location.href=row.file;
+				} else {
+					window.location.href = row.file;
 				}
-				
+
 			},
-			
+
 			getUserInfo() {
 				this.$axios.post(
 					'/backUser/query', {}
@@ -427,8 +411,8 @@
 				this.imagedatelist = [];
 				this.filedatelist = [];
 				this.filedatelist.push({
-					name:row.file,
-					url:row.file
+					name: row.file,
+					url: row.file
 				});
 				this.imagedatelist.push({
 					name: row.image,
@@ -507,10 +491,10 @@
 							}
 						});
 						break;
-						
-						
+
+
 					case "file":
-						row.file == ""||row.file == null ? returnData = "暂未上传附件" : returnData = row.file;
+						row.file == "" || row.file == null ? returnData = "暂未上传附件" : returnData = row.file;
 				}
 				return returnData;
 			},
@@ -528,7 +512,7 @@
 				// 开发环境使用 easy-mock 数据，正式环境使用 json 文件
 				var startTime = null;
 				var endTime = null;
-				if (this.selectTimeData[0] == [] || this.selectTimeData[0] == null) {} else {
+				if (this.selectTimeData== [] || this.selectTimeData == null || this.selectTimeData == "") {} else {
 					startTime = new Date(this.selectTimeData[0]).format("yyyy/MM/dd");
 					endTime = new Date(this.selectTimeData[1]).format("yyyy/MM/dd");
 				}
@@ -608,11 +592,11 @@
 				this.$message.success('图片上传成功');
 				this.form.image = url;
 			},
-			filesuccess(url){
+			filesuccess(url) {
 				this.$message.success("文件上传成功");
 				this.form.file = url;
 			},
-			
+
 			imgRemove1() {
 				this.$message.success('图片删除成功');
 			},

@@ -46,7 +46,6 @@
 				salesAnalysisCount:[],
 				salesAnalysisCountName:[],
 				salesAnalysisCountData:[],
-
 			}
 		},
 		mounted() {
