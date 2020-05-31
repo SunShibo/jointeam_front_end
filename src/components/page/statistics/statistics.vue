@@ -9,8 +9,12 @@
 
 					<!-- 信息展示框-->
 					<div>
-						<el-row :key="menuKey" v-html="forEachData">
-
+						<el-row v-if="tableData==''||tableData==null||tableData==[]">
+							<span>暂无数据</span>
+						</el-row>
+						
+						<el-row v-else :key="menuKey" v-html="forEachData">
+							
 						</el-row>
 					</div>
 				</el-card>
@@ -51,7 +55,6 @@
 				tableData: [],
 				nowTime: '',
 				forEachData: '',
-				testData: {},
 				
 				
 				analysis:[],
