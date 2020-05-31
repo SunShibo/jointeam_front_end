@@ -311,7 +311,7 @@
 
 
 			downloadFile(index, row) {
-				if (row.file == "" || row.file == null) {
+				if (row.file == "" || row.file == null|| row.file == "无") {
 					this.$message.error("所选项目未上传附件");
 				} else {
 					window.location.href = row.file;
@@ -413,10 +413,14 @@
 				this.idx = index;
 				this.imagedatelist = [];
 				this.filedatelist = [];
-				this.filedatelist.push({
-					name: row.file,
-					url: row.file
-				});
+				if(row.file == ""||row.file == null || row.file == "无"){
+					
+				}else{
+					this.filedatelist.push({
+						name: row.file,
+						url: row.file
+					});
+				}
 				this.imagedatelist.push({
 					name: row.image,
 					url: row.image
@@ -497,7 +501,7 @@
 
 
 					case "file":
-						row.file == "" || row.file == null ? returnData = "暂未上传附件" : returnData = row.file;
+						row.file == "" || row.file == null || row.file == "无" ? returnData = "暂未上传附件" : returnData = row.file;
 				}
 				return returnData;
 			},
@@ -605,6 +609,7 @@
 			},
 			fileRemove() {
 				this.$message.success('文件删除成功');
+				this.form.file = "无";
 			},
 		}
 	};
