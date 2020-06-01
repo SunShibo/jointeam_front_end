@@ -17,10 +17,10 @@
 			</div>
 			<!-- 信息展示 -->
 			<el-table :data="tableData" border class="table" ref="multipleTable">
-				<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" width="50"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="title" align="center" label="标题"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="introduction" align="center" label="简介"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="source" align="center" label="来源"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" width="90"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true"  prop="title" align="center" label="标题"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true"  prop="introduction" align="center" label="简介"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true"  prop="source" align="center" label="来源"></el-table-column>
 				<el-table-column width="120" height="60" align="center" prop="image" label="封面图">
 					<template slot-scope="scope">
 						<el-popover placement="top-start" trigger="click">
@@ -32,13 +32,13 @@
 						</el-popover>
 					</template>
 				</el-table-column>
-				<el-table-column :show-overflow-tooltip="true" align="center" width="140" prop="label" label="标签"></el-table-column>
-				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" width="140" prop="createTime"
+				<el-table-column :show-overflow-tooltip="true" align="center" prop="label" label="标签"></el-table-column>
+				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true"  prop="createTime"
 				 label="创建时间"></el-table-column>
-				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" width="140" prop="updateTime"
+				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true"  prop="updateTime"
 				 label="更新时间"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" align="center" width="75" prop="sort" label="排列顺序"></el-table-column>
-				<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
+				<el-table-column :show-overflow-tooltip="true" align="center"  prop="sort" label="排列顺序"></el-table-column>
+				<el-table-column  header-align="center" align="center" width="160" label="操作">
 					<template slot-scope="scp">
 						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">查看详情(修改)</el-button>
 						<el-popconfirm title="确认删除此资讯吗？" @onConfirm="handleDelete(scp.$index, scp.row)">
