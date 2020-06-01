@@ -166,15 +166,9 @@
 	}
 
 	.grid-content {
-		text-align: center;
-		height: 60px;
 		border-radius: 4px;
 		min-height: 36px;
 		padding-top: 20px;
-	}
-
-	.bg-purple {
-		background: #d3dce6;
 	}
 
 	.bg-purple-light {

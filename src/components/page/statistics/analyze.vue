@@ -42,10 +42,14 @@
 			return {
 				nowTime: '',
 				forEachData: '',
+
+				salesAnalysisCount: [],
+				salesAnalysisCountName: [],
+				salesAnalysisCountData: [],
 				
-				salesAnalysisCount:[],
-				salesAnalysisCountName:[],
-				salesAnalysisCountData:[],
+				taskCountList:[],
+				taskCountListName:[],
+				taskCountListData:[],
 			}
 		},
 		mounted() {
@@ -69,54 +73,63 @@
 				let analysisChart = this.$echarts.init(document.getElementById('analysisChart'));
 				let sellChart = this.$echarts.init(document.getElementById('sellChart'));
 				// 绘制图表
+
+				var colors = ['#5793f3', '#d14a61', '#675bba'];
 				analysisChart.setOption({
+					color: colors,
+
 					title: {
-						text: '折线图堆叠'
+						text: '近六年任务分析'
 					},
 					tooltip: {
-						trigger: 'axis'
+						trigger: 'none',
+						axisPointer: {
+							type: 'cross'
+						}
 					},
 					legend: {
-						data: ['项目延期', '正常进行', '已经交付']
+						data: ['近六年任务分析']
 					},
 					grid: {
-						left: '3%',
-						right: '4%',
-						bottom: '3%',
-						containLabel: true
+						top: 70,
+						bottom: 50
 					},
 					toolbox: {
 						feature: {
 							saveAsImage: {}
 						}
 					},
-					xAxis: {
+					xAxis: [{
 						type: 'category',
-						boundaryGap: false,
-						data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
-					},
-					yAxis: {
+						axisTick: {
+							alignWithLabel: true
+						},
+						axisLine: {
+							onZero: false,
+							lineStyle: {
+								color: colors[0]
+							}
+						},
+						axisPointer: {
+							label: {
+								formatter: function(params) {
+									return '任务数量  ' + params.value +
+										(params.seriesData.length ? '：' + params.seriesData[0].data : '');
+								}
+							}
+						},
+						data: this.taskCountListName
+					}],
+					yAxis: [{
 						type: 'value'
-					},
+					}],
 					series: [{
-							name: '项目延期',
-							type: 'line',
-							stack: '总量',
-							data: [120, 0, 132, 101, 134, 90, 230, 210]
-						},
-						{
-							name: '正常进行',
-							type: 'line',
-							stack: '总量',
-							data: [220, 0, 182, 191, 234, 290, 330, 310]
-						},
-						{
-							name: '已经交付',
-							type: 'line',
-							stack: '总量',
-							data: [220, 0, 182, 191, 234, 290, 330, 310]
-						},
-					]
+						name: '任务数',
+						type: 'line',
+						xAxisIndex: 0,
+						smooth: true,
+						data: this.taskCountListData
+					}]
 				});
 				sellChart.setOption({
 					title: {
@@ -160,10 +173,18 @@
 						if (!res.success)
 							this.$message.error("加载数据失败");
 						this.salesAnalysisCount = res.data;
-
 						this.salesAnalysisCountName = Object.keys(res.data);
-
 						this.salesAnalysisCountData = Object.values(res.data);
+						this.$axios
+							.post('/dataStats/salesAnalysisInfoCount', {})
+							.then(res => {
+								if (!res.success)
+									this.$message.error("加载数据失败");
+								this.taskCountList = res.data;
+								this.taskCountListName = Object.keys(res.data);
+								this.taskCountListData = Object.values(res.data);
+								this.drawLine();
+							});
 						this.drawLine();
 					});
 			}
@@ -172,7 +193,7 @@
 </script>
 
 <style>
-	.el-row {
+	/* .el-row {
 		margin-bottom: 20px;
 
 		&:last-child {
@@ -215,5 +236,5 @@
 	.row-bg {
 		padding: 10px 0;
 		background-color: #f9fafc;
-	}
+	} */
 </style>

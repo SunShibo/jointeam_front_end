@@ -149,9 +149,9 @@
 				</el-form-item>
 
 				<div class="grid-content bg-purple">
-					<el-form-item label-width="100px" label="项目缩略图" prop="image" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+					<el-form-item label-width="100px" label="项目缩略图" prop="image">
 						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="imgsuccess1" :onUpLoadRemove="imgRemove1"
-						 :onUpLoadError="onUpLoadError" :multiple="true" :drag="true" :show-file-list="true" accept="image/*" :fileList="imagedatelist"
+						 :onUpLoadError="onUpLoadError" :multiple="false" :drag="true" :show-file-list="true" accept="image/*" :fileList="imagedatelist"
 						 :filesNumber="1">
 						</upload>
 					</el-form-item>
@@ -168,7 +168,7 @@
 				<div class="grid-content bg-purple">
 					<el-form-item label-width="100px" label="附件" prop="file">
 						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="filesuccess" :onUpLoadRemove="fileRemove"
-						 :onUpLoadError="onUpLoadError" :multiple="true" :drag="true" :show-file-list="true" accept="*" :fileList="filedatelist"
+						 :onUpLoadError="onUpLoadError" :multiple="false" :drag="true" :show-file-list="true" accept="*" :fileList="filedatelist"
 						 :filesNumber="1">
 						</upload>
 					</el-form-item>
@@ -285,6 +285,10 @@
 				//提交表单
 				form: {},
 				count: 0,
+				subData:{},
+				
+				imgx:'',
+				filex:'',
 			};
 		},
 
@@ -314,32 +318,33 @@
 				if (row.file == "" || row.file == null|| row.file == "无") {
 					this.$message.error("所选项目未上传附件");
 				} else {
-					window.location.href = row.file;
+					//window.location.href = row.file;
+					window.open(row.file, "_blank")
 				}
 
 			},
 
 			getUserInfo() {
 				this.$axios.post(
-					'/backUser/query', {}
+					'/backUser/queryUserSelect', {}
 				).then(res => {
 					if (!res.success) {
 						this.$message.error("获取用户信息失败");
 						return;
 					}
-					this.userInfo = res.data.records;
+					this.userInfo = res.data;
 				})
 			},
 
 			getStaffInfo() {
 				this.$axios.post(
-					'/staff/selectAll', {}
+					'/staff/queryStuffSelect', {}
 				).then(res => {
 					if (!res.success) {
-						this.$message.error("获取用户信息失败")
+						this.$message.error("获取施工人员信息失败")
 						return;
 					}
-					this.staffInfo = res.data.records;
+					this.staffInfo = res.data;
 				})
 			},
 
@@ -358,18 +363,27 @@
 
 			saveProjectEdit() {
 				this.loading = true;
+				
+				if(this.imgx==""||this.imgx==null||this.imgx==[]){
+					this.$message.error("请添加缩略图");
+					this.loading = false;
+					return;
+				}
+				
 				this.$refs.projectform.validate(valid => {
 					if (valid) {
 						/* 添加 */
-						const subData = this.form;
-						subData.startTime = new Date(this.form.startTime).format("yyyy/MM/dd hh:mm:ss");
-						if(subData.endTime==null||subData.endTime==""||subData.endTime==[]){}else{
-							subData.endTime = new Date(this.form.endTime).format("yyyy/MM/dd hh:mm:ss");
+						this.subData = this.form;
+						this.subData.image = this.imgx;
+						this.subData.file = this.filex;
+						this.subData.startTime = new Date(this.form.startTime).format("yyyy/MM/dd hh:mm:ss");
+						if(this.subData.endTime==null||this.subData.endTime==""||this.subData.endTime==[]){}else{
+							this.subData.endTime = new Date(this.form.endTime).format("yyyy/MM/dd hh:mm:ss");
 						}
 						
-						subData.predictEndTime = new Date(this.form.predictEndTime).format("yyyy/MM/dd hh:mm:ss");
+						this.subData.predictEndTime = new Date(this.form.predictEndTime).format("yyyy/MM/dd hh:mm:ss");
 						if (this.form.id == '' || this.form.id == null) {
-							let fd = JSON.parse(JSON.stringify(subData));
+							let fd = JSON.parse(JSON.stringify(this.subData));
 							delete fd.id;
 							this.$axios.post('/project/addProject', fd).then(res => {
 								if (!res.success) {
@@ -387,7 +401,7 @@
 						} else {
 							/* 更新 */
 							this.loading = true;
-							let fd = JSON.parse(JSON.stringify(subData));
+							let fd = JSON.parse(JSON.stringify(this.subData));
 							this.$axios.post('/project/updateProjectById', fd).then(res => {
 								if (!res.success) {
 									this.$message.success(res.errMsg);
@@ -404,6 +418,7 @@
 						}
 					} else {
 						console.error('error submit!!');
+						this.loading = false;
 						return false;
 					}
 				});
@@ -413,6 +428,7 @@
 				this.idx = index;
 				this.imagedatelist = [];
 				this.filedatelist = [];
+				this.imgx = "";
 				if(row.file == ""||row.file == null || row.file == "无"){
 					
 				}else{
@@ -510,6 +526,7 @@
 				this.form = {};
 				this.imagedatelist = [];
 				this.filedatelist = [];
+				this.imgx = "";
 				this.editProjectVisible = true;
 			},
 
@@ -597,19 +614,20 @@
 			},
 			imgsuccess1(url) {
 				this.$message.success('图片上传成功');
-				this.form.image = url;
+				this.imgx = url;
 			},
 			filesuccess(url) {
 				this.$message.success("文件上传成功");
-				this.form.file = url;
+				this.filex = url;
 			},
 
 			imgRemove1() {
 				this.$message.success('图片删除成功');
+				this.imgx = "";
 			},
 			fileRemove() {
 				this.$message.success('文件删除成功');
-				this.form.file = "无";
+				this.subData.file = "无";
 			},
 		}
 	};

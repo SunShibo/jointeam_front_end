@@ -127,13 +127,13 @@
 
 
 		<!-- 添加/编辑项目流程 -->
-		<el-dialog title="新增/编辑项目" :visible.sync="editPjcInfoVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+		<el-dialog title="新增/编辑项目流程" :visible.sync="editPjcInfoVisible" width="75%" :close-on-click-modal="closeOnClickModal">
 			<el-form ref="pjcInfoform" :model="form" label-width="50px">
-				<el-form-item label-width="100px" label="标题" prop="title" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+				<el-form-item label-width="100px" label="标题" prop="title" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="form.title"></el-input>
 				</el-form-item>
 
-				<el-form-item label-width="100px" label="内容" prop="content" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+				<el-form-item label-width="100px" label="内容" prop="content" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="form.content"></el-input>
 				</el-form-item>
 
@@ -141,7 +141,7 @@
 					<el-input v-model="form.remark"></el-input>
 				</el-form-item>
 
-				<el-form-item label-width="100px" label="流程日期" prop="date" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+				<el-form-item label-width="100px" label="流程日期" prop="date" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
 						<div class="block">
 							<el-date-picker :key="startDay" v-model="form.date" type="date" placeholder="选择流程日期" :picker-options="pickerOptions0">
@@ -150,7 +150,7 @@
 					</template>
 				</el-form-item>
 
-				<el-form-item label-width="120px" label="员工" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
+				<el-form-item label-width="120px" label="员工" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
 						<el-select filterable v-model="form.staffId" placeholder="请选择员工">
 							<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
@@ -158,8 +158,16 @@
 					</template>
 				</el-form-item>
 
+				<el-form-item label-width="120px" label="完成状态" prop="completionStatus" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
+					<template>
+						<el-select v-model="form.completionStatus" placeholder="请选择状态">
+							<el-option v-for="item in infoStatusOptionss" :key="item.id" :label="item.name" :value="item.ename"></el-option>
+						</el-select>
+					</template>
+				</el-form-item>
+
 				<div class="grid-content bg-purple">
-					<el-form-item label-width="100px" label="项目缩略图" prop="image" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+					<el-form-item label-width="100px" label="项目缩略图" prop="image">
 						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="imgsuccess1" :onUpLoadRemove="imgRemove1"
 						 :onUpLoadError="onUpLoadError" :multiple="true" :drag="true" :show-file-list="true" accept="image/*" :fileList="imagedatelist"
 						 :filesNumber="1">
@@ -167,13 +175,7 @@
 					</el-form-item>
 				</div>
 
-				<el-form-item label-width="120px" label="完成状态" prop="completionStatus" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
-					<template>
-						<el-select v-model="form.completionStatus" placeholder="请选择状态">
-							<el-option v-for="item in infoStatusOptionss" :key="item.id" :label="item.name" :value="item.ename"></el-option>
-						</el-select>
-					</template>
-				</el-form-item>
+
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveInfoEdit('form')">确
@@ -187,7 +189,7 @@
 		<el-dialog title="新增图片" :visible.sync="infoimgVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
 			<el-form ref="imgform" :model="form" label-width="50px">
 				<div class="grid-content bg-purple">
-					<el-form-item label-width="100px" label="详细照片" prop="image" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+					<el-form-item label-width="100px" label="详细照片" prop="image">
 						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="imgsuccess2" :onUpLoadRemove="imgRemove2"
 						 :onUpLoadError="onUpLoadError" :multiple="true" :drag="true" :show-file-list="true" accept="image/*" :fileList="formimglist"
 						 :filesNumber="1">
@@ -244,11 +246,11 @@
 		</el-dialog>
 	</div>
 </template>
-<script>
+<script scopes>
 	import menu from '../../common/menu';
 	import upload from '../../common/Upload.vue';
 	import arrUtil from '../../../utils/arrUtil.js';
-	
+
 	import 'quill/dist/quill.core.css';
 	import 'quill/dist/quill.snow.css';
 	import 'quill/dist/quill.bubble.css';
@@ -374,8 +376,9 @@
 				count: 0,
 
 				postinfoid: "",
-				
-				formImgListArr:[],
+
+				formImgListArr: "",
+				imgx:"",
 			};
 		},
 
@@ -419,6 +422,7 @@
 			this.getAdminInfo();
 			this.getData();
 		},
+
 		computed: {
 			data() {
 				return this.tableData;
@@ -428,7 +432,7 @@
 			}
 		},
 		methods: {
-			handleInfoImgDelete(index,row){
+			handleInfoImgDelete(index, row) {
 				this.$axios.post(
 					'/projectInfoImg/delPictureById', {
 						id: row.id
@@ -451,12 +455,21 @@
 					}
 				})
 			},
-			
+
 			saveImg() {
+				if(this.formImgListArr==""||this.formImgListArr==null){
+					this.$message.error("请选择图片");
+					return;
+				}
 				this.loading = true;
+				
 				const subData = this.form;
+				
 				subData["infoId"] = this.postinfoid;
-				subData["image"] = this.formImgListArr;
+				
+				var alist = [];
+				alist.push(this.formImgListArr);
+				subData["image"] = alist;
 				let fd = JSON.parse(JSON.stringify(subData));
 				delete fd.id;
 				this.$axios.post('/projectInfoImg/addPictureByInfoId', fd).then(res => {
@@ -486,12 +499,17 @@
 			},
 
 			addimg() {
-				this.formImgListArr = [];
+				this.form = {};
+				this.formImgListArr = '';
+				this.formimglist = [];
+				this.imgx = "";
 				this.infoimgVisible = true;
 			},
 
 			handleEditImg(index, row) {
-				this.formImgListArr = [];
+				this.form = {};
+				this.formImgListArr = '';
+				this.formimglist = [];
 				this.$axios.post(
 					'/projectInfoImg/selectAllByInfoId', {
 						infoId: row.id
@@ -515,12 +533,20 @@
 
 			saveInfoEdit() {
 				this.loading = true;
+				
+				if(this.imgx==""||this.imgx==null||this.imgx==[]){
+					this.$message.error("请添加缩略图");
+					this.loading = false;
+					return;
+				}
+				
 				this.$refs.pjcInfoform.validate(valid => {
 					if (valid) {
 						/* 添加 */
 						const subData = this.form;
-						subData.date = new Date(this.form.date).format("yyyy/MM/dd");
+						subData.date = new Date(this.form.date).format("yyyy/MM/dd hh:mm:ss");
 						subData["projectId"] = this.pjcId;
+						subData.image = this.imgx;
 						if (this.form.id == '' || this.form.id == null) {
 							let fd = JSON.parse(JSON.stringify(subData));
 							delete fd.id;
@@ -557,6 +583,7 @@
 						}
 					} else {
 						console.error('error submit!!');
+						this.loading = false;
 						return false;
 					}
 				});
@@ -578,6 +605,7 @@
 				new Date().startDay(new Date, "reset");
 				this.startDay = null;
 				this.$forceUpdate;
+				this.imgx = "";
 				this.form = {};
 				this.imagedatelist = [];
 				this.editPjcInfoVisible = true;
@@ -723,24 +751,6 @@
 				this.loading = false;
 			},
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			showInput() {
 				this.inputVisible = true;
 				this.$nextTick(_ => {
@@ -775,28 +785,34 @@
 			},
 			/* 图片上传 */
 			onUpLoadError() {
-				this.$message('出现错误，请重新尝试');
+				this.$message.error('出现错误，请重新尝试');
 			},
 			imgsuccess1(url) {
-				this.$message('图片上传成功');
-				this.form.image = url;
+				this.$message.success('图片上传成功');
+				this.imgx = url;
 			},
 			imgRemove1() {
-				this.$message('图片删除成功');
+				this.$message.success('图片删除成功');
+				this.imgx = "";
 			},
 
 			imgsuccess2(url) {
-				this.$message('图片上传成功');
-				this.formImgListArr.push(url);
+				this.$message.success('图片上传成功');
+				this.formImgListArr = url;
 			},
 			imgRemove2() {
-				this.$message('图片删除成功');
+				this.$message.success('图片删除成功');
+				this.formImgListArr = "";
 			},
 		}
 	};
 </script>
 
 <style scoped>
+	.el-dialog__body{
+		overflow-y: auto;
+	}
+
 	.text {
 		font-size: 14px;
 	}

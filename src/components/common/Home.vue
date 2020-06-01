@@ -7,7 +7,9 @@
             <div class="content">
                 <transition name="move" mode="out-in">
                     <keep-alive :include="tagsList">
-                        <router-view v-if="isRouterAlive"></router-view>
+                        <router-view v-if="isRouterAlive">
+							
+						</router-view>
                     </keep-alive>
                 </transition>
             </div>
@@ -23,14 +25,14 @@
     export default {
         provide (){
             return {
-                reload:this.reload
+                reload:this.reload,
             }
         },
         data(){
             return {
                 tagsList: [],
                 collapse: false,
-                isRouterAlive:true
+                isRouterAlive:true,
             }
         },
         components: {
@@ -42,7 +44,7 @@
                 this.$nextTick(function(){
                     this.isRouterAlive = true
                 })
-            }
+            },
         },
         created(){
             bus.$on('collapse', msg => {

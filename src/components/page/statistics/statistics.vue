@@ -12,9 +12,9 @@
 						<el-row v-if="tableData==''||tableData==null||tableData==[]">
 							<span>暂无数据</span>
 						</el-row>
-						
+
 						<el-row v-else :key="menuKey" v-html="forEachData">
-							
+
 						</el-row>
 					</div>
 				</el-card>
@@ -55,16 +55,16 @@
 				tableData: [],
 				nowTime: '',
 				forEachData: '',
-				
-				
-				analysis:[],
-				analysisName:[],
-				analysisData:[],
-				
-				
-				itemAnalysis:[],
-				itemAnalysisName:[],
-				itemAnalysisData:[],
+
+
+				analysis: [],
+				analysisName: [],
+				analysisData: [],
+
+
+				itemAnalysis: [],
+				itemAnalysisName: [],
+				itemAnalysisData: [],
 			}
 		},
 
@@ -82,36 +82,36 @@
 		},
 
 		methods: {
-			getAnalysisData(){
+			getAnalysisData() {
 				this.$axios
 					.post('/dataStats/salesAnalysis', {})
 					.then(res => {
-						if(!res.success)
+						if (!res.success)
 							this.$message.error("加载数据失败");
 						this.analysis = res.data;
-						
+
 						this.analysisName = Object.keys(res.data);
-						this.analysisName.splice(-1,1);
-						
+						this.analysisName.splice(-1, 1);
+
 						this.analysisData = Object.values(res.data);
-						this.analysisData.splice(-1,1);
-						
+						this.analysisData.splice(-1, 1);
+
 						this.gatItemAnalysisData();
-						
+
 						this.drowsellChart();
 					});
 			},
-			
-			gatItemAnalysisData(){
+
+			gatItemAnalysisData() {
 				this.$axios
 					.post('/dataStats/itemAnalysis', {})
 					.then(res => {
-						if(!res.success)
+						if (!res.success)
 							this.$message.error("加载数据失败");
 						this.itemAnalysis = res.data;
-						
+
 						this.itemAnalysisName = Object.keys(res.data);
-						
+
 						this.itemAnalysisData = Object.values(res.data);
 						this.drawLine();
 					});
@@ -123,7 +123,7 @@
 			//mounted后在用Echarts在card里画线
 			drawLine() {
 				let analysisChart = this.$echarts.init(document.getElementById('analysisChart'));
-				
+
 				// 绘制图表
 				analysisChart.setOption({
 					title: {
@@ -134,7 +134,7 @@
 					},
 					legend: {
 						data: this.itemAnalysisName
-					}, 
+					},
 					grid: {
 						left: '3%',
 						right: '4%',
@@ -149,7 +149,7 @@
 					xAxis: {
 						type: 'category',
 						boundaryGap: false,
-						data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月','八月','九月','十月','十一月','十二月']
+						data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
 					},
 					yAxis: {
 						type: 'value'
@@ -172,8 +172,8 @@
 					]
 				});
 			},
-			
-			drowsellChart(){
+
+			drowsellChart() {
 				let sellChart = this.$echarts.init(document.getElementById('sellChart'));
 				sellChart.setOption({
 					title: {
@@ -205,7 +205,7 @@
 					xAxis: [{
 						type: 'category',
 						boundaryGap: false,
-						data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月','八月','九月','十月','十一月','十二月']
+						data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
 					}],
 					yAxis: {
 						type: 'value'
@@ -258,17 +258,19 @@
 						let arr = Object.entries(this.tableData);
 						var i = "".getCName(arr);
 						i.forEach((item, index, value) => {
-							this.forEachData += '<div data-v-8b9d66c2 class="el-col el-col-4" style="padding-right: 12px;padding-top:12px;text-align: center;">';
-							this.forEachData += '<div data-v-8b9d66c2 class="grid-content bg-purple-light" style="background: #e5e9f2;" >';
-							this.forEachData += '<span data-v-8b9d66c2 class="smallFont">' + item[0] + '</span>';
-							this.forEachData += "<br data-v-8b9d66c2 />";
-							if (item[1] == null || item[1] == "null") { 
-								this.forEachData += '<span data-v-8b9d66c2 class="hugeFont">暂无数据</span>';
+							this.forEachData +=
+								'<div class="el-col el-col-4" style="padding-right: 12px;padding-top:12px;text-align: center;">';
+							this.forEachData +=
+								'<div class="grid-content bg-purple-light" style="background: #e5e9f2;padding-bottom: 18px;" >';
+							this.forEachData += '<span  class="smallFont">' + item[0] + '</span>';
+							this.forEachData += "<br  />";
+							if (item[1] == null || item[1] == "null") {
+								this.forEachData += '<span  class="hugeFont">暂无数据</span>';
 							} else {
-								this.forEachData += '<span data-v-8b9d66c2 class="hugeFont">' + item[1] + '</span>';
+								this.forEachData += '<span  class="hugeFont">' + item[1] + '</span>';
 							}
-							this.forEachData += '</div data-v-8b9d66c2>';
-							this.forEachData += '</div data-v-8b9d66c2>';
+							this.forEachData += '</div >';
+							this.forEachData += '</div >';
 						});
 					});
 				this.loading = false;
@@ -277,7 +279,11 @@
 	}
 </script>
 
-<style scoped>
+<style>
+	.box-card{
+		width: 100%!important;
+	} 
+	
 	.el-row {
 		margin-bottom: 20px;
 
@@ -295,15 +301,9 @@
 	}
 
 	.grid-content {
-		text-align: center;
-		height: 60px;
 		border-radius: 4px;
 		min-height: 36px;
 		padding-top: 20px;
-	}
-
-	.bg-purple {
-		background: #d3dce6;
 	}
 
 	.bg-purple-light {

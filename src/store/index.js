@@ -8,7 +8,8 @@ import timeUtil from '../utils/timeUtil.js'
 
 Vue.use(Vuex)
 const state = {
-  requestLoading: false
+  requestLoading: false,
+  mycount:0
 }
 
 export default new Vuex.Store({

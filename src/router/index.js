@@ -158,6 +158,16 @@ export default new Router({
 					}
 				},
 				{
+					path: '/home/zhongjing',
+					name: 'zhongjing',
+					component: resolve => require(['../components/page/sys/zhongjing.vue'], resolve),
+					meta: {
+						title: '关于中竞',
+						permission: true,
+						index: 'zhongjing'
+					}
+				},
+				{
 					path: '/home/role',
 					name: 'role',
 					component: resolve => require(['../components/page/sys/role.vue'], resolve),
