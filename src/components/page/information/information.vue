@@ -2,7 +2,7 @@
 	<div class="table" v-loading="loading">
 		<div class="crumbs">
 			<el-breadcrumb separator="/">
-				<el-breadcrumb-item><i class="el-icon-lx-cascades">行业资讯</i></el-breadcrumb-item>
+				<el-breadcrumb-item><i class="el-icon-lx-cascades">政策解读</i></el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
 		<div class="container">
@@ -33,11 +33,11 @@
 					</template>
 				</el-table-column>
 				<el-table-column :show-overflow-tooltip="true" align="center" prop="label" label="标签"></el-table-column>
-				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" prop="createTime"
+				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true"  prop="createTime"
 				 label="创建时间"></el-table-column>
 				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true"  prop="updateTime"
 				 label="更新时间"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" align="center" prop="sort" label="排列顺序"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" align="center"  prop="sort" label="排列顺序"></el-table-column>
 				<el-table-column  header-align="center" align="center" width="160" label="操作">
 					<template slot-scope="scp">
 						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">查看详情(修改)</el-button>
@@ -244,10 +244,10 @@
 					if (valid) {
 						/* 添加 */
 						if (this.form.id == '' || this.form.id == null) {
-							if(this.Sort == "" || this.Sort == null || this.Sort == 0){
+							if (this.Sort == "" || this.Sort == null || this.Sort == 0) {
 								this.Sort = 0;
 							}
-							
+
 							this.form = {
 								title: subData.title,
 								introduction: subData.introduction,
@@ -318,7 +318,7 @@
 					name: row.image,
 					url: row.image
 				});
-
+				
 				row.content = row.content
 					.replace(/video/g, "iframe")
 					.replace(
@@ -379,6 +379,7 @@
 					.then(res => {
 						this.tableData = res.data.records;
 						this.totalCount = res.data.total;
+						this.loading = false;
 					});
 				this.loading = false;
 			},
