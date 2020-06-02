@@ -85,10 +85,12 @@
                 </el-form-item>
                 <el-form-item label="图片">
                     <upLoad  id-name="banner"
+                             accept="image/*"
                             :fileList="fileList"
                             :onUpLoadSuccess="onUpLoadSuccess"
                             :onUpLoadError="onUpLoadError"
                             :filesNumber="1"
+
                             :showFileList="true" ></upLoad>
                 </el-form-item>
             </el-form>
