@@ -28,9 +28,13 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+				<el-table-column prop="sex" label="性别" align="center"></el-table-column>
                 <el-table-column prop="phone" label="手机号" align="center"></el-table-column>
                 <el-table-column prop="teamName" label="团队名称" align="center"></el-table-column>
+				<el-table-column prop="department" label="部门" align="center"></el-table-column>
                 <el-table-column prop="position" label="职位" align="center"></el-table-column>
+				<el-table-column prop="idCard" label="身份证号" align="center"></el-table-column>
+				<el-table-column prop="comment" label="备注" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"
                                  :formatter="formatDate"></el-table-column>
                 <el-table-column label="操作" width="280" align="center">
@@ -77,12 +81,26 @@
                 <el-form-item label="手机号" prop="phone">
                     <el-input v-model="form.phone" size="mini" class="inputform"></el-input>
                 </el-form-item>
+				
                 <el-form-item label="团队名"  prop="teamName">
                     <el-input v-model="form.teamName" class="inputform"></el-input>
                 </el-form-item>
+				<el-form-item label="部门" prop="department" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur,change' }]">
+				    <el-input v-model="form.department" size="mini" class="inputform"></el-input>
+				</el-form-item>
                 <el-form-item label="职位：" prop="position">
                     <el-input v-model="form.position" class="inputform" ></el-input>
                 </el-form-item>
+				<el-form-item label="身份证号码" prop="idCard" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur,change' }]">
+				    <el-input v-model="form.idCard" size="mini" class="inputform"></el-input>
+				</el-form-item>
+				<el-form-item label="性别" prop="sex">
+				    <el-radio v-model="form.sex" label="男">男</el-radio>
+				    <el-radio v-model="form.sex" label="女">女</el-radio>
+				</el-form-item>
+				<el-form-item label="备注" prop="comment">
+				    <el-input v-model="form.comment" size="mini" class="inputform"></el-input>
+				</el-form-item>
                 <el-form-item label="头像">
                     <upLoad  id-name="team"
                             :fileList="fileList"

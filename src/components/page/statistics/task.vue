@@ -10,13 +10,13 @@
 						<span style="color: #FF0000!important;">今日待办</span>
 					</div>
 					
-					<div v-if="taskToday == ''|| taskToday == null || taskToday == []" style="width: 100%;text-align: left!important;">
+					<div v-if="taskToday == ''|| taskToday == null || taskToday == []" style="width: 100%;height:400px;text-align: left!important;overflow:auto;">
 						<span>暂时没有任务</span>
 					</div>
 
-					<div v-else style="width: 100%;text-align: left!important;">
+					<div v-else style="width: 100%;height:400px;text-align: left!important;overflow:auto;">
 						<el-row>
-							<el-col :span="12" v-for="item in taskToday">
+							<el-col :span="12" v-for="(item,index) in taskToday" :key="index">
 								<div class="grid-content grid-left">
 									<el-button type="text">
 										<span class="firm-name">
@@ -44,12 +44,12 @@
 					<div slot="header" class="clearfix">
 						<span style="color: #5555ff!important;">七日待办</span>
 					</div>
-					<div v-if="taskFuture == ''||taskFuture == null||taskFuture==[]" style="width: 100%;height:400px;text-align: left!important;">
+					<div v-if="taskFuture == ''||taskFuture == null||taskFuture==[]" style="width: 100%;height:400px;text-align: left!important;overflow:auto;">
 						<span>暂时没有任务</span>
 					</div>
-					<div v-else style="width: 100%;height:400px;text-align: left!important;">
+					<div v-else style="width: 100%;height:400px;text-align: left!important;overflow:auto;">
 						<el-row>
-							<el-col :span="12" v-for="item in taskFuture">
+							<el-col :span="12" v-for="(item,index) in taskFuture" :key="index">
 								<div class="grid-content grid-left">
 									<el-button type="text">
 										<span class="firm-name">

@@ -26,7 +26,7 @@
 				<div class="block">
 					<div v-if="tableData!=null&&tableData!=''" style="height:500px;overflow:auto;">
 						<el-timeline>
-							<el-timeline-item v-for="item in tableData" :color="item.color" :timestamp="item.date | formatDate" placement="top">
+							<el-timeline-item v-for="(item,index) in tableData" :key = "index" :color="item.color" :timestamp="item.date | formatDate" placement="top">
 								<el-card>
 									<h4>{{item.title}}({{item.completionStatus | formatCompletionStatus}})</h4>
 									<p>负责人:{{item.staffName}} &nbsp;&nbsp;{{item.staffPhone}} &nbsp;&nbsp;&nbsp;&nbsp; 负责内容:{{item.content}}</p>
@@ -534,11 +534,6 @@
 			saveInfoEdit() {
 				this.loading = true;
 				
-				if(this.imgx==""||this.imgx==null||this.imgx==[]){
-					this.$message.error("请添加缩略图");
-					this.loading = false;
-					return;
-				}
 				
 				this.$refs.pjcInfoform.validate(valid => {
 					if (valid) {
@@ -548,6 +543,12 @@
 						subData["projectId"] = this.pjcId;
 						subData.image = this.imgx;
 						if (this.form.id == '' || this.form.id == null) {
+							
+							if(this.imgx==""||this.imgx==null||this.imgx==[]){
+								this.$message.error("请添加缩略图");
+								this.loading = false;
+								return;
+							}
 							let fd = JSON.parse(JSON.stringify(subData));
 							delete fd.id;
 							this.$axios.post('/projectInfo/addProjectInfo', fd).then(res => {
@@ -583,6 +584,7 @@
 						}
 					} else {
 						console.error('error submit!!');
+						this.$message.error("参数填写不完全");
 						this.loading = false;
 						return false;
 					}

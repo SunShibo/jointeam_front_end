@@ -2,7 +2,7 @@ var data = {
 	"finishedCount": "已完成数量",
 	"projectCount": "项目总数量",
 	"paidMoney": "已付金额",
-	"havingCount":"已完成的项目数",
+	"havingCount":"正在进行的项目数量",
 	"balancePay":"剩余尾款",
 	"rentalMoney":"项目总金额",
 	"deferredMoney":"项目延期金额",

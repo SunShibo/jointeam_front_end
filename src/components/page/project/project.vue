@@ -100,18 +100,18 @@
 		<!-- 编辑项目弹出框 -->
 		<el-dialog title="新增/编辑项目" :visible.sync="editProjectVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
 			<el-form ref="projectform" :model="form" label-width="50px">
-				<el-form-item label-width="100px" label="项目名称" prop="projectName" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+				<el-form-item label-width="100px" label="项目名称" prop="projectName" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="form.projectName"></el-input>
 				</el-form-item>
 
-				<el-form-item label-width="100px" label="用户" prop="userId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+				<el-form-item label-width="100px" label="用户" prop="userId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
 						<el-select filterable v-model="form.userId" placeholder="请选择客户">
 							<el-option v-for="item in userInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 						</el-select>
 					</template>
 				</el-form-item>
-				<el-form-item label-width="120px" label="员工" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
+				<el-form-item label-width="120px" label="员工" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
 						<el-select filterable v-model="form.staffId" placeholder="请选择员工">
 							<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
@@ -363,13 +363,6 @@
 
 			saveProjectEdit() {
 				this.loading = true;
-				
-				if(this.imgx==""||this.imgx==null||this.imgx==[]){
-					this.$message.error("请添加缩略图");
-					this.loading = false;
-					return;
-				}
-				
 				this.$refs.projectform.validate(valid => {
 					if (valid) {
 						/* 添加 */
@@ -383,6 +376,11 @@
 						
 						this.subData.predictEndTime = new Date(this.form.predictEndTime).format("yyyy/MM/dd hh:mm:ss");
 						if (this.form.id == '' || this.form.id == null) {
+							if(this.imgx==""||this.imgx==null||this.imgx==[]){
+								this.$message.error("请添加缩略图");
+								this.loading = false;
+								return;
+							}
 							let fd = JSON.parse(JSON.stringify(this.subData));
 							delete fd.id;
 							this.$axios.post('/project/addProject', fd).then(res => {
@@ -418,6 +416,7 @@
 						}
 					} else {
 						console.error('error submit!!');
+						this.$message.error("参数填写不完全");
 						this.loading = false;
 						return false;
 					}

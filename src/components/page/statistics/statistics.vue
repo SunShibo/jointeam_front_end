@@ -155,14 +155,14 @@
 						type: 'value'
 					},
 					series: [{
-							name: this.itemAnalysisName[0],
-							type: 'line',
-							data: this.itemAnalysisData[0]
-						},
-						{
 							name: this.itemAnalysisName[1],
 							type: 'line',
 							data: this.itemAnalysisData[1]
+						},
+						{
+							name: this.itemAnalysisName[0],
+							type: 'line',
+							data: this.itemAnalysisData[0]
 						},
 						{
 							name: this.itemAnalysisName[2],
