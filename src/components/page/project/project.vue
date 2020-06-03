@@ -157,12 +157,12 @@
 					</el-form-item>
 				</div>
 
-				<el-form-item label-width="100px" label="总额" prop="rental" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{type: 'number', message: '排列顺序必须为数字值',trigger: 'change' }]">
-					<el-input v-model.number="form.rental"></el-input>
+				<el-form-item label-width="100px" label="总额" prop="rental" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+					<el-input v-model="form.rental"></el-input>
 				</el-form-item>
 
-				<el-form-item label-width="100px" label="已付金额" prop="paid" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{type: 'number', message: '排列顺序必须为数字值',trigger: 'change' }]">
-					<el-input v-model.number="form.paid"></el-input>
+				<el-form-item label-width="100px" label="已付金额" prop="paid" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+					<el-input v-model="form.paid"></el-input>
 				</el-form-item>
 
 				<div class="grid-content bg-purple">
