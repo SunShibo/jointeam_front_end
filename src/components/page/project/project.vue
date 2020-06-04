@@ -479,7 +479,8 @@
 						returnData = row.percentage + "%";
 						break;
 					case "evaluateContent":
-						row.evaluateWithContext == "" || row.evaluateWithContext == null ? returnData = "尚未评价" : returnData = row.evaluateContent;
+						
+						row.evaluateContent == "" || row.evaluateContent == null ? returnData = "尚未评价" : returnData = row.evaluateContent;
 						break;
 					case "evaluateTime":
 						row.evaluateTime < new Date(1577808000) ? returnData = "尚未评价" : returnData = new Date(row.evaluateTime).format(

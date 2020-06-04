@@ -30,7 +30,7 @@
 								<el-card>
 									<h4>{{item.title}}({{item.completionStatus | formatCompletionStatus}})</h4>
 									<p>负责人:{{item.staffName}} &nbsp;&nbsp;{{item.staffPhone}} &nbsp;&nbsp;&nbsp;&nbsp; 负责内容:{{item.content}}</p>
-
+									
 									<br />
 									<span>备注:</span>
 									<span v-if="item.remark!=null&&item.remark!=''">{{item.remark}}</span>
@@ -712,7 +712,7 @@
 
 			getPjcInfo() {
 				this.$axios
-					.post('/project/selectProject', {
+					.post('/project/selectIdAndTitle', {
 						accomplishStatus: this.status,
 					})
 					.then(res => {
