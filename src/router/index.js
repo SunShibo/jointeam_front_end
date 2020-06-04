@@ -31,7 +31,7 @@ export default new Router({
 					name: 'feedback',
 					component: resolve => require(['../components/page/feedback/feedback.vue'], resolve),
 					meta: {
-						title: '意见反馈',
+						title: '客户反馈',
 						permission: true,
 						index: 'feedback'
 					}
@@ -62,7 +62,7 @@ export default new Router({
 					name: 'team',
 					component: resolve => require(['../components/page/team/team.vue'], resolve),
 					meta: {
-						title: '员工列表',
+						title: '项目团队',
 						permission: true,
 						index: 'team'
 					}
@@ -72,7 +72,7 @@ export default new Router({
 					name: 'project',
 					component: resolve => require(['../components/page/project/project.vue'], resolve),
 					meta: {
-						title: '项目',
+						title: '项目列表',
 						permission: true,
 						index: 'project'
 					}
