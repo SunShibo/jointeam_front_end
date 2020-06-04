@@ -212,7 +212,7 @@ export default new Router({
 					name: 'organization',
 					component: resolve => require(['../components/page/user/organization.vue'], resolve),
 					meta: {
-						title: '机构列表',
+						title: '客户列表',
 						permission: true,
 						index: 'organization'
 					}
