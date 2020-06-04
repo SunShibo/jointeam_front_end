@@ -122,7 +122,7 @@ export default new Router({
 					name: 'politics',
 					component: resolve => require(['../components/page/information/politics.vue'], resolve),
 					meta: {
-						title: '政治解读',
+						title: '政策解读',
 						permission: true,
 						index: 'politics'
 					}
