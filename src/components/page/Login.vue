@@ -1,7 +1,7 @@
 <template>
     <div class="login-wrap">
         <div class="ms-login">
-            <div class="ms-title">中竞管理平台</div>
+            <div class="ms-title">数字化云管家管理后台</div>
             <!--model为表单数据 rules为表单规则-->
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="mobile">
