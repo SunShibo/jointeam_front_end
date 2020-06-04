@@ -131,7 +131,7 @@
                     label: '网页'
                 }, {
                     value: 'politics',
-                    label: '政治解读'
+                    label: '政策解读'
                 }, {
                     value: 'industry',
                     label: '行业资讯'

@@ -5,8 +5,8 @@
 			<i class="el-icon-menu"></i>
 		</div>
 		<div>
-			 <img height="70px" src="../../assets/img/2f3788cbae899f52dd268f05e8778fd.png"/>
-			<span style="position: absolute;top: 19px;">数字化云管家管理后台</span>
+			 <img width="3%" height="3%" style="margin-top: 14px;" src="../../assets/img/2f3788cbae899f52dd268f05e8778fd.png"/>
+			<span style="position: absolute;top: 19px;margin-left: 1%;">数字化云管家管理后台</span>
 		</div>
 		<div class="header-right">
 			<div class="header-user-con">
