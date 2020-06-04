@@ -281,7 +281,7 @@
                 if(row.path == ""||row.path == null){
                     this.$message.error("没有文件");
                 }else{
-                    window.location.href=row.path;
+                    window.open(row.path, "_blank")
                 }
 
             },
