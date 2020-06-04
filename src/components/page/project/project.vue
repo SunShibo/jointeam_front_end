@@ -486,7 +486,11 @@
 							"yyyy/MM/dd hh:mm:ss");
 						break;
 					case "evaluateScore":
-						row.evaluateScore == "" || row.evaluateScore == null ? returnData = "暂未评分" : returnData = row.evaluateScore;
+						if(row.evaluateScore == "" || row.evaluateScore == null){
+							returnData = "暂未评分"
+						}else{
+							returnData = row.evaluateScore;
+						}
 						break;
 					case "score":
 						row.score == "yes" ? returnData = "已评分" : returnData = "未评分";
