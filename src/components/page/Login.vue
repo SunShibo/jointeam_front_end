@@ -75,7 +75,7 @@
         position: relative;
         width: 100%;
         height: 100%;
-        background: url(../../assets/img/u=2309153370,2688280452&fm=26&gp=0.jpg) no-repeat;
+        background: url(../../assets/img/illust_37855635_20200604_125819.jpg) no-repeat;
         background-size: 100% 100%;
     }
 
