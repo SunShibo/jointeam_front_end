@@ -32,7 +32,7 @@
 				<el-button type="primary" icon="search" @click="reset">重置</el-button>
 			</div>
 			<!-- 信息展示 -->
-			<el-table :data="tableData" border class="table" ref="multipleTable">
+			<el-table max-height="645px" :data="tableData" border class="table" ref="multipleTable">
 				<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" sortable width="50"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"

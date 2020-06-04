@@ -2,7 +2,7 @@
 	<div class="table" v-loading="loading">
 		<div class="crumbs">
 			<el-breadcrumb separator="/">
-				<el-breadcrumb-item><i class="el-icon-lx-cascades">意见反馈</i></el-breadcrumb-item>
+				<el-breadcrumb-item><i class="el-icon-lx-cascades">客户反馈</i></el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
 		<div class="container">
