@@ -62,6 +62,7 @@
                 type: Function,
                 default: () => {
                     (file, fileList) => {
+
                     }
                 }
             },
@@ -185,7 +186,7 @@
                 try {
                     let vm = this;
                     vm.disabled = true;
-                    const client = Client(this.dataObj), file = option.file, relativePath = 'https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/';
+                    const client = Client(this.dataObj), file = option.file, relativePath = 'https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/';
                     //随机命名
                     const random_name = this.random_string(6) + '_' + new Date().getTime() + '.' + file.name.split('.').pop();
                     // 分片上传文件
@@ -199,11 +200,12 @@
                         if (res.statusCode === 200) {
                             vm.disabled = false;
                             //根据?截取前半部分地址
-                            const url = res.requestUrls[0].split('?');
+                            let url = res.requestUrls[0].split('?');
+                            url = "https"+url[0].substring(4);
                             //上传成功事件回调
-                            option.onSuccess(url[0], file);
+                            option.onSuccess(url, file);
                             //回调函数
-                            vm.onUpLoadSuccess(url[0], file);
+                            vm.onUpLoadSuccess(url, file);
                             //判断是否清空上传组件类的数据
                             if(vm.isClear){
                                 this.$refs[this.refUpLoad].clearFiles();
