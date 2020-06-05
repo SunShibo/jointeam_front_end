@@ -106,6 +106,12 @@
 	}
 </script>
 <style scoped>
+	.user-name{
+		position: relative;
+		top: 75px;
+		margin-left: 10px;
+	}
+
 	.header {
 		position: relative;
 		box-sizing: border-box;
@@ -129,6 +135,8 @@
 	}
 
 	.header-right {
+		position: relative;
+		top: -135px;
 		float: right;
 		padding-right: 50px;
 	}
@@ -170,9 +178,6 @@
 		color: #fff;
 	}
 
-	.user-name {
-		margin-left: 10px;
-	}
 
 	.user-avator {
 		margin-left: 20px;

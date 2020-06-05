@@ -716,7 +716,7 @@
 						accomplishStatus: this.status,
 					})
 					.then(res => {
-						this.pjcInfo = res.data.records;
+						this.pjcInfo = res.data;
 					});
 			},
 
