@@ -24,9 +24,13 @@
         <el-table-column prop="unitName" label="机构名称" align="center"  :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="type" label="机构类型" align="center"  :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="phone" label="联系电话" align="center"  :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="mail" label="联系邮箱" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="contactPhone" label="联系人电话" align="center"  :show-overflow-tooltip="true"></el-table-column>
+		<el-table-column prop="contacts" label="联系人姓名" align="center"  :show-overflow-tooltip="true"></el-table-column>
+		<el-table-column prop="contactPosition" label="联系人职位" align="center"  :show-overflow-tooltip="true"></el-table-column>
+		<el-table-column prop="mail" label="联系邮箱" align="center"  :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="address" label="地址" align="center"  :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="remark" label="备注" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        
+		<el-table-column prop="remark" label="备注" align="center"  :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center"  :show-overflow-tooltip="true"
                          :formatter="formatDate"></el-table-column>
         <el-table-column label="操作" width="280" align="center">
@@ -76,6 +80,15 @@
         <el-form-item label="联系电话"  prop="phone">
           <el-input v-model="form.phone" class="inputform"></el-input>
         </el-form-item>
+		<el-form-item label="联系人电话"  prop="contactPhone">
+		  <el-input v-model="form.contactPhone" class="inputform"></el-input>
+		</el-form-item>
+		<el-form-item label="联系人姓名"  prop="contacts">
+		  <el-input v-model="form.contacts" class="inputform"></el-input>
+		</el-form-item>
+		<el-form-item label="联系人职位"  prop="contactPosition">
+		  <el-input v-model="form.contactPosition" class="inputform"></el-input>
+		</el-form-item>
         <el-form-item label="联系邮箱" prop="mail" style="margin-left: 1%">
           <el-input v-model="form.mail" class="inputform" ></el-input>
         </el-form-item>
