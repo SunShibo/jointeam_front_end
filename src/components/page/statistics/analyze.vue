@@ -7,7 +7,7 @@
 						<span>数据分析 / 数据更新时间 : {{nowTime}}</span>
 					</div>
 					<el-row>
-						<el-col :span="24">
+						<el-col :span="12">
 							<el-card class="box-card" shadow="hover">
 								<div slot="header" class="clearfix">
 									<span>任务分析</span>
@@ -16,7 +16,7 @@
 							</el-card>
 						</el-col>
 
-						<el-col :span="24">
+						<el-col :span="12">
 							<el-card class="box-card" shadow="hover">
 								<div slot="header" class="clearfix">
 									<span>项目分析</span>

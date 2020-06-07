@@ -52,6 +52,7 @@
                     console.log(res);
                     if (res.success) {
                         sessionStorage.setItem('ms_uid', res.data.admin.id);  //保存用户ID
+						
                         localStorage.setItem('ms_u', JSON.stringify({  //保存用户信息
                             name: res.data.admin.name,
                             phoneNumber: res.data.admin.phoneNumber,

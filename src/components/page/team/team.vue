@@ -11,8 +11,10 @@
             <div class="handle-box">
                 <el-input v-model="s_name" placeholder="姓名" class="handle-input mr10"></el-input>
                 <el-input v-model="s_phone" placeholder="手机号" class="querySize"></el-input>
+				<el-input v-model="s_position" placeholder="职位" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="search" @click="add">添加</el-button>
+				<el-button type="success" icon="search" @click="reset">重置</el-button>
             </div>
             <el-table
                     :data="tableData"
@@ -88,10 +90,10 @@
 				<el-form-item label="部门" prop="department" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur,change' }]">
 				    <el-input v-model="form.department" size="mini" class="inputform"></el-input>
 				</el-form-item>
-                <el-form-item label="职位：" prop="position">
+                <el-form-item label="职位:" prop="position">
                     <el-input v-model="form.position" class="inputform" ></el-input>
                 </el-form-item>
-				<el-form-item label="身份证号码" prop="idCard" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur,change' }]">
+				<el-form-item label="身份证号码" prop="idCard">
 				    <el-input v-model="form.idCard" size="mini" class="inputform"></el-input>
 				</el-form-item>
 				<el-form-item label="性别" prop="sex">
@@ -150,6 +152,7 @@
                 PageSize: 10,
                 s_name: "",
                 s_phone: "",
+				s_position:"",
                 count: 0,
                 //检测规则
                 rules: {
@@ -188,6 +191,13 @@
             }
         },
         methods: {
+			reset(){
+				this.s_name = "";
+				this.s_phone = "";
+				this.s_position = "";
+				this.getData();
+			},
+			
             // 每页显示的条数
             handleSizeChange(val) {
                 // 改变每页显示的条数
@@ -212,6 +222,7 @@
                     pageSize: this.PageSize,
                     phone: this.s_phone,
                     name: this.s_name,
+					position: this.s_position
                 }).then(res => {
                     this.tableData = res.data.records;
                     this.totalCount = res.data.total;

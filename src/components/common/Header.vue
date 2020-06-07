@@ -5,7 +5,7 @@
 			<i class="el-icon-menu"></i>
 		</div>
 		<div>
-			 <img width="3%" height="3%" style="margin-top: 14px;" src="../../assets/img/2f3788cbae899f52dd268f05e8778fd.png"/>
+			 <img width="3%" height="3%" style="margin-top: 18px;" src="../../assets/img/2f3788cbae899f52dd268f05e8778fd.png"/>
 			<span style="position: absolute;top: 19px;margin-left: 1%;">数字化云管家管理后台</span>
 		</div>
 		<div class="header-right">
@@ -22,7 +22,7 @@
 				<!-- 用户名下拉菜单 -->
 				<el-dropdown class="user-name" trigger="click" @command="handleCommand">
 					<span class="el-dropdown-link">
-						{{username}} <i class="el-icon-caret-bottom"></i>
+						{{username}} : {{roleName}}<i class="el-icon-caret-bottom"></i>
 					</span>
 					<el-dropdown-menu slot="dropdown">
 						<el-dropdown-item command="loginout">退出登录</el-dropdown-item>
@@ -48,6 +48,10 @@
 			username() {
 				let username = JSON.parse(localStorage.getItem('ms_u'));
 				return username ? username.name : this.name;
+			},
+			roleName(){
+				let roleName = JSON.parse(localStorage.getItem('ms_u'));
+				return roleName ? roleName.roleName : this.roleName;
 			}
 		},
 		methods: {
@@ -108,7 +112,7 @@
 <style scoped>
 	.user-name{
 		position: relative;
-		top: 75px;
+		top: 82px;
 		margin-left: 10px;
 	}
 

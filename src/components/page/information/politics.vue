@@ -13,7 +13,7 @@
 				</el-date-picker>
 				<el-button type="primary" icon="search" @click="search">搜索</el-button>
 				<el-button type="primary" icon="add" @click="addInfo">新增</el-button>
-				<el-button type="primary" icon="search" @click="reset">重置</el-button>
+				<el-button type="success" icon="search" @click="reset">重置</el-button>
 			</div>
 			<!-- 信息展示 -->
 			<el-table :data="tableData" border class="table" ref="multipleTable">
@@ -34,7 +34,7 @@
 				</el-table-column>
 				<el-table-column :show-overflow-tooltip="true" align="center" prop="label" label="标签"></el-table-column>
 				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true"  prop="createTime"
-				 label="创建时间"></el-table-column>
+				 label="显示日期"></el-table-column>
 				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true"  prop="updateTime"
 				 label="更新时间"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" align="center"  prop="sort" label="排列顺序"></el-table-column>
@@ -65,6 +65,14 @@
 
 				<el-form-item label-width="100px" label="来源" prop="source" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
 					<el-input v-model="form.source"></el-input>
+				</el-form-item>
+				
+				<el-form-item label-width="100px" label="显示日期" prop="createTime" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
+				 <el-date-picker
+				      v-model="form.createTime"
+				      type="datetime"
+				      placeholder="选择日期时间">
+				    </el-date-picker>
 				</el-form-item>
 
 				<div class="grid-content bg-purple">
@@ -252,6 +260,7 @@
 								title: subData.title,
 								introduction: subData.introduction,
 								source: subData.source,
+								createTime:subData.createTime,
 								image: subData.image,
 								label: subData.label,
 								content: subData.content,
@@ -280,6 +289,7 @@
 								title: subData.title,
 								introduction: subData.introduction,
 								introduction: subData.introduction,
+								createTime:subData.createTime,
 								source: subData.source,
 								image: subData.image,
 								label: subData.label,

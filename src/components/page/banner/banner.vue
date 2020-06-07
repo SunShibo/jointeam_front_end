@@ -190,7 +190,7 @@
                     return "网页";
                 }
                 if (row.skip == 'politics') {
-                    return "政治解读";
+                    return "政策解读";
                 }
                 if (row.skip == 'industry') {
                     return "行业资讯";

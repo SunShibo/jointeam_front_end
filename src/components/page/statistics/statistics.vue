@@ -22,7 +22,7 @@
 		</el-row>
 		<!-- Echarts -->
 		<el-row>
-			<el-col :span="24">
+			<el-col :span="12">
 				<el-card class="box-card" shadow="hover" style="width: 100%;">
 					<div slot="header" class="clearfix">
 						<span>项目分析</span>
@@ -30,7 +30,7 @@
 					<div id="analysisChart" style="width: 100%;height:400px;"></div>
 				</el-card>
 			</el-col>
-			<el-col :span="24">
+			<el-col :span="12">
 				<el-card class="box-card" shadow="hover" style="width: 100%;">
 					<div slot="header" class="clearfix">
 						<span>销售分析</span>

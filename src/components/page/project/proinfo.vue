@@ -23,38 +23,14 @@
 						</el-select>
 					</template>
 				</div>
-				<div class="block">
-					<div v-if="tableData!=null&&tableData!=''" style="height:500px;overflow:auto;">
-						<el-timeline>
-							<el-timeline-item v-for="(item,index) in tableData" :key = "index" :color="item.color" :timestamp="item.date | formatDate" placement="top">
-								<el-card>
-									<h4>{{item.title}}({{item.completionStatus | formatCompletionStatus}})</h4>
-									<p>负责人:{{item.staffName}} &nbsp;&nbsp;{{item.staffPhone}} &nbsp;&nbsp;&nbsp;&nbsp; 负责内容:{{item.content}}</p>
-									
-									<br />
-									<span>备注:</span>
-									<span v-if="item.remark!=null&&item.remark!=''">{{item.remark}}</span>
-									<span v-else>无</span>
-								</el-card>
-							</el-timeline-item>
-						</el-timeline>
-					</div>
-					<div v-else-if="pjcId==null||pjcId==''">
-						<h4>暂无数据,请选择项目</h4>
-					</div>
-					<div v-else>
-						<h4>本项目暂无数据</h4>
-					</div>
-				</div>
-			</el-card>
-			<el-card class="box-card" style="width: 100%;">
+				
 				<div class="crumbs">
 					<el-breadcrumb separator="/">
 						<el-breadcrumb-item><i class="el-icon-lx-cascades">项目详情</i></el-breadcrumb-item>
 					</el-breadcrumb>
 				</div>
-
-
+				
+				
 				<div class="container">
 					<div class="handle-box">
 						<!-- <el-input v-model="pjcName" placeholder="项目名称" class="handle-input mr10"></el-input>
@@ -68,7 +44,7 @@
 								<el-option v-for="item in infoStatusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 							</el-select>
 						</template> -->
-
+				
 						<el-button v-if="pjcId!=null&&pjcId!=''" type="primary" icon="add" @click="addInfo">新增项目流程</el-button>
 					</div>
 					<!-- 信息展示 -->
@@ -103,8 +79,8 @@
 						 label="创建人"></el-table-column>
 						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="updateUserId" align="center"
 						 label="修改人"></el-table-column>
-
-
+				
+				
 						<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
 							<template slot-scope="scp">
 								<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">修改项目流程</el-button>
@@ -122,6 +98,34 @@
 						 :page-sizes="pageSizes" :page-size="PageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount"></el-pagination>
 					</div>
 				</div>
+				
+			</el-card>
+			<el-card class="box-card" style="width: 100%;">
+				<div class="block">
+					<div v-if="tableData!=null&&tableData!=''" style="height:500px;overflow:auto;">
+						<el-timeline>
+							<el-timeline-item v-for="(item,index) in tableData" :key = "index" :color="item.color" :timestamp="item.date | formatDate" placement="top">
+								<el-card>
+									<h4>{{item.title}}({{item.completionStatus | formatCompletionStatus}})</h4>
+									<p>负责人:{{item.staffName}} &nbsp;&nbsp;{{item.staffPhone}} &nbsp;&nbsp;&nbsp;&nbsp; 负责内容:{{item.content}}</p>
+									
+									<br />
+									<span>备注:</span>
+									<span v-if="item.remark!=null&&item.remark!=''">{{item.remark}}</span>
+									<span v-else>无</span>
+								</el-card>
+							</el-timeline-item>
+						</el-timeline>
+					</div>
+					<div v-else-if="pjcId==null||pjcId==''">
+						<h4>暂无数据,请选择项目</h4>
+					</div>
+					<div v-else>
+						<h4>本项目暂无数据</h4>
+					</div>
+				</div>
+				
+				
 			</el-card>
 		</div>
 

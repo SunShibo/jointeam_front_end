@@ -8,21 +8,21 @@
 		<div class="container">
 			<div class="handle-box">
 				<el-input v-model="pjcName" placeholder="项目名称" class="handle-input mr10"></el-input>
-				<el-date-picker :editable="false" v-model="selectTimeData" type="datetimerange" range-separator="至"
+				<el-date-picker style="width: 332px;" :editable="false" v-model="selectTimeData" type="datetimerange" range-separator="至"
 				 start-placeholder="开始日期" end-placeholder="结束日期">
 				</el-date-picker>
 				<template>
-					<el-select filterable v-model="userInfoId" placeholder="请选择客户">
+					<el-select style="margin-left: 12px;" filterable v-model="userInfoId" placeholder="请选择客户">
 						<el-option v-for="item in userInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 					</el-select>
 				</template>
 				<template>
-					<el-select filterable v-model="staffInfoId" placeholder="请选择员工">
+					<el-select style="margin-left: 12px;" filterable v-model="staffInfoId" placeholder="请选择客服经理">
 						<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 					</el-select>
 				</template>
 				<template>
-					<el-select v-model="status" placeholder="请选择状态">
+					<el-select style="width: 95px;margin-left: 12px;" v-model="status" placeholder="请选择状态">
 						<el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 					</el-select>
 				</template>
@@ -32,13 +32,13 @@
 				<el-button type="primary" icon="search" @click="reset">重置</el-button>
 			</div>
 			<!-- 信息展示 -->
-			<el-table max-height="645px" :data="tableData" border class="table" ref="multipleTable">
+			<el-table max-height="550px" :data="tableData" border class="table" ref="multipleTable">
 				<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" sortable width="50"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"
 				 label="客户"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="staffId" align="center"
-				 label="员工"></el-table-column>
+				 label="客服经理"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="percentage" align="center"
 				 label="项目进度百分比"></el-table-column>
 				<el-table-column width="120" height="60" align="center" prop="image" label="封面图">
@@ -104,16 +104,16 @@
 					<el-input v-model="form.projectName"></el-input>
 				</el-form-item>
 
-				<el-form-item label-width="100px" label="用户" prop="userId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
+				<el-form-item label-width="100px" label="客户名称" prop="userId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
 						<el-select filterable v-model="form.userId" placeholder="请选择客户">
 							<el-option v-for="item in userInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 						</el-select>
 					</template>
 				</el-form-item>
-				<el-form-item label-width="120px" label="员工" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
+				<el-form-item label-width="120px" label="客服经理" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
-						<el-select filterable v-model="form.staffId" placeholder="请选择员工">
+						<el-select filterable v-model="form.staffId" placeholder="请选择客服经理">
 							<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 						</el-select>
 					</template>
