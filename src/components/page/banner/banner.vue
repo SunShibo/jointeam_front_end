@@ -34,7 +34,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="skip" label="跳转方式" align="center" :formatter="skip"></el-table-column>
-                <el-table-column prop="skipPath" label="跳转路径" align="center"></el-table-column>
+                <el-table-column prop="skipPath" label="路径/标题" align="center"></el-table-column>
                 <el-table-column prop="sort" label="排序" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"
                                  :formatter="timeFormatter"></el-table-column>
@@ -74,11 +74,18 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="跳转路径" v-if="!path" prop="skipPath">
-                    <el-input v-model="form.skipPath" type="number" size="mini" class="inputform"></el-input>
+                <el-form-item label="跳转路径" v-if="path" prop="skipPath">
+                    <el-input v-model="form.skipPath" size="mini" class="inputform"></el-input>
                 </el-form-item>
-                <el-form-item label="跳转路径" v-if="path"  prop="skipPath">
-                    <el-input v-model="form.skipPath" class="inputform"></el-input>
+                <el-form-item label="跳转文章" v-if="!path"  prop="skipPath">
+                    <el-select v-model="form.skipPath" placeholder="请选择" >
+                        <el-option
+                                v-for="item in opt"
+                                :key="item.id"
+                                :label="'id:'+item.id +' -' +item.title"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="排序编码"   prop="sort">
                     <el-input v-model="form.sort" class="inputform" type="number"></el-input>
@@ -90,7 +97,6 @@
                             :onUpLoadSuccess="onUpLoadSuccess"
                             :onUpLoadError="onUpLoadError"
                             :filesNumber="1"
-
                             :showFileList="true" ></upLoad>
                 </el-form-item>
             </el-form>
@@ -144,6 +150,8 @@
                 }],
                 value: ''
                 ,
+
+                opt:[],
                 //检测规则
                 rules: {
                     skip: [{
@@ -174,6 +182,43 @@
                 } else {
                     this.path = true;
                 }
+
+                if(value==='politics'){ //政策解读
+                    this.$axios.post('/politics/selectIdAndTile', {}).then(res => {
+                        if (!res.success) {
+                            this.$message.error(res.errMsg);
+                            return;
+                        }
+                        this.opt=res.data;
+                    });
+                }else  if(value==='industry'){ //行业资讯
+                    this.$axios.post('/backServer/queryIdTitle', {}).then(res => {
+                        if (!res.success) {
+                            this.$message.error(res.errMsg);
+                            return;
+                        }
+                        this.opt=res.data;
+                    });
+                }else  if(value==='serve'){ //服务详情
+                    this.$axios.post('/backServer/queryIdTitle', {}).then(res => {
+                        if (!res.success) {
+                            this.$message.error(res.errMsg);
+                            return;
+                        }
+                        this.opt=res.data;
+                    });
+                }else  if(value==='client'){ //服务详情
+                    this.$axios.post('/client/queryIdTitle', {}).then(res => {
+                        if (!res.success) {
+                            this.$message.error(res.errMsg);
+                            return;
+                        }
+                        this.opt=res.data;
+                    });
+                }
+
+
+
             },
             timeFormatter(row) {
                 var date = new Date(row.createTime);
