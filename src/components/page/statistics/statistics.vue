@@ -38,6 +38,11 @@
 					<div id="sellChart" style="width: 100%;height:400px;"></div>
 				</el-card>
 			</el-col>
+			<el-col>
+				<div>
+					<a href="https://workbench.umeng.com/" target="_blank"></a>
+				</div>
+			</el-col>
 		</el-row>
 	</div>
 </template>
