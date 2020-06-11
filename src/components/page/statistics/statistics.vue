@@ -38,7 +38,7 @@
 					<div id="sellChart" style="width: 100%;height:400px;"></div>
 				</el-card>
 			</el-col>
-			<el-col>
+			<el-col :span="24">
 				<div>
 					<a href="https://workbench.umeng.com/" target="_blank"></a>
 				</div>
