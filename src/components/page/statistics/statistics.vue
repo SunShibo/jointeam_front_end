@@ -39,9 +39,12 @@
 				</el-card>
 			</el-col>
 			<el-col :span="24">
-				<div>
-					<a href="https://workbench.umeng.com/" target="_blank"></a>
-				</div>
+				<el-card class="box-card" shadow="hover" style="width: 100%;">
+					<div>
+						外部链接 &nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="https://workbench.umeng.com/" target="_blank" style="font-size: 18px;">友盟平台</a>
+					</div>
+				</el-card>
 			</el-col>
 		</el-row>
 	</div>
@@ -285,10 +288,10 @@
 </script>
 
 <style>
-	.box-card{
-		width: 100%!important;
-	} 
-	
+	.box-card {
+		width: 100% !important;
+	}
+
 	.el-row {
 		margin-bottom: 20px;
 

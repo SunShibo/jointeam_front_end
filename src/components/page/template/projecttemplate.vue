@@ -225,7 +225,6 @@
 						if (this.tempInfoform.id == '' || this.tempInfoform.id == null) {
 							let fd = JSON.parse(JSON.stringify(subData));
 							delete fd.id;
-							alert(JSON.stringify(fd));
 							this.$axios.post('/projectInfoTempInfo/addInfoTempInfo', fd).then(res => {
 								if (!res.success) {
 									this.$message.success(res.errMsg);

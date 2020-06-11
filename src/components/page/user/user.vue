@@ -545,7 +545,6 @@
 							}
 							let fd = JSON.parse(JSON.stringify(this.form));
 							delete fd.id;
-							alert(this.form.head);
 							this.$axios.post('/backUser/add', fd).then(res => {
 								if (!res.success) {
 									this.$message.error(res.errMsg);
