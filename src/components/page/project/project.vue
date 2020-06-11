@@ -8,12 +8,12 @@
 		<div class="container">
 			<div class="handle-box">
 				<el-input v-model="pjcName" placeholder="项目名称" class="handle-input mr10"></el-input>
-				<el-date-picker style="width: 332px;" :editable="false" v-model="selectTimeData" type="datetimerange" range-separator="至"
-				 start-placeholder="开始日期" end-placeholder="结束日期">
+				<el-date-picker style="width: 332px;" :editable="false" v-model="selectTimeData" type="datetimerange"
+				 range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
 				</el-date-picker>
 				<template>
-					<el-select style="margin-left: 12px;" filterable v-model="userInfoId" placeholder="请选择客户">
-						<el-option v-for="item in userInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
+					<el-select style="margin-left: 12px;" filterable v-model="organInfoId" placeholder="请选择公司">
+						<el-option v-for="item in organInfo" :key="item.id" :label="item.unitName" :value="item.id"></el-option>
 					</el-select>
 				</template>
 				<template>
@@ -29,16 +29,19 @@
 
 				<el-button type="primary" icon="search" @click="search">搜索</el-button>
 				<el-button type="primary" icon="add" @click="addPjc">新增</el-button>
-				<el-button type="primary" icon="search" @click="reset">重置</el-button>
+				<el-button type="success" icon="search" @click="reset">重置</el-button>
 			</div>
 			<!-- 信息展示 -->
 			<el-table max-height="550px" :data="tableData" border class="table" ref="multipleTable">
 				<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" sortable width="50"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"
-				 label="客户"></el-table-column>
+				 label="公司"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="staffId" align="center"
 				 label="客服经理"></el-table-column>
+				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="bauort" align="center"
+				 label="项目施工地点"></el-table-column>
+
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="percentage" align="center"
 				 label="项目进度百分比"></el-table-column>
 				<el-table-column width="120" height="60" align="center" prop="image" label="封面图">
@@ -81,6 +84,7 @@
 				<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
 					<template slot-scope="scp">
 						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">修改项目</el-button>
+						<el-button type="text" icon="el-icon-user-solid" @click="getStaff(scp.row)">项目负责人</el-button>
 						<el-button type="text" icon="el-icon-edit" @click="gotoProInfo(scp.$index, scp.row)">查看项目详情</el-button>
 						<el-button type="text" icon="el-icon-download" @click="downloadFile(scp.$index, scp.row)">下载附件</el-button>
 
@@ -96,6 +100,23 @@
 				 :page-sizes="pageSizes" :page-size="PageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount"></el-pagination>
 			</div>
 		</div>
+		<!-- 多个负责人 -->
+		<el-dialog title="新增/编辑项目负责人" :visible.sync="principalVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+
+			<template>
+				<el-select v-model="upStaffList" multiple placeholder="请选择">
+					<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id">
+					</el-option>
+				</el-select>
+			</template>
+			
+			<span slot="footer" class="dialog-footer">
+				<!-- saveProjectEdit('form') -->
+				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveStaffEdit()">确
+					定</el-button>
+				<el-button @click="principalVisible = false">取 消</el-button>
+			</span>
+		</el-dialog>
 
 		<!-- 编辑项目弹出框 -->
 		<el-dialog title="新增/编辑项目" :visible.sync="editProjectVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
@@ -103,20 +124,24 @@
 				<el-form-item label-width="100px" label="项目名称" prop="projectName" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="form.projectName"></el-input>
 				</el-form-item>
-
-				<el-form-item label-width="100px" label="客户名称" prop="userId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
+				<el-form-item label-width="100px" label="公司名称" prop="userId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
-						<el-select filterable v-model="form.userId" placeholder="请选择客户">
-							<el-option v-for="item in userInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
+						<el-select filterable v-model="form.userId" placeholder="请选择公司">
+							<el-option v-for="item in organInfo" :key="item.id" :label="item.unitName" :value="item.id"></el-option>
 						</el-select>
 					</template>
 				</el-form-item>
+
 				<el-form-item label-width="120px" label="客服经理" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
 						<el-select filterable v-model="form.staffId" placeholder="请选择客服经理">
 							<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 						</el-select>
 					</template>
+				</el-form-item>
+
+				<el-form-item label-width="100px" label="项目施工地址" prop="bauort">
+					<el-input v-model="form.bauort"></el-input>
 				</el-form-item>
 
 
@@ -182,6 +207,10 @@
 						</div>
 					</template>
 				</el-form-item>
+
+				<el-form-item label-width="100px" label="客户评价" prop="evaluateContent">
+					<el-input v-model="form.evaluateContent"></el-input>
+				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveProjectEdit('form')">确
@@ -189,11 +218,6 @@
 				<el-button @click="editProjectVisible = false">取 消</el-button>
 			</span>
 		</el-dialog>
-
-
-
-
-
 	</div>
 </template>
 <script>
@@ -214,6 +238,8 @@
 		},
 		data() {
 			return {
+
+				staffFrom: {},
 				status: null,
 				statusOptions: [{
 						id: 0,
@@ -242,13 +268,12 @@
 						ename: "finished"
 					}
 				],
-
-				userInfoId: "",
+				organInfoId: "",
 				staffInfoId: "",
 
 				pjcName: "",
 
-				userInfo: [],
+				organInfo: [],
 
 				staffInfo: [],
 
@@ -266,6 +291,8 @@
 				editProjectVisible: false,
 
 				addInfoVisible: false,
+
+				principalVisible: false,
 
 				// 总数据
 				tableData: [],
@@ -285,16 +312,19 @@
 				//提交表单
 				form: {},
 				count: 0,
-				subData:{},
-				
-				imgx:'',
-				filex:'',
+				subData: {},
+
+				imgx: '',
+				filex: '',
+				allStaffList: [],
+
+				upStaffList: [],
 			};
 		},
 
 		created() {
 			this.getData();
-			this.getUserInfo();
+			this.getOrgan();
 			this.getStaffInfo();
 		},
 		computed: {
@@ -306,6 +336,43 @@
 			}
 		},
 		methods: {
+			saveStaffEdit(){
+				let fd = {
+					
+				}
+				this.$axios.post('/project/updateProjectById', fd).then(res => {
+					if (!res.success) {
+						this.$message.success(res.errMsg);
+						this.loading = false;
+						return;
+					}
+					this.$message.success(`操作成功`);
+					this.form = {};
+					this.getData();
+					this.loading = false;
+					this.editProjectVisible = false;
+				});
+			},
+			
+			getStaff(row) {
+				this.$axios.post(
+					'/projectByStaff/selectStaffByProjectId', {
+						projectId: row.id
+					}
+				).then(res => {
+					if (!res.success) {
+						this.$message.error("获取施工人员信息失败")
+						return;
+					}
+					this.upStaffList = [];
+					(res.data).forEach((item, index, value)=>{
+						this.upStaffList.push(item.staffid);
+					});
+				})
+				this.principalVisible = true;
+			},
+
+
 			gotoProInfo(index, row) {
 				this.$router.push({
 					name: 'proinfo'
@@ -315,7 +382,7 @@
 
 
 			downloadFile(index, row) {
-				if (row.file == "" || row.file == null|| row.file == "无") {
+				if (row.file == "" || row.file == null || row.file == "无") {
 					this.$message.error("所选项目未上传附件");
 				} else {
 					//window.location.href = row.file;
@@ -324,15 +391,15 @@
 
 			},
 
-			getUserInfo() {
+			getOrgan() {
 				this.$axios.post(
-					'/backUser/queryUserSelect', {}
+					'/organ/queryByWechatId', {}
 				).then(res => {
 					if (!res.success) {
-						this.$message.error("获取用户信息失败");
+						this.$message.error("获取公司信息失败");
 						return;
 					}
-					this.userInfo = res.data;
+					this.organInfo = res.data;
 				})
 			},
 
@@ -368,18 +435,18 @@
 						/* 添加 */
 						this.subData = this.form;
 						this.subData.image = this.imgx;
-						this.subData.file = this.filex;
 						this.subData.startTime = new Date(this.form.startTime).format("yyyy/MM/dd hh:mm:ss");
-						if(this.subData.endTime==null||this.subData.endTime==""||this.subData.endTime==[]){}else{
+						this.subData.organizationId = this.subData.userId;
+						this.subData.userId = "";
+						this.subData.file = this.filex;
+
+						if (this.subData.endTime == null || this.subData.endTime == "" || this.subData.endTime == []) {} else {
 							this.subData.endTime = new Date(this.form.endTime).format("yyyy/MM/dd hh:mm:ss");
 						}
-						
 						this.subData.predictEndTime = new Date(this.form.predictEndTime).format("yyyy/MM/dd hh:mm:ss");
 						if (this.form.id == '' || this.form.id == null) {
-							if(this.imgx==""||this.imgx==null||this.imgx==[]){
-								this.$message.error("请添加缩略图");
-								this.loading = false;
-								return;
+							if (this.form.image == '' || this.form.image == null) {
+								this.form.image = "https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/XrpGRp_1591776936457.jpg";
 							}
 							let fd = JSON.parse(JSON.stringify(this.subData));
 							delete fd.id;
@@ -428,9 +495,9 @@
 				this.imagedatelist = [];
 				this.filedatelist = [];
 				this.imgx = "";
-				if(row.file == ""||row.file == null || row.file == "无"){
-					
-				}else{
+				if (row.file == "" || row.file == null || row.file == "无") {
+
+				} else {
 					this.filedatelist.push({
 						name: row.file,
 						url: row.file
@@ -479,7 +546,6 @@
 						returnData = row.percentage + "%";
 						break;
 					case "evaluateContent":
-						
 						row.evaluateContent == "" || row.evaluateContent == null ? returnData = "尚未评价" : returnData = row.evaluateContent;
 						break;
 					case "evaluateTime":
@@ -487,10 +553,18 @@
 							"yyyy/MM/dd hh:mm:ss");
 						break;
 					case "evaluateScore":
-						if(row.evaluateScore == "" || row.evaluateScore == null){
+						if (row.evaluateScore == "" || row.evaluateScore == null) {
 							returnData = "暂未评分"
-						}else{
+						} else {
 							returnData = row.evaluateScore;
+						}
+						break;
+
+					case "bauort":
+						if (row.bauort == "" || row.bauort == null) {
+							returnData = "无施工地址"
+						} else {
+							returnData = row.bauort;
 						}
 						break;
 					case "score":
@@ -503,10 +577,10 @@
 						returnData = "￥" + row.paid;
 						break;
 					case "userId":
-						this.userInfo.forEach((item, index, value) => {
+						this.organInfo.forEach((item, index, value) => {
 							var username = item.id;
 							if (row.userId == username) {
-								returnData = item.name;
+								returnData = item.unitName;
 							}
 						});
 						break;
@@ -518,8 +592,6 @@
 							}
 						});
 						break;
-
-
 					case "file":
 						row.file == "" || row.file == null || row.file == "无" ? returnData = "暂未上传附件" : returnData = row.file;
 				}
@@ -540,13 +612,13 @@
 				// 开发环境使用 easy-mock 数据，正式环境使用 json 文件
 				var startTime = null;
 				var endTime = null;
-				if (this.selectTimeData== [] || this.selectTimeData == null || this.selectTimeData == "") {} else {
+				if (this.selectTimeData == [] || this.selectTimeData == null || this.selectTimeData == "") {} else {
 					startTime = new Date(this.selectTimeData[0]).format("yyyy/MM/dd");
 					endTime = new Date(this.selectTimeData[1]).format("yyyy/MM/dd");
 				}
 
 				this.pjcName == "" ? this.pjcName = null : this.pjcName = this.pjcName;
-				this.userInfoId == "" ? this.userInfoId = null : this.userInfoId = this.userInfoId;
+				this.organInfoId == "" ? this.organInfoId = null : this.organInfoId = this.organInfoId;
 				this.staffInfoId == "" ? this.staffInfoId = null : this.staffInfoId = this.staffInfoId;
 				this.$axios
 					.post('/project/selectProject', {
@@ -554,7 +626,7 @@
 						pageSize: this.PageSize,
 						accomplishStatus: this.status,
 						projectName: this.pjcName,
-						userId: this.userInfoId,
+						organizationId: this.organInfoId,
 						staffId: this.staffInfoId,
 						startTime: startTime,
 						endTime: endTime,
@@ -575,6 +647,7 @@
 				this.pjcName = "";
 				this.userInfoId = "";
 				this.staffInfoId = "";
+				this.organInfoId = "";
 				this.status = null;
 				this.search();
 			},
@@ -631,6 +704,7 @@
 			},
 			fileRemove() {
 				this.$message.success('文件删除成功');
+				this.filex = "无";
 				this.subData.file = "无";
 			},
 		}

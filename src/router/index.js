@@ -226,6 +226,15 @@ export default new Router({
 						permission: true,
 						index: 'user'
 					}
+				},{
+					path: '/home/projecttemplate',
+					name: 'projecttemplate',
+					component: resolve => require(['../components/page/template/projecttemplate.vue'], resolve),
+					meta: {
+						title: '项目模板',
+						permission: true,
+						index: 'projecttemplate'
+					}
 				},
 			]
 		},

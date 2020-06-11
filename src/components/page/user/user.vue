@@ -160,7 +160,7 @@
 						</div>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item style="margin-left:10%;width: 300px" label="图片">
+						<el-form-item style="margin-left:10%;width: 300px" label="图片" prop="head">
 							<upLoad id-name="team1" :fileList="fileList1" :onUpLoadSuccess="onUpLoadSuccess1" :onUpLoadError="onUpLoadError1"
 							 :filesNumber="1" :showFileList="true"></upLoad>
 						</el-form-item>
@@ -481,10 +481,6 @@
 				this.dialogFormVisible = true;
 			},
 			dialogInfoSave(formName) {
-				if (this.formInfo.image == '' || this.formInfo.image == null) {
-					this.$message.error("未添加图片");
-					return false;
-				}
 				this.$refs.courseform.validate(valid => {
 					if (valid) {
 						let fd = JSON.parse(JSON.stringify(this.formInfo));
@@ -532,11 +528,9 @@
 			
 			
 			saveEdit(formName) {
-				if (this.form.head == '' || this.form.head == null) {
-					this.$message.error("未添加图片");
-					return false;
-				}
-
+				
+				
+				
 				this.$refs.courseform.validate(valid => {
 					if (valid) {
 						/* 添加 */
@@ -545,8 +539,12 @@
 								this.$message.error(`密码需要设置6到18位`);
 								return false;
 							}
+							if (this.form.head == '' || this.form.head == null) {
+								this.form.head = "https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/EhEEXa_1591773064554.png";
+							}
 							let fd = JSON.parse(JSON.stringify(this.form));
 							delete fd.id;
+							alert(this.form.head);
 							this.$axios.post('/backUser/add', fd).then(res => {
 								if (!res.success) {
 									this.$message.error(res.errMsg);

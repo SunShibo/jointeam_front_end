@@ -8,14 +8,14 @@
 		<div class="container">
 			<el-card class="box-card" style="width: 100%;">
 				<div slot="header" class="clearfix">
-
+					
 					<template>
 						<span>项目状态: </span>
 						<el-select v-model="status" placeholder="请选择状态">
 							<el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 						</el-select>
 					</template>
-
+					
 					<template>
 						<span>&nbsp;&nbsp;&nbsp;&nbsp; 选择项目:&nbsp;&nbsp;&nbsp;</span>
 						<el-select filterable v-model="pjcId" placeholder="请选择项目" style="width: 300px;">
@@ -71,6 +71,7 @@
 								</el-popover>
 							</template>
 						</el-table-column>
+						
 						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="createTime" align="center"
 						 label="创建时间"></el-table-column>
 						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="updateTime" align="center"
@@ -79,13 +80,14 @@
 						 label="创建人"></el-table-column>
 						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="updateUserId" align="center"
 						 label="修改人"></el-table-column>
-				
-				
+						
 						<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
 							<template slot-scope="scp">
 								<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">修改项目流程</el-button>
 								<el-button type="text" icon="el-icon-bottom" @click="handleAdd(scp.$index, scp.row)">向下插入项目流程</el-button>
 								<el-button type="text" icon="el-icon-edit" @click="handleEditImg(scp.$index, scp.row)">查看/修改项目流程图片</el-button>
+								<el-button type="text" icon="el-icon-download" @click="downloadFile(scp.$index, scp.row)">下载附件</el-button>
+								
 								<el-popconfirm title="确认删除此项目流程吗？" @onConfirm="handleDelete(scp.$index, scp.row)">
 									<el-button slot="reference" type="text" icon="el-icon-delete" style="color: #ff4d51!important">删除
 									</el-button>
@@ -128,7 +130,6 @@
 				
 			</el-card>
 		</div>
-
 
 		<!-- 添加/编辑项目流程 -->
 		<el-dialog title="新增/编辑项目流程" :visible.sync="editPjcInfoVisible" width="75%" :close-on-click-modal="closeOnClickModal">
@@ -178,8 +179,15 @@
 						</upload>
 					</el-form-item>
 				</div>
-
-
+				
+				<div class="grid-content bg-purple">
+					<el-form-item label-width="100px" label="附件" prop="file">
+						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="filesuccess1" :onUpLoadRemove="fileRemove1"
+						 :onUpLoadError="onUpLoadError" :multiple="false" :drag="true" :show-file-list="true" accept="*" :fileList="filedatelist"
+						 :filesNumber="1">
+						</upload>
+					</el-form-item>
+				</div>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveInfoEdit('form')">确
@@ -261,7 +269,7 @@
 	import {
 		quillEditor
 	} from 'vue-quill-editor';
-
+	
 	export default {
 		name: 'infomation',
 		components: {
@@ -382,7 +390,9 @@
 				postinfoid: "",
 
 				formImgListArr: "",
+				filedatelist:[],
 				imgx:"",
+				filex:"",
 			};
 		},
 
@@ -436,6 +446,15 @@
 			}
 		},
 		methods: {
+			downloadFile(index, row) {
+				if (row.file == "" || row.file == null|| row.file == "无") {
+					this.$message.error("所选项目未上传附件");
+				} else {
+					//window.location.href = row.file;
+					window.open(row.file, "_blank")
+				}
+			},
+			
 			handleInfoImgDelete(index, row) {
 				this.$axios.post(
 					'/projectInfoImg/delPictureById', {
@@ -507,6 +526,7 @@
 				this.formImgListArr = '';
 				this.formimglist = [];
 				this.imgx = "";
+				this.filex= "";
 				this.infoimgVisible = true;
 			},
 
@@ -528,12 +548,10 @@
 					}
 				})
 			},
-
-
+			
 			reset() {
 				this.$forceUpdate;
 			},
-
 
 			saveInfoEdit() {
 				this.loading = true;
@@ -546,13 +564,9 @@
 						subData.date = new Date(this.form.date).format("yyyy/MM/dd hh:mm:ss");
 						subData["projectId"] = this.pjcId;
 						subData.image = this.imgx;
+						subData.file = this.filex;
 						if (this.form.id == '' || this.form.id == null) {
 							
-							if(this.imgx==""||this.imgx==null||this.imgx==[]){
-								this.$message.error("请添加缩略图");
-								this.loading = false;
-								return;
-							}
 							let fd = JSON.parse(JSON.stringify(subData));
 							delete fd.id;
 							this.$axios.post('/projectInfo/addProjectInfo', fd).then(res => {
@@ -600,10 +614,20 @@
 				this.startDay = null;
 				this.idx = index;
 				this.imagedatelist = [];
+				this.filedatelist = [];
+				
 				this.imagedatelist.push({
 					name: row.image,
 					url: row.image
 				});
+				if(row.file == ""||row.file == null || row.file == "无"){
+					
+				}else{
+					this.filedatelist.push({
+						name: row.file,
+						url: row.file
+					});
+				}
 				this.editPjcInfoVisible = true;
 			},
 
@@ -612,6 +636,7 @@
 				this.startDay = null;
 				this.$forceUpdate;
 				this.imgx = "";
+				this.filex = "";
 				this.form = {};
 				this.imagedatelist = [];
 				this.editPjcInfoVisible = true;
@@ -800,6 +825,16 @@
 			imgRemove1() {
 				this.$message.success('图片删除成功');
 				this.imgx = "";
+			},
+			
+			filesuccess1(url){
+				this.$message.success('附件上传成功');
+				this.filex = url;
+			},
+			fileRemove1(){
+				this.$message.success('附件删除成功');
+				this.filex = "无";
+				this.subData.file = "无";
 			},
 
 			imgsuccess2(url) {
