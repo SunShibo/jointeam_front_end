@@ -642,6 +642,8 @@
 
 			addPjc() {
 				this.form = {};
+				this.form["rental"] = 0;
+				this.form["paid"] = 0;
 				this.isShow = true;
 				this.imagedatelist = [];
 				this.filedatelist = [];
