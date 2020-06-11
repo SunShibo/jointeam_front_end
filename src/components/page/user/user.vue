@@ -334,6 +334,7 @@
 				this.dialogInfo = true;
 			},
 			informAdd() {
+				this.formInfo = {};
 				this.dialogInfoadd = true;
 			},
 			// 每页显示的条数

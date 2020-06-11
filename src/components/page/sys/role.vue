@@ -293,7 +293,7 @@
             // 确定删除
             deleteRow(){
 				this.loading = true;
-                this.$axios.post("/admin/delRoleByIds", {roleIds: "["+this.form.id+"]"}).then((res) => {
+                this.$axios.post("/admin/delRoleByIds", {roleIds: this.form.id}).then((res) => {
                     if (!res.success) {
                         this.$message.error(res.errMsg);
 						this.loading = false;

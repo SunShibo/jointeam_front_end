@@ -27,8 +27,7 @@
             </div>
             <!-- 信息展示 -->
             <el-table :data="tableData" border class="table" ref="multipleTable">
-                <el-table-column :show-overflow-tooltip="true" label="ID" align="center" prop="id"
-                                 width="70"></el-table-column>
+                <el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" prop="title" align="center"
                                  label="标题"></el-table-column>
                 <el-table-column width="120" height="60" align="center" prop="image" label="展示图片">

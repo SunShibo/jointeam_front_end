@@ -49,7 +49,7 @@
 					</div>
 					<!-- 信息展示 -->
 					<el-table max-height="600px" :data="tableData" border class="table" ref="multipleTable">
-						<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" sortable width="50"></el-table-column>
+						<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
 						<el-table-column sortable :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="date" align="center"
 						 label="日期"></el-table-column>
 						<el-table-column :show-overflow-tooltip="true" width="140" prop="title" align="center" label="标题"></el-table-column>

@@ -20,7 +20,7 @@
                     ref="multipleTable"
                     v-loading="$store.state.requestLoading"
             >
-                <el-table-column prop="id" label="ID" align="center"></el-table-column>
+			<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
                 <el-table-column prop="type" label="分类名称" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"
                                  :formatter="formatDate"></el-table-column>

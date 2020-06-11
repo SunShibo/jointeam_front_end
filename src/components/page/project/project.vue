@@ -33,7 +33,7 @@
 			</div>
 			<!-- 信息展示 -->
 			<el-table max-height="550px" :data="tableData" border class="table" ref="multipleTable">
-				<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" sortable width="50"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"
 				 label="公司"></el-table-column>
@@ -109,7 +109,7 @@
 					</el-option>
 				</el-select>
 			</template>
-			
+
 			<span slot="footer" class="dialog-footer">
 				<!-- saveProjectEdit('form') -->
 				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveStaffEdit()">确
@@ -120,6 +120,17 @@
 
 		<!-- 编辑项目弹出框 -->
 		<el-dialog title="新增/编辑项目" :visible.sync="editProjectVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+			<div v-if="isShow">
+				根据模板创建项目(选择模板)
+				<template>
+					<el-select @focus="getAllTemp" filterable v-model="tempId" placeholder="请选择模板">
+						<el-option v-for="item in tempInfo" :key="item.id" :label="item.name" :value="item.id"></el-option>
+					</el-select>
+				</template>
+			</div>
+			<br />
+			<br />
+			<br />
 			<el-form ref="projectform" :model="form" label-width="50px">
 				<el-form-item label-width="100px" label="项目名称" prop="projectName" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="form.projectName"></el-input>
@@ -207,7 +218,7 @@
 						</div>
 					</template>
 				</el-form-item>
-				
+
 				<el-form-item label-width="100px" label="客户评价" prop="evaluateContent">
 					<el-input v-model="form.evaluateContent"></el-input>
 				</el-form-item>
@@ -319,14 +330,18 @@
 				allStaffList: [],
 
 				upStaffList: [],
-				
-				pjcId : "",
+
+				pjcId: "",
+				tempId:"",
+				tempInfo:"",
+				isShow:false,
 			};
 		},
 
 		created() {
 			this.getData();
 			this.getOrgan();
+			this.getAllTemp();
 			this.getStaffInfo();
 		},
 		computed: {
@@ -338,10 +353,16 @@
 			}
 		},
 		methods: {
-			saveStaffEdit(){
+			getAllTemp(){
+				this.$axios.post("/projectInfoTemp/selectInfoTemp", {}).then(res => {
+					this.tempInfo = res.data;
+				});
+			},
+			
+			saveStaffEdit() {
 				let fd = {
-					projectId:this.pjcId,
-					staffId:this.upStaffList.toString()
+					projectId: this.pjcId,
+					staffId: this.upStaffList.toString()
 				}
 				console.log(JSON.stringify(fd));
 				this.$axios.post('/projectByStaff/updateProjectByStaff', fd).then(res => {
@@ -354,7 +375,7 @@
 					this.principalVisible = false;
 				});
 			},
-			
+
 			getStaff(row) {
 				this.$axios.post(
 					'/projectByStaff/selectStaffByProjectId', {
@@ -367,7 +388,7 @@
 					}
 					this.upStaffList = [];
 					this.pjcId = row.id;
-					(res.data).forEach((item, index, value)=>{
+					(res.data).forEach((item, index, value) => {
 						this.upStaffList.push(item.staffid);
 					});
 				})
@@ -458,9 +479,26 @@
 									this.loading = false;
 									return;
 								}
+								var pid = res.data.id;
+								if(this.tempId!=""&&this.tempId != null){
+									this.$axios.post(
+										'/projectInfo/addProjectInfoByTemp', {
+											projectId: pid,
+											infoTempId:this.tempId
+										}
+									).then(res => {
+										if (res.success) {
+											this.tempId = "";
+										} else {
+											this.$message.error("插入模板错误ss,请重试");
+										}
+									})
+								}
+								
 								this.$message.success(`操作成功`);
 								this.getData();
 								this.form = {};
+								this.tempId = "";
 								this.loading = false;
 								this.editProjectVisible = false;
 							});
@@ -492,6 +530,8 @@
 				});
 			},
 			handleEdit(index, row) {
+				this.isShow = false;
+				this.tempId = "";
 				this.form = row;
 				this.idx = index;
 				this.imagedatelist = [];
@@ -602,6 +642,7 @@
 
 			addPjc() {
 				this.form = {};
+				this.isShow = true;
 				this.imagedatelist = [];
 				this.filedatelist = [];
 				this.imgx = "";

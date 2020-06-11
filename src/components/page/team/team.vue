@@ -23,7 +23,7 @@
                     ref="multipleTable"
                     v-loading="$store.state.requestLoading"
             >
-                <el-table-column type="index" label="序号" align="center" sortable width="50"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" width="130" prop="introduce" label="头像"  align="center">
                     <template slot-scope="scope">
                         <img :src="scope.row.head" width="60" height="60"/>
