@@ -12,12 +12,12 @@
 				 range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
 				</el-date-picker>
 				<template>
-					<el-select style="margin-left: 12px;" filterable v-model="organInfoId" placeholder="请选择公司">
+					<el-select @focus="getOrgan" style="margin-left: 12px;" filterable v-model="organInfoId" placeholder="请选择公司">
 						<el-option v-for="item in organInfo" :key="item.id" :label="item.unitName" :value="item.id"></el-option>
 					</el-select>
 				</template>
 				<template>
-					<el-select style="margin-left: 12px;" filterable v-model="staffInfoId" placeholder="请选择客服经理">
+					<el-select @focus="getStaffInfo" style="margin-left: 12px;" filterable v-model="staffInfoId" placeholder="请选择总负责人">
 						<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 					</el-select>
 				</template>
@@ -38,7 +38,7 @@
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"
 				 label="公司"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="staffId" align="center"
-				 label="客服经理"></el-table-column>
+				 label="总负责人"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="bauort" align="center"
 				 label="项目施工地点"></el-table-column>
 
@@ -104,7 +104,7 @@
 		<el-dialog title="新增/编辑项目负责人" :visible.sync="principalVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
 
 			<template>
-				<el-select v-model="upStaffList" multiple placeholder="请选择">
+				<el-select @focus="getStaffInfo" v-model="upStaffList" multiple placeholder="请选择">
 					<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id">
 					</el-option>
 				</el-select>
@@ -126,15 +126,15 @@
 				</el-form-item>
 				<el-form-item label-width="100px" label="公司名称" prop="userId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
-						<el-select filterable v-model="form.userId" placeholder="请选择公司">
+						<el-select @focus="getOrgan" filterable v-model="form.userId" placeholder="请选择公司">
 							<el-option v-for="item in organInfo" :key="item.id" :label="item.unitName" :value="item.id"></el-option>
 						</el-select>
 					</template>
 				</el-form-item>
 
-				<el-form-item label-width="120px" label="客服经理" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
+				<el-form-item label-width="120px" label="总负责人" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
-						<el-select filterable v-model="form.staffId" placeholder="请选择客服经理">
+						<el-select @focus="getStaffInfo" filterable v-model="form.staffId" placeholder="请选择负责人">
 							<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 						</el-select>
 					</template>
@@ -207,7 +207,7 @@
 						</div>
 					</template>
 				</el-form-item>
-
+				
 				<el-form-item label-width="100px" label="客户评价" prop="evaluateContent">
 					<el-input v-model="form.evaluateContent"></el-input>
 				</el-form-item>
@@ -319,6 +319,8 @@
 				allStaffList: [],
 
 				upStaffList: [],
+				
+				pjcId : "",
 			};
 		},
 
@@ -338,19 +340,18 @@
 		methods: {
 			saveStaffEdit(){
 				let fd = {
-					
+					projectId:this.pjcId,
+					staffId:this.upStaffList.toString()
 				}
-				this.$axios.post('/project/updateProjectById', fd).then(res => {
+				console.log(JSON.stringify(fd));
+				this.$axios.post('/projectByStaff/updateProjectByStaff', fd).then(res => {
 					if (!res.success) {
 						this.$message.success(res.errMsg);
-						this.loading = false;
 						return;
 					}
 					this.$message.success(`操作成功`);
-					this.form = {};
 					this.getData();
-					this.loading = false;
-					this.editProjectVisible = false;
+					this.principalVisible = false;
 				});
 			},
 			
@@ -365,6 +366,7 @@
 						return;
 					}
 					this.upStaffList = [];
+					this.pjcId = row.id;
 					(res.data).forEach((item, index, value)=>{
 						this.upStaffList.push(item.staffid);
 					});

@@ -10,7 +10,7 @@
         <div class="container">
             <div class="handle-box">
                 <el-input v-model="s_name" placeholder="模板名" class="handle-input"></el-input>
-                <el-select v-model="typeId" placeholder="请选择分类" style="margin-right: 1%;margin-left: 1%">
+                <el-select @focus="getType" v-model="typeId" placeholder="请选择分类" style="margin-right: 1%;margin-left: 1%">
                     <el-option value="">全部</el-option>
                     <el-option
                             v-for="item in select"
@@ -74,7 +74,7 @@
         <el-dialog title="添加/编辑" :visible.sync="dialogFormVisible" :close-on-click-modal="closeOnClickModal">
             <el-form ref="courseform" :model="form" :rules="rules">
                 <el-form-item label="分类名称" prop="typeId" style="margin-left: 4%">
-                    <el-select v-model="form.typeId" placeholder="请选择分类" style="margin-right: 1%;margin-left: 1%">
+                    <el-select @focus="getType" v-model="form.typeId" placeholder="请选择分类" style="margin-right: 1%;margin-left: 1%">
                         <el-option
                                 v-for="item in select"
                                 :key="item.id"

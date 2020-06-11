@@ -18,9 +18,9 @@
 			<!-- 信息展示 -->
 			<el-table :data="tableData" border class="table" ref="multipleTable">
 				<el-table-column :show-overflow-tooltip="true" label="编号" prop="id" align="center" width="90"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true"  prop="title" align="center" label="标题"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true"  prop="introduction" align="center" label="简介"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true"  prop="source" align="center" label="来源"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" prop="title" align="center" label="标题"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" prop="introduction" align="center" label="简介"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" prop="source" align="center" label="来源"></el-table-column>
 				<el-table-column width="120" height="60" align="center" prop="image" label="封面图">
 					<template slot-scope="scope">
 						<el-popover placement="top-start" trigger="click">
@@ -33,12 +33,10 @@
 					</template>
 				</el-table-column>
 				<el-table-column :show-overflow-tooltip="true" align="center" prop="label" label="标签"></el-table-column>
-				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true"  prop="createTime"
-				 label="显示日期"></el-table-column>
-				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true"  prop="updateTime"
-				 label="更新时间"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" align="center"  prop="sort" label="排列顺序"></el-table-column>
-				<el-table-column  header-align="center" align="center" width="160" label="操作">
+				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" prop="createTime" label="显示日期"></el-table-column>
+				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" prop="updateTime" label="更新时间"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" align="center" prop="sort" label="排列顺序"></el-table-column>
+				<el-table-column header-align="center" align="center" width="160" label="操作">
 					<template slot-scope="scp">
 						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">查看详情(修改)</el-button>
 						<el-popconfirm title="确认删除此资讯吗？" @onConfirm="handleDelete(scp.$index, scp.row)">
@@ -67,14 +65,11 @@
 					<el-input v-model="form.source"></el-input>
 				</el-form-item>
 				createTime
-				
-				
+
+
 				<el-form-item label-width="100px" label="显示日期" prop="createTime" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
-				 <el-date-picker
-				      v-model="form.createTime"
-				      type="datetime"
-				      placeholder="选择日期时间">
-				    </el-date-picker>
+					<el-date-picker v-model="form.createTime" type="datetime" placeholder="选择日期时间">
+					</el-date-picker>
 				</el-form-item>
 
 				<div class="grid-content bg-purple">
@@ -98,6 +93,10 @@
 					<upload v-show="false" :onUpLoadSuccess="newEditorSuccess" :onUpLoadError="onUpLoadError" :multiple="false"
 					 :showFileList="false" :drag="false" accept="image/*" :fileList="editorsList" refUpLoad="uniqueId" idName="uniqueId"
 					 :filesNumber="999" :isClear="true" listType="picture"></upload>
+
+					<upload class="videoUpload" v-show="false" :onUpLoadSuccess="newEditorVideoSuccess" :onUpLoadError="onUpLoadError"
+					 :multiple="false" :showFileList="false" :drag="false" accept="video/*" :fileList="editorsVideoList" refUpLoad="uniqueId"
+					 idName="uniqueId" :filesNumber="999" :isClear="true"></upload>
 					<quill-editor ref="newEditor" v-model="form.content" class="container"></quill-editor>
 				</el-form-item>
 
@@ -131,6 +130,7 @@
 		},
 		data() {
 			return {
+				editorsVideoList: [],
 				editorsList: [],
 				fileList: [],
 
@@ -198,6 +198,17 @@
 					this.$refs.newEditor.quill
 						.getModule("toolbar")
 						.addHandler("image", imgHandler); //将点击事件绑定到工具栏上的图片上传按钮上
+					
+					let videoHandler = async function(state) {
+						//异步触发element ui的上传图片按钮
+						if (state) {
+							let fileInput = document.querySelector(".videoUpload #uniqueId input"); //隐藏的file元素
+							fileInput.click(); //触发事件
+						}
+					};
+					this.$refs.newEditor.quill
+						.getModule("toolbar")
+						.addHandler("video", videoHandler);
 				});
 			},
 			//富文本专用上传图片回调
@@ -212,6 +223,19 @@
 				);
 				// 调整光标到最后
 				this.$refs.newEditor.quill.setSelection(this.addImgRange.index + 1);
+			},
+
+			newEditorVideoSuccess(response, file) {
+				this.$message.success("上传成功！");
+				this.addVideoRange = this.$refs.newEditor.quill.getSelection();
+				//添加图片
+				this.$refs.newEditor.quill.insertEmbed(
+					this.addVideoRange != null ? this.addVideoRange.index : 0,
+					"video",
+					response
+				);
+				// 调整光标到最后
+				this.$refs.newEditor.quill.setSelection(this.addVideoRange.index + 1);
 			},
 
 			handleDelete(index, row) {
@@ -263,7 +287,7 @@
 								introduction: subData.introduction,
 								source: subData.source,
 								image: subData.image,
-								createTime:subData.createTime,
+								createTime: subData.createTime,
 								label: subData.label,
 								content: subData.content,
 								status: subData.status,
@@ -292,7 +316,7 @@
 								introduction: subData.introduction,
 								introduction: subData.introduction,
 								source: subData.source,
-								createTime:subData.createTime,
+								createTime: subData.createTime,
 								image: subData.image,
 								label: subData.label,
 								content: subData.content,
@@ -330,7 +354,7 @@
 					name: row.image,
 					url: row.image
 				});
-				
+
 				row.content = row.content
 					.replace(/video/g, "iframe")
 					.replace(
@@ -376,7 +400,7 @@
 				// 开发环境使用 easy-mock 数据，正式环境使用 json 文件
 				var startTime = null;
 				var endTime = null;
-				if (this.selectTimeData== [] || this.selectTimeData == null || this.selectTimeData == "") {} else {
+				if (this.selectTimeData == [] || this.selectTimeData == null || this.selectTimeData == "") {} else {
 					startTime = new Date(this.selectTimeData[0]).format("yyyy/MM/dd");
 					endTime = new Date(this.selectTimeData[1]).format("yyyy/MM/dd");
 				}

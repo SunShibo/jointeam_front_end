@@ -18,7 +18,7 @@
 					
 					<template>
 						<span>&nbsp;&nbsp;&nbsp;&nbsp; 选择项目:&nbsp;&nbsp;&nbsp;</span>
-						<el-select filterable v-model="pjcId" placeholder="请选择项目" style="width: 300px;">
+						<el-select @focus="getPjcInfo" filterable v-model="pjcId" placeholder="请选择项目" style="width: 300px;">
 							<el-option v-for="item in pjcInfo" :key="item.id" :label="'id:'+item.id+' 项目名称:'+item.projectName" :value="item.id"></el-option>
 						</el-select>
 					</template>
@@ -157,7 +157,7 @@
 
 				<el-form-item label-width="120px" label="员工" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
-						<el-select filterable v-model="form.staffId" placeholder="请选择员工">
+						<el-select @focus="getStaffInfo" filterable v-model="form.staffId" placeholder="请选择员工">
 							<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 						</el-select>
 					</template>

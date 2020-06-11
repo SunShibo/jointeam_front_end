@@ -96,6 +96,9 @@
 					<upload v-show="false" :onUpLoadSuccess="newEditorSuccess" :onUpLoadError="onUpLoadError" :multiple="false"
 					 :showFileList="false" :drag="false" accept="image/*" :fileList="editorsList" refUpLoad="uniqueId" idName="uniqueId"
 					 :filesNumber="999" :isClear="true" listType="picture"></upload>
+					<upload class="videoUpload" v-show="false" :onUpLoadSuccess="newEditorVideoSuccess" :onUpLoadError="onUpLoadError"
+					 :multiple="false" :showFileList="false" :drag="false" accept="video/*" :fileList="editorsVideoList" refUpLoad="uniqueId"
+					 idName="uniqueId" :filesNumber="999" :isClear="true"></upload>
 					<quill-editor ref="newEditor" v-model="form.content" class="container"></quill-editor>
 				</el-form-item>
 
@@ -130,6 +133,7 @@
 		data() {
 			return {
 				editorsList: [],
+				editorsVideoList: [],
 				fileList: [],
 
 				Sort: 0,
@@ -196,6 +200,17 @@
 					this.$refs.newEditor.quill
 						.getModule("toolbar")
 						.addHandler("image", imgHandler); //将点击事件绑定到工具栏上的图片上传按钮上
+					
+					let videoHandler = async function(state) {
+						//异步触发element ui的上传图片按钮
+						if (state) {
+							let fileInput = document.querySelector(".videoUpload #uniqueId input"); //隐藏的file元素
+							fileInput.click(); //触发事件
+						}
+					};
+					this.$refs.newEditor.quill
+						.getModule("toolbar")
+						.addHandler("video", videoHandler);
 				});
 			},
 			//富文本专用上传图片回调
@@ -210,6 +225,19 @@
 				);
 				// 调整光标到最后
 				this.$refs.newEditor.quill.setSelection(this.addImgRange.index + 1);
+			},
+			
+			newEditorVideoSuccess(response, file) {
+				this.$message.success("上传成功！");
+				this.addVideoRange = this.$refs.newEditor.quill.getSelection();
+				//添加图片
+				this.$refs.newEditor.quill.insertEmbed(
+					this.addVideoRange != null ? this.addVideoRange.index : 0,
+					"video",
+					response
+				);
+				// 调整光标到最后
+				this.$refs.newEditor.quill.setSelection(this.addVideoRange.index + 1);
 			},
 
 			handleDelete(index, row) {

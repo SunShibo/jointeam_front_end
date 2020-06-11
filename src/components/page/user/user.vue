@@ -12,7 +12,7 @@
 			<div class="handle-box">
 				<el-input v-model="s_name" placeholder="用户名" class="handle-input mr10"></el-input>
 				<el-input v-model="s_phone" placeholder="手机号" class="querySize"></el-input>
-				<el-select v-model="s_value" placeholder="请选择" style="margin-right: 2%">
+				<el-select @focus="getSelect" v-model="s_value" placeholder="请选择" style="margin-right: 2%">
 					<el-option value="">全部</el-option>
 					<el-option v-for="item in options" :key="item.id" :label="item.unitName" :value="item.id">
 					</el-option>
@@ -79,7 +79,7 @@
 							
 							
 							<el-form-item label="机构：" prop="companyId">
-								<el-select v-model="form.companyId" placeholder="请选择" style="margin-right: 2%">
+								<el-select @focus="getSelect" v-model="form.companyId" placeholder="请选择" style="margin-right: 2%">
 									<el-option v-for="item in options" :key="item.id" :label="item.unitName" :value="item.id">
 									</el-option>
 								</el-select>

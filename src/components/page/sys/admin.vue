@@ -13,7 +13,7 @@
 				<el-input v-model="s_name" placeholder="用户名" class="handle-input mr10"></el-input>
 				<!--<el-input v-model="s_name" placeholder="姓名" class="handle-input mr10"></el-input>-->
 				<!--<el-input v-model="s_role" placeholder="角色" class="handle-input mr10"></el-input>-->
-				<el-select v-model="s_role" placeholder="请选择角色" style="margin-right:10px;">
+				<el-select @focus="getRole" v-model="s_role" placeholder="请选择角色" style="margin-right:10px;">
 					<el-option label="全部" value=""></el-option>
 					<el-option v-for="item in options" :key="item.id" :label="item.roleName" :value="item.id"></el-option>
 				</el-select>
@@ -61,7 +61,7 @@
 				<!--<el-input v-model="form.email"></el-input>-->
 				<!--</el-form-item>-->
 				<el-form-item label-width="100px" label="角色" prop="roleId" :rules="[{required: true, message: '该项不能为空', trigger: 'blur'}]">
-					<el-select v-model="form.roleId" clearable placeholder="请选择" style="width:260px">
+					<el-select @focus="getRole" v-model="form.roleId" clearable placeholder="请选择" style="width:260px">
 						<el-option v-for="item in options" :key="item.id" :label="item.roleName" :value="item.id"></el-option>
 					</el-select>
 				</el-form-item>

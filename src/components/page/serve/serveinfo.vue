@@ -8,7 +8,7 @@
         <div class="container">
             <div class="handle-box">
                 <el-input v-model="s_projectName" placeholder="标题" class="handle-input mr10"></el-input>
-                <el-select v-model="s_typeId" placeholder="请选择">
+                <el-select @focus="getType" v-model="s_typeId" placeholder="请选择">
                     <el-option value="">全部</el-option>
                     <el-option-group
                             v-for="group in select"
@@ -92,7 +92,7 @@
                                   style="width: 30%;margin-left: 1.5%"></el-input>
                     </el-form-item>
                     <el-form-item label="服务分类" prop="typeId" style="margin-left: 4%">
-                        <el-select v-model="form.typeId" placeholder="请选择">
+                        <el-select @focus="getType" v-model="form.typeId" placeholder="请选择">
                             <el-option-group
                                     v-for="group in select"
                                     :key="group.typeName"
