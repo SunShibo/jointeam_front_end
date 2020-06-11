@@ -82,7 +82,7 @@
                                   style="width: 30%;margin-left: 2.5%"></el-input>
                     </el-form-item>
                     <el-form-item label="服务分类" prop="typeId" style="margin-left: 4%">
-                        <el-select v-model="form.typeId" placeholder="请选择" style="margin-left: 1%">
+                        <el-select @focus="getType" v-model="form.typeId" placeholder="请选择" style="margin-left: 1%">
                             <el-option v-for="item in select" :key="item.id" :label="item.typeName" :value="item.id">
                             </el-option>
                         </el-select>

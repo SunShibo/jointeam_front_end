@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades">团队管理</i>
+                    <i class="el-icon-lx-cascades">公司管理</i>
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -32,7 +32,7 @@
                 <el-table-column prop="name" label="姓名" align="center"></el-table-column>
 				<el-table-column prop="sex" label="性别" align="center"></el-table-column>
                 <el-table-column prop="phone" label="手机号" align="center"></el-table-column>
-                <el-table-column prop="teamName" label="团队名称" align="center"></el-table-column>
+                <el-table-column prop="teamName" label="公司名称" align="center"></el-table-column>
 				<el-table-column prop="department" label="部门" align="center"></el-table-column>
                 <el-table-column prop="position" label="职位" align="center"></el-table-column>
 				<el-table-column prop="idCard" label="身份证号" align="center"></el-table-column>
@@ -84,7 +84,7 @@
                     <el-input v-model="form.phone" size="mini" class="inputform"></el-input>
                 </el-form-item>
 				
-                <el-form-item label="团队名"  prop="teamName">
+                <el-form-item label="公司名称"  prop="teamName">
                     <el-input v-model="form.teamName" class="inputform"></el-input>
                 </el-form-item>
 				<el-form-item label="部门" prop="department" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur,change' }]">
@@ -168,7 +168,7 @@
                     }],
                     teamName: [{
                         required: true,
-                        message: '请填团队名称',
+                        message: '请填公司名称',
                         trigger: 'blur'
                     }],
                     position: [{
