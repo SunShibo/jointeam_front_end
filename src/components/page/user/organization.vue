@@ -9,7 +9,7 @@
     </div>
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="s_name" placeholder="机构名称"  style="margin-right: 2%;width: 10%"></el-input>
+        <el-input v-model="s_name" placeholder="客户名称"  style="margin-right: 2%;width: 10%"></el-input>
         <el-button type="primary" icon="search" @click="search">搜索</el-button>
         <el-button type="primary" icon="search" @click="add">添加</el-button>
       </div>
@@ -21,14 +21,14 @@
               v-loading="$store.state.requestLoading"
       >
         <el-table-column type="index" label="序号" align="center" sortable width="50"></el-table-column>
-        <el-table-column prop="unitName" label="机构名称" align="center"  :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="type" label="机构类型" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="unitName" label="客户名称" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="type" label="客户类型" align="center"  :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="phone" label="单位电话" align="center"  :show-overflow-tooltip="true"></el-table-column>
 		<el-table-column prop="contacts" label="联系人姓名" align="center"  :show-overflow-tooltip="true"></el-table-column>
 		<el-table-column prop="contactPosition" label="联系人职位" align="center"  :show-overflow-tooltip="true"></el-table-column>
 		<el-table-column prop="contactPhone" label="联系人电话" align="center"  :show-overflow-tooltip="true"></el-table-column>
-		<el-table-column prop="mail" label="联系邮箱" align="center"  :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="address" label="地址" align="center"  :show-overflow-tooltip="true"></el-table-column>
+		<el-table-column prop="mail" label="联系人邮箱" align="center"  :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="address" label="客户地址" align="center"  :show-overflow-tooltip="true"></el-table-column>
         
 		<el-table-column prop="remark" label="备注" align="center"  :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center"  :show-overflow-tooltip="true"
@@ -71,10 +71,10 @@
     <el-dialog title="添加/编辑" :visible.sync="dialogFormVisible"
                :close-on-click-modal="closeOnClickModal">
       <el-form ref="courseform" :model="form" :rules="rules">
-        <el-form-item label="机构名称" prop="unitName" >
+        <el-form-item label="客户名称" prop="unitName" >
           <el-input v-model="form.unitName" size="mini" class="inputform"></el-input>
         </el-form-item>
-        <el-form-item label="机构类型" prop="type">
+        <el-form-item label="客户类型" prop="type">
           <el-input v-model="form.type" size="mini" class="inputform"></el-input>
         </el-form-item>
         <el-form-item label="单位电话"  prop="phone">
@@ -89,10 +89,10 @@
 		<el-form-item label="联系人电话"  prop="contactPhone">
 		  <el-input v-model="form.contactPhone" class="inputform"></el-input>
 		</el-form-item>
-        <el-form-item label="联系邮箱" prop="mail" style="margin-left: 1%">
+        <el-form-item label="联系人邮箱" prop="mail" style="margin-left: 1%">
           <el-input v-model="form.mail" class="inputform" ></el-input>
         </el-form-item>
-        <el-form-item label="联系地址" prop="address" style="margin-left: 1%">
+        <el-form-item label="客户地址" prop="address" style="margin-left: 1%">
           <el-input v-model="form.address" class="inputform" ></el-input>
         </el-form-item>
         <el-form-item label="备注信息" prop="remark" style="margin-left: 1%">
@@ -144,7 +144,7 @@
         rules: {
           unitName: [{
             required: true,
-            message: '请填写机构名称',
+            message: '请填写客户名称',
             trigger: 'blur'
           }],
           phone: [{

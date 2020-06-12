@@ -60,7 +60,7 @@
 		</div>
 
 
-		<el-dialog title="添加/编辑" :visible.sync="dialogFormVisible" :close-on-click-modal="closeOnClickModal">
+		<el-dialog width="74%" title="添加/编辑" :visible.sync="dialogFormVisible" :close-on-click-modal="closeOnClickModal">
 			<el-form ref="courseform" :model="form" :rules="rules">
 				<el-row>
 					<el-col :span="12" style="border-right: 1px #666666 solid">

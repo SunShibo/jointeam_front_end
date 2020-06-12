@@ -8,14 +8,14 @@
 		<div class="container">
 			<el-card class="box-card" style="width: 100%;">
 				<div slot="header" class="clearfix">
-					
+
 					<template>
 						<span>项目状态: </span>
 						<el-select v-model="status" placeholder="请选择状态">
 							<el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 						</el-select>
 					</template>
-					
+
 					<template>
 						<span>&nbsp;&nbsp;&nbsp;&nbsp; 选择项目:&nbsp;&nbsp;&nbsp;</span>
 						<el-select @focus="getPjcInfo" filterable v-model="pjcId" placeholder="请选择项目" style="width: 300px;">
@@ -23,14 +23,14 @@
 						</el-select>
 					</template>
 				</div>
-				
+
 				<div class="crumbs">
 					<el-breadcrumb separator="/">
 						<el-breadcrumb-item><i class="el-icon-lx-cascades">项目详情</i></el-breadcrumb-item>
 					</el-breadcrumb>
 				</div>
-				
-				
+
+
 				<div class="container">
 					<div class="handle-box">
 						<!-- <el-input v-model="pjcName" placeholder="项目名称" class="handle-input mr10"></el-input>
@@ -44,7 +44,7 @@
 								<el-option v-for="item in infoStatusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 							</el-select>
 						</template> -->
-				
+
 						<el-button v-if="pjcId!=null&&pjcId!=''" type="primary" icon="add" @click="addInfo">新增项目流程</el-button>
 					</div>
 					<!-- 信息展示 -->
@@ -71,7 +71,7 @@
 								</el-popover>
 							</template>
 						</el-table-column>
-						
+
 						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="createTime" align="center"
 						 label="创建时间"></el-table-column>
 						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="updateTime" align="center"
@@ -80,14 +80,14 @@
 						 label="创建人"></el-table-column>
 						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="updateUserId" align="center"
 						 label="修改人"></el-table-column>
-						
+
 						<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
 							<template slot-scope="scp">
 								<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">修改项目流程</el-button>
 								<el-button type="text" icon="el-icon-bottom" @click="handleAdd(scp.$index, scp.row)">向下插入项目流程</el-button>
 								<el-button type="text" icon="el-icon-edit" @click="handleEditImg(scp.$index, scp.row)">查看/修改项目流程图片</el-button>
 								<el-button type="text" icon="el-icon-download" @click="downloadFile(scp.$index, scp.row)">下载附件</el-button>
-								
+
 								<el-popconfirm title="确认删除此项目流程吗？" @onConfirm="handleDelete(scp.$index, scp.row)">
 									<el-button slot="reference" type="text" icon="el-icon-delete" style="color: #ff4d51!important">删除
 									</el-button>
@@ -100,17 +100,18 @@
 						 :page-sizes="pageSizes" :page-size="PageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount"></el-pagination>
 					</div>
 				</div>
-				
+
 			</el-card>
 			<el-card class="box-card" style="width: 100%;">
 				<div class="block">
 					<div v-if="tableData!=null&&tableData!=''" style="height:500px;overflow:auto;">
 						<el-timeline>
-							<el-timeline-item v-for="(item,index) in tableData" :key = "index" :color="item.color" :timestamp="item.date | formatDate" placement="top">
+							<el-timeline-item v-for="(item,index) in tableData" :key="index" :color="item.color" :timestamp="item.date | formatDate"
+							 placement="top">
 								<el-card>
 									<h4>{{item.title}}({{item.completionStatus | formatCompletionStatus}})</h4>
 									<p>负责人:{{item.staffName}} &nbsp;&nbsp;{{item.staffPhone}} &nbsp;&nbsp;&nbsp;&nbsp; 负责内容:{{item.content}}</p>
-									
+
 									<br />
 									<span>备注:</span>
 									<span v-if="item.remark!=null&&item.remark!=''">{{item.remark}}</span>
@@ -126,8 +127,8 @@
 						<h4>本项目暂无数据</h4>
 					</div>
 				</div>
-				
-				
+
+
 			</el-card>
 		</div>
 
@@ -139,7 +140,7 @@
 				</el-form-item>
 
 				<el-form-item label-width="100px" label="内容" prop="content" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{ required: true, message: '该项不能为空', trigger: 'change' }]">
-					<el-input v-model="form.content"></el-input>
+					<el-input type="textarea" :rows="5" placeholder="请输入内容" v-model="form.content"></el-input>
 				</el-form-item>
 
 				<el-form-item label-width="100px" label="备注" prop="remark">
@@ -179,7 +180,7 @@
 						</upload>
 					</el-form-item>
 				</div>
-				
+
 				<div class="grid-content bg-purple">
 					<el-form-item label-width="100px" label="附件" prop="file">
 						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="filesuccess1" :onUpLoadRemove="fileRemove1"
@@ -269,7 +270,7 @@
 	import {
 		quillEditor
 	} from 'vue-quill-editor';
-	
+
 	export default {
 		name: 'infomation',
 		components: {
@@ -390,9 +391,9 @@
 				postinfoid: "",
 
 				formImgListArr: "",
-				filedatelist:[],
-				imgx:"",
-				filex:"",
+				filedatelist: [],
+				imgx: "",
+				filex: "",
 			};
 		},
 
@@ -447,14 +448,14 @@
 		},
 		methods: {
 			downloadFile(index, row) {
-				if (row.file == "" || row.file == null|| row.file == "无") {
+				if (row.file == "" || row.file == null || row.file == "无") {
 					this.$message.error("所选项目未上传附件");
 				} else {
 					//window.location.href = row.file;
 					window.open(row.file, "_blank")
 				}
 			},
-			
+
 			handleInfoImgDelete(index, row) {
 				this.$axios.post(
 					'/projectInfoImg/delPictureById', {
@@ -480,16 +481,16 @@
 			},
 
 			saveImg() {
-				if(this.formImgListArr==""||this.formImgListArr==null){
+				if (this.formImgListArr == "" || this.formImgListArr == null) {
 					this.$message.error("请选择图片");
 					return;
 				}
 				this.loading = true;
-				
+
 				const subData = this.form;
-				
+
 				subData["infoId"] = this.postinfoid;
-				
+
 				var alist = [];
 				alist.push(this.formImgListArr);
 				subData["image"] = alist;
@@ -526,7 +527,7 @@
 				this.formImgListArr = '';
 				this.formimglist = [];
 				this.imgx = "";
-				this.filex= "";
+				this.filex = "";
 				this.infoimgVisible = true;
 			},
 
@@ -548,15 +549,15 @@
 					}
 				})
 			},
-			
+
 			reset() {
 				this.$forceUpdate;
 			},
 
 			saveInfoEdit() {
 				this.loading = true;
-				
-				
+
+
 				this.$refs.pjcInfoform.validate(valid => {
 					if (valid) {
 						/* 添加 */
@@ -566,7 +567,7 @@
 						subData.image = this.imgx;
 						subData.file = this.filex;
 						if (this.form.id == '' || this.form.id == null) {
-							
+
 							let fd = JSON.parse(JSON.stringify(subData));
 							delete fd.id;
 							this.$axios.post('/projectInfo/addProjectInfo', fd).then(res => {
@@ -615,14 +616,14 @@
 				this.idx = index;
 				this.imagedatelist = [];
 				this.filedatelist = [];
-				
+
 				this.imagedatelist.push({
 					name: row.image,
 					url: row.image
 				});
-				if(row.file == ""||row.file == null || row.file == "无"){
-					
-				}else{
+				if (row.file == "" || row.file == null || row.file == "无") {
+
+				} else {
 					this.filedatelist.push({
 						name: row.file,
 						url: row.file
@@ -633,6 +634,7 @@
 
 			addInfo() {
 				new Date().startDay(new Date, "reset");
+				this.filedatelist = [];
 				this.startDay = null;
 				this.$forceUpdate;
 				this.imgx = "";
@@ -826,12 +828,12 @@
 				this.$message.success('图片删除成功');
 				this.imgx = "";
 			},
-			
-			filesuccess1(url){
+
+			filesuccess1(url) {
 				this.$message.success('附件上传成功');
 				this.filex = url;
 			},
-			fileRemove1(){
+			fileRemove1() {
 				this.$message.success('附件删除成功');
 				this.filex = "无";
 				this.subData.file = "无";
@@ -850,7 +852,7 @@
 </script>
 
 <style scoped>
-	.el-dialog__body{
+	.el-dialog__body {
 		overflow-y: auto;
 	}
 
