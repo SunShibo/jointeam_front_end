@@ -23,7 +23,7 @@
 						</el-select>
 					</template>
 				</div>
-
+				
 				<div class="crumbs">
 					<el-breadcrumb separator="/">
 						<el-breadcrumb-item><i class="el-icon-lx-cascades">项目详情</i></el-breadcrumb-item>
@@ -86,7 +86,7 @@
 								<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">修改项目流程</el-button>
 								<el-button type="text" icon="el-icon-bottom" @click="handleAdd(scp.$index, scp.row)">向下插入项目流程</el-button>
 								<el-button type="text" icon="el-icon-edit" @click="handleEditImg(scp.$index, scp.row)">查看/修改项目流程图片</el-button>
-								<el-button type="text" icon="el-icon-download" @click="downloadFile(scp.$index, scp.row)">下载附件</el-button>
+								<el-button type="text" icon="el-icon-download" @click="openFile(scp.$index, scp.row)">查看附件</el-button>
 
 								<el-popconfirm title="确认删除此项目流程吗？" @onConfirm="handleDelete(scp.$index, scp.row)">
 									<el-button slot="reference" type="text" icon="el-icon-delete" style="color: #ff4d51!important">删除
@@ -131,7 +131,51 @@
 
 			</el-card>
 		</div>
-
+		
+		<el-dialog title="新增项目附件" :visible.sync="addFileVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+			<el-form ref="projectform" :model="fileForm" label-width="50px">
+				<el-form-item label-width="100px" label="附件名称" prop="name" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
+					<el-input v-model="fileForm.name"></el-input>
+				</el-form-item>
+				
+				<el-form-item label-width="100px" label="详细照片" prop="path">
+					<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="filesuccess2" :onUpLoadRemove="fileRemove2"
+					 :onUpLoadError="onUpLoadError" :multiple="true" :drag="true" :show-file-list="true" accept="*" :fileList="formfilelist"
+					 :filesNumber="1">
+					</upload>
+				</el-form-item>
+			</el-form>
+			<span slot="footer" class="dialog-footer">
+				<!-- saveProjectEdit('form') -->
+				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveFileEdit()">确
+					定</el-button>
+				<el-button @click="addFileVisible = false">取 消</el-button>
+			</span>
+		</el-dialog>
+		
+		<el-dialog title="新增/编辑项目附件" :visible.sync="fileVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+			<el-button type="primary" icon="add" @click="addFiles">添加附件</el-button>
+			<el-table max-height="550px" :data="tableFileData" border class="table" ref="multipleTable">
+				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" prop="name" align="center" label="附件名称"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" prop="path" align="center" label="附件地址"></el-table-column>
+				<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
+					<template slot-scope="scp">
+						<el-button type="text" icon="el-icon-download" @click="downloadFile(scp.$index, scp.row)">下载附件</el-button>
+						<el-popconfirm title="确认删除此附件吗？" @onConfirm="handleDeleteFile(scp.$index, scp.row)">
+							<el-button slot="reference" type="text" icon="el-icon-delete" style="color: #ff4d51!important">删除
+							</el-button>
+						</el-popconfirm>
+					</template>
+				</el-table-column>
+			</el-table>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="fileVisible = false">关 闭</el-button>
+			</span>
+		</el-dialog>
+		
+		
+		
 		<!-- 添加/编辑项目流程 -->
 		<el-dialog title="新增/编辑项目流程" :visible.sync="editPjcInfoVisible" width="75%" :close-on-click-modal="closeOnClickModal">
 			<el-form ref="pjcInfoform" :model="form" label-width="50px">
@@ -196,9 +240,6 @@
 				<el-button @click="editPjcInfoVisible = false">取 消</el-button>
 			</span>
 		</el-dialog>
-
-
-
 		<el-dialog title="新增图片" :visible.sync="infoimgVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
 			<el-form ref="imgform" :model="form" label-width="50px">
 				<div class="grid-content bg-purple">
@@ -279,6 +320,14 @@
 		},
 		data() {
 			return {
+				tableFileData: [],
+				
+				formfilelist:[],
+				fileVisible: false,
+				
+				addFileVisible: false,
+				
+				
 				infoimgVisible: false,
 
 				pickerOptions0: {
@@ -298,6 +347,11 @@
 				startDay: "",
 
 				pjcId: "",
+				
+				pId:"",
+				fileForm:{},
+				
+				filedatelist: [],
 
 
 				editPjcInfoVisible: false,
@@ -447,13 +501,84 @@
 			}
 		},
 		methods: {
+			openFile(index, row) {
+				this.pId = row.id;
+				this.getFile(row.id);
+				this.fileVisible = true;
+			},
+			
+			saveFileEdit(){
+				let fd = {
+					name: this.fileForm.name,
+					path: this.fileForm.path,
+					type: "info",
+					pId: this.pId
+				}
+				this.$axios.post('/accessory/addAccessory', fd).then(res => {
+					if (!res.success) {
+						this.$message.success(res.errMsg);
+						return;
+					}
+					this.$message.success(`操作成功`);
+					this.getFile(this.pId);
+					this.addFileVisible = false;
+				});
+			},
+			
+			
 			downloadFile(index, row) {
-				if (row.file == "" || row.file == null || row.file == "无") {
+				if (row.path == "" || row.path == null || row.path == "无") {
 					this.$message.error("所选项目未上传附件");
 				} else {
 					//window.location.href = row.file;
-					window.open(row.file, "_blank")
+					window.open(row.path, "_blank")
 				}
+			},
+			
+			getFile(id) {
+				this.$axios.post(
+					'/accessory/queryAll', {
+						pId: id,
+						type: "info"
+					}
+				).then(res => {
+					if (!res.success) {
+						this.$message.error("获取附件信息失败");
+						return;
+					}
+					this.tableFileData = res.data;
+				})
+			},
+			
+			handleDeleteFile(index, row) {
+				this.$axios.post(
+					'/accessory/delById', {
+						id: row.id
+					}
+				).then(res => {
+					if (res.success) {
+						this.$message.success('删除成功')
+						this.getFile(this.pId);
+					}
+				})
+			},
+			
+			
+			
+			addFiles() {
+				this.fileForm = {};
+				this.formfilelist = [];
+				this.addFileVisible = true;
+			},
+			
+			imgsuccess2(url) {
+				this.$message.success('附件上传成功');
+				this.fileForm.path = url;
+			},
+			
+			imgRemove2() {
+				this.$message.success('文件删除成功');
+				this.fileForm.path = "";
 			},
 
 			handleInfoImgDelete(index, row) {
@@ -824,6 +949,16 @@
 				this.$message.success('图片上传成功');
 				this.imgx = url;
 			},
+			filesuccess2(url) {
+				this.$message.success('附件上传成功');
+				this.fileForm.path = url;
+			},
+			
+			fileRemove2() {
+				this.$message.success('文件删除成功');
+				this.fileForm.path = "";
+			},
+			
 			imgRemove1() {
 				this.$message.success('图片删除成功');
 				this.imgx = "";
