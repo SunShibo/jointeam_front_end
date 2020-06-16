@@ -77,7 +77,7 @@
                 <el-form-item label="跳转路径" v-if="path" prop="skipPath">
                     <el-input v-model="form.skipPath" size="mini" class="inputform"></el-input>
                 </el-form-item>
-                <el-form-item label="跳转文章" v-if="!path"  prop="skipPath">
+                <el-form-item label="跳转文章" v-if="!path">
                     <el-select v-model="form.skipPath" placeholder="请选择" >
                         <el-option
                                 v-for="item in opt"
@@ -182,7 +182,7 @@
                 } else {
                     this.path = true;
                 }
-
+                console.log(value);
                 if(value==='politics'){ //政策解读
                     this.$axios.post('/politics/selectIdAndTile', {}).then(res => {
                         if (!res.success) {
@@ -192,7 +192,7 @@
                         this.opt=res.data;
                     });
                 }else  if(value==='industry'){ //行业资讯
-                    this.$axios.post('/backServer/queryIdTitle', {}).then(res => {
+                    this.$axios.post('/industry/selectIdAndTile', {}).then(res => {
                         if (!res.success) {
                             this.$message.error(res.errMsg);
                             return;
@@ -216,8 +216,6 @@
                         this.opt=res.data;
                     });
                 }
-
-
 
             },
             timeFormatter(row) {
@@ -333,9 +331,14 @@
                 this.form=row;
                 if (row.skip != 'page') {
                     this.path = false;
+                    this.form.skipPath='';
                 } else {
                     this.path = true;
+                    this.form.skipPath=row.skipPath;
                 }
+                this.change(row.skip);
+                console.log(this.form.skipPath);
+                console.log(row.skip);
                 this.fileList=[];
                 this.fileList.push({name:row.image,url:row.image});
                 this.dialogFormVisible = true ;
