@@ -541,7 +541,7 @@
 								return false;
 							}
 							if (this.form.head == '' || this.form.head == null) {
-								this.form.head = "https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/EhEEXa_1591773064554.png";
+								this.form.head = "https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/zw3jyc_1592296011722.png";
 							}
 							let fd = JSON.parse(JSON.stringify(this.form));
 							delete fd.id;

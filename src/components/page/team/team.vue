@@ -272,15 +272,14 @@
                 this.dialogFormVisible = true;
             },
             saveEdit(formName) {
-                if(this.form.head=='' || this.form.head==null){
-                    this.$message.error("未添加图片");
-                    return false;
-                }
-
                 this.$refs.courseform.validate(valid => {
                     if (valid) {
                         /* 添加 */
                         if (this.form.id == '' || this.form.id == null) {
+							if (this.form.head == '' || this.form.head == null) {
+								this.form.head = "https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/zw3jyc_1592296011722.png";
+							}
+							
                             let fd = JSON.parse(JSON.stringify(this.form));
                             delete fd.id;
                             this.$axios.post('/staff/insertStaff', fd).then(res => {

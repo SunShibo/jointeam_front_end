@@ -84,7 +84,8 @@
 				<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
 					<template slot-scope="scp">
 						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">修改项目</el-button>
-						<el-button type="text" icon="el-icon-user-solid" @click="getStaff(scp.row)">项目负责人</el-button>
+						<el-button type="text" icon="el-icon-user-solid" @click="getStaff(scp.row)">项目团队</el-button>
+						<el-button type="text" icon="el-icon-user-solid" @click="getAdmin(scp.row)">项目管理员</el-button>
 						<el-button type="text" icon="el-icon-edit" @click="gotoProInfo(scp.$index, scp.row)">查看项目详情</el-button>
 						<el-button type="text" icon="el-icon-download" @click="openFile(scp.$index, scp.row)">查看附件</el-button>
 
@@ -142,9 +143,27 @@
 				<el-button @click="fileVisible = false">关 闭</el-button>
 			</span>
 		</el-dialog>
+		
+		<!-- 多个管理员 -->
+		<el-dialog title="新增/编辑管理员" :visible.sync="adminVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+		
+			<template>
+				<el-select @focus="getAdminInfo" v-model="upAdminList" value-key="id" multiple placeholder="请选择">
+					<el-option v-for="item in adminInfo" :key="item.id" :label="item.name+''+item.phoneNumber" :value="item.id">
+					</el-option>
+				</el-select>
+			</template>
+		
+			<span slot="footer" class="dialog-footer">
+				<!-- saveProjectEdit('form') -->
+				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveAdminEdit()">确
+					定</el-button>
+				<el-button @click="adminVisible = false">取 消</el-button>
+			</span>
+		</el-dialog>
 
 		<!-- 多个负责人 -->
-		<el-dialog title="新增/编辑项目负责人" :visible.sync="principalVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+		<el-dialog title="新增/编辑项目团队" :visible.sync="principalVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
 
 			<template>
 				<el-select @focus="getStaffInfo" v-model="upStaffList" multiple placeholder="请选择">
@@ -197,8 +216,7 @@
 				<el-form-item label-width="100px" label="项目施工地址" prop="bauort">
 					<el-input v-model="form.bauort"></el-input>
 				</el-form-item>
-
-
+				
 				<el-form-item label-width="120px" label="开始时间" prop="startTime" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
 					<div class="block">
 						<el-date-picker v-model="form.startTime" align="right" type="date" placeholder="选择日期" format="yyyy/MM/dd">
@@ -217,8 +235,7 @@
 						</el-date-picker>
 					</div>
 				</el-form-item>
-
-
+				
 				<el-form-item label-width="120px" label="完成状态" prop="accomplishStatus" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
 					<template>
 						<el-select v-model="form.accomplishStatus" placeholder="请选择状态">
@@ -298,7 +315,7 @@
 				fileVisible: false,
 				
 				addFileVisible: false,
-
+				adminVisible:false,
 				staffFrom: {},
 				status: null,
 				statusOptions: [{
@@ -340,6 +357,8 @@
 				organInfo: [],
 
 				staffInfo: [],
+				
+				adminInfo:[],
 
 				editorOption: { //富文本参数
 					placeholder: '开始编辑...'
@@ -383,6 +402,8 @@
 				allStaffList: [],
 
 				upStaffList: [],
+				
+				upAdminList:[],
 
 				pjcId: "",
 				tempId: "",
@@ -396,6 +417,7 @@
 			this.getOrgan();
 			this.getAllTemp();
 			this.getStaffInfo();
+			this.getAdminInfo();
 		},
 		computed: {
 			data() {
@@ -409,6 +431,22 @@
 			getAllTemp() {
 				this.$axios.post("/projectInfoTemp/selectInfoTemp", {}).then(res => {
 					this.tempInfo = res.data;
+				});
+			},
+			
+			saveAdminEdit() {
+				let fd = {
+					projectId: this.pjcId,
+					adminId: this.upAdminList.toString()
+				}
+				this.$axios.post('/projectAdmin/updateProjectAdmin', fd).then(res => {
+					if (!res.success) {
+						this.$message.success(res.errMsg);
+						return;
+					}
+					this.$message.success(`操作成功`);
+					this.getData();
+					this.adminVisible = false;
 				});
 			},
 
@@ -446,6 +484,25 @@
 					});
 				})
 				this.principalVisible = true;
+			},
+			
+			getAdmin(row) {
+				this.$axios.post(
+					'/projectAdmin/selectAdminByProjectId', {
+						projectId: row.id
+					}
+				).then(res => {
+					if (!res.success) {
+						this.$message.error("获取施工人员信息失败")
+						return;
+					}
+					this.upAdminList = [];
+					this.pjcId = row.id;
+					(res.data).forEach((item, index, value) => {
+						this.upAdminList.push(item.adminId);
+					});
+				})
+				this.adminVisible = true;
 			},
 
 
@@ -514,6 +571,18 @@
 					this.organInfo = res.data;
 				})
 			},
+			
+			getAdminInfo() {
+				this.$axios.post(
+					'/admin/getAdminSelect', {}
+				).then(res => {
+					if (!res.success) {
+						this.$message.error("获取管理人员信息失败")
+						return;
+					}
+					this.adminInfo = res.data;
+				})
+			},
 
 			getStaffInfo() {
 				this.$axios.post(
@@ -571,7 +640,7 @@
 						this.subData.predictEndTime = new Date(this.form.predictEndTime).format("yyyy/MM/dd hh:mm:ss");
 						if (this.form.id == '' || this.form.id == null) {
 							if (this.form.image == '' || this.form.image == null) {
-								this.form.image = "https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/XrpGRp_1591776936457.jpg";
+								this.form.image = "https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/WXxS8D_1592314162761.jpg";
 							}
 							let fd = JSON.parse(JSON.stringify(this.subData));
 							delete fd.id;

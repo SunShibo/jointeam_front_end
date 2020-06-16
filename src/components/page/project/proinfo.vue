@@ -15,7 +15,7 @@
 							<el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 						</el-select>
 					</template>
-
+					
 					<template>
 						<span>&nbsp;&nbsp;&nbsp;&nbsp; 选择项目:&nbsp;&nbsp;&nbsp;</span>
 						<el-select @focus="getPjcInfo" filterable v-model="pjcId" placeholder="请选择项目" style="width: 300px;">
@@ -174,17 +174,25 @@
 			</span>
 		</el-dialog>
 		
-		
-		
 		<!-- 添加/编辑项目流程 -->
-		<el-dialog title="新增/编辑项目流程" :visible.sync="editPjcInfoVisible" width="75%" :close-on-click-modal="closeOnClickModal">
+		<el-dialog  @open="init" title="新增/编辑项目流程" :visible.sync="editPjcInfoVisible" width="75%" :close-on-click-modal="closeOnClickModal">
 			<el-form ref="pjcInfoform" :model="form" label-width="50px">
 				<el-form-item label-width="100px" label="标题" prop="title" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="form.title"></el-input>
 				</el-form-item>
 
-				<el-form-item label-width="100px" label="内容" prop="content" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{ required: true, message: '该项不能为空', trigger: 'change' }]">
-					<el-input type="textarea" :rows="5" placeholder="请输入内容" v-model="form.content"></el-input>
+				<el-form-item label="文章内容" :rules="[{required: true, message: '该项不能为空', trigger: 'change'}]" prop="content">
+					<!--富文本-->
+					<!-- 文件上传input 将它隐藏-->
+				
+					<upload v-show="false" :onUpLoadSuccess="newEditorSuccess" :onUpLoadError="onUpLoadError" :multiple="false"
+					 :showFileList="false" :drag="false" accept="image/*" :fileList="editorsList" refUpLoad="uniqueId" idName="uniqueId"
+					 :filesNumber="999" :isClear="true" listType="picture"></upload>
+				
+					<upload class="videoUpload" v-show="false" :onUpLoadSuccess="newEditorVideoSuccess" :onUpLoadError="onUpLoadError"
+					 :multiple="false" :showFileList="false" :drag="false" accept="video/*" :fileList="editorsVideoList" refUpLoad="uniqueId"
+					 idName="uniqueId" :filesNumber="999" :isClear="true"></upload>
+					<quill-editor ref="newEditor" v-model="form.content" class="container"></quill-editor>
 				</el-form-item>
 
 				<el-form-item label-width="100px" label="备注" prop="remark">
@@ -225,14 +233,14 @@
 					</el-form-item>
 				</div>
 
-				<div class="grid-content bg-purple">
+				<!-- <div class="grid-content bg-purple">
 					<el-form-item label-width="100px" label="附件" prop="file">
 						<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="filesuccess1" :onUpLoadRemove="fileRemove1"
 						 :onUpLoadError="onUpLoadError" :multiple="false" :drag="true" :show-file-list="true" accept="*" :fileList="filedatelist"
 						 :filesNumber="1">
 						</upload>
 					</el-form-item>
-				</div>
+				</div> -->
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveInfoEdit('form')">确
@@ -320,6 +328,8 @@
 		},
 		data() {
 			return {
+				editorsVideoList:[],
+				editorsList:[],
 				tableFileData: [],
 				
 				formfilelist:[],
@@ -383,7 +393,6 @@
 						name: "全部",
 						ename: null
 					},
-
 					{
 						id: 1,
 						name: "未开始",
@@ -398,6 +407,11 @@
 						id: 3,
 						name: "已结束",
 						ename: "finished"
+					},
+					{
+						id:4,
+						name:"已暂停",
+						ename:"stopping"
 					}
 				],
 
@@ -415,11 +429,13 @@
 						id: 2,
 						name: "已结束",
 						ename: "finished"
+					},
+					{
+						id:3,
+						name:"已暂停",
+						ename:"stopping"
 					}
 				],
-
-
-
 				adminInfo: [],
 				imagedatelist: [],
 				loading: false,
@@ -469,6 +485,9 @@
 					case "finished":
 						return "已完成";
 						break;
+					case "stopping":
+						return "暂停中";
+						break;
 				}
 			},
 		},
@@ -501,6 +520,58 @@
 			}
 		},
 		methods: {
+			init() {
+				this.$nextTick(() => {
+					let imgHandler = async function(state) {
+						//异步触发element ui的上传图片按钮
+						if (state) {
+							let fileInput = document.querySelector("#uniqueId input"); //隐藏的file元素
+							fileInput.click(); //触发事件
+						}
+					};
+					this.$refs.newEditor.quill
+						.getModule("toolbar")
+						.addHandler("image", imgHandler); //将点击事件绑定到工具栏上的图片上传按钮上
+					
+					let videoHandler = async function(state) {
+						//异步触发element ui的上传图片按钮
+						if (state) {
+							let fileInput = document.querySelector(".videoUpload #uniqueId input"); //隐藏的file元素
+							fileInput.click(); //触发事件
+						}
+					};
+					this.$refs.newEditor.quill
+						.getModule("toolbar")
+						.addHandler("video", videoHandler);
+				});
+			},
+			//富文本专用上传图片回调
+			newEditorSuccess(response, file) {
+				this.$message.success("上传成功！");
+				this.addImgRange = this.$refs.newEditor.quill.getSelection();
+				//添加图片
+				this.$refs.newEditor.quill.insertEmbed(
+					this.addImgRange != null ? this.addImgRange.index : 0,
+					"image",
+					response
+				);
+				// 调整光标到最后
+				this.$refs.newEditor.quill.setSelection(this.addImgRange.index + 1);
+			},
+			
+			newEditorVideoSuccess(response, file) {
+				this.$message.success("上传成功！");
+				this.addVideoRange = this.$refs.newEditor.quill.getSelection();
+				//添加图片
+				this.$refs.newEditor.quill.insertEmbed(
+					this.addVideoRange != null ? this.addVideoRange.index : 0,
+					"video",
+					response
+				);
+				// 调整光标到最后
+				this.$refs.newEditor.quill.setSelection(this.addVideoRange.index + 1);
+			},
+			
 			openFile(index, row) {
 				this.pId = row.id;
 				this.getFile(row.id);
@@ -680,8 +751,28 @@
 			},
 
 			saveInfoEdit() {
+				
+				
 				this.loading = true;
-
+				let subData = { ...this.form
+				};
+				//外层嵌套div
+				subData.content =
+					"<div style='text-align: left;text-indent: 3px;'>" +
+					subData.content +
+					"</div>";
+				//处理视频iframe
+				subData.content = subData.content
+					.replace(/iframe/g, "video")
+					.replace(
+						/class="ql-video"/g,
+						'controls="controls" width="100%" style="margin: 10px auto;"'
+					);
+				//处理图片格式
+				subData.content = subData.content.replace(
+					/<img/g,
+					'<img style="width:100%;"'
+				);	
 
 				this.$refs.pjcInfoform.validate(valid => {
 					if (valid) {
@@ -692,7 +783,9 @@
 						subData.image = this.imgx;
 						subData.file = this.filex;
 						if (this.form.id == '' || this.form.id == null) {
-
+							if (this.form.image == '' || this.form.image == null) {
+								this.form.image = "https://zjtc-bucket-01.oss-cn-beijing.aliyuncs.com/wxapp/WXxS8D_1592314162761.jpg";
+							}
 							let fd = JSON.parse(JSON.stringify(subData));
 							delete fd.id;
 							this.$axios.post('/projectInfo/addProjectInfo', fd).then(res => {
@@ -754,6 +847,18 @@
 						url: row.file
 					});
 				}
+				
+				row.content = row.content
+					.replace(/video/g, "iframe")
+					.replace(
+						/controls="controls" width="100%" style="margin: 10px auto;"/g,
+						'class="ql-video"'
+					);
+				this.$nextTick(function() {
+					//解决富文本自动获取焦点并设置滚动条问题
+					this.$refs.newEditor.quill.enable(true);
+					this.$refs.newEditor.quill.blur();
+				});
 				this.editPjcInfoVisible = true;
 			},
 
@@ -813,6 +918,9 @@
 								break;
 							case "finished":
 								returnData = "已完成";
+								break;
+							case "stopping":
+								returnData = "暂停中";
 								break;
 						}
 						break;
@@ -895,6 +1003,9 @@
 									break;
 								case "finished":
 									item["color"] = "#e4e7ed";
+									break;
+								case "stopping":
+									item["color"] = "#de8d01";
 									break;
 							}
 							this.staffInfo.forEach((items) => {
