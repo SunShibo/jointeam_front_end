@@ -295,6 +295,8 @@
 				},
 				
 				showPwd:false,
+				
+				upUserId:""
 			};
 		},
 		created() {
@@ -335,6 +337,7 @@
 			},
 			informAdd() {
 				this.formInfo = {};
+				this.fileList1 = [];
 				this.dialogInfoadd = true;
 			},
 			// 每页显示的条数
@@ -482,9 +485,15 @@
 				this.dialogFormVisible = true;
 			},
 			dialogInfoSave(formName) {
+				var upFormInfo = {
+					userId: this.row.id,
+					content: this.formInfo.content,
+					title: this.formInfo.title,
+					image: this.formInfo.image,
+				};
 				this.$refs.courseform.validate(valid => {
 					if (valid) {
-						let fd = JSON.parse(JSON.stringify(this.formInfo));
+						let fd = JSON.parse(JSON.stringify(upFormInfo));
 						this.$axios.post('/inform/add', fd).then(res => {
 							if (!res.success) {
 								this.$message.error(res.errMsg);
