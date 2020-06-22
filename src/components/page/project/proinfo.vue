@@ -50,15 +50,15 @@
 					<!-- 信息展示 -->
 					<el-table max-height="600px" :data="tableData" border class="table" ref="multipleTable">
 						<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
-						<el-table-column sortable :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="date" align="center"
+						<el-table-column sortable :formatter="formatRowData" :show-overflow-tooltip="true" prop="date" align="center"
 						 label="日期"></el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="title" align="center" label="标题"></el-table-column>
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="staffId" align="center"
+						<el-table-column :show-overflow-tooltip="true" prop="title" align="center" label="标题"></el-table-column>
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="staffId" align="center"
 						 label="负责人"></el-table-column>
-						<el-table-column :formatter="formatRowData" sortable :show-overflow-tooltip="true" width="140" prop="completionStatus"
+						<el-table-column :formatter="formatRowData" sortable :show-overflow-tooltip="true" prop="completionStatus"
 						 align="center" label="完成状态"></el-table-column>
-						<el-table-column :show-overflow-tooltip="true" width="140" prop="content" align="center" label="内容"></el-table-column>
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="remark" align="center"
+						<el-table-column :show-overflow-tooltip="true" prop="content" align="center" label="内容"></el-table-column>
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="remark" align="center"
 						 label="备注"></el-table-column>
 						<el-table-column width="120" height="60" align="center" pro0o-pp="image" label="封面图">
 							<template slot-scope="scope">
@@ -72,13 +72,13 @@
 							</template>
 						</el-table-column>
 
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="createTime" align="center"
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="createTime" align="center"
 						 label="创建时间"></el-table-column>
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="updateTime" align="center"
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true"  prop="updateTime" align="center"
 						 label="修改时间"></el-table-column>
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="createUserId" align="center"
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="createUserId" align="center"
 						 label="创建人"></el-table-column>
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="updateUserId" align="center"
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="updateUserId" align="center"
 						 label="修改人"></el-table-column>
 
 						<el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
