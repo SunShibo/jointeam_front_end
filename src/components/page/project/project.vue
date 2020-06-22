@@ -8,6 +8,7 @@
 		<div class="container">
 			<div class="handle-box">
 				<el-input v-model="pjcName" placeholder="项目名称" class="handle-input mr10"></el-input>
+				<el-input v-model="projectType" placeholder="项目类型" class="handle-input mr10"></el-input>
 				<el-date-picker style="width: 332px;" :editable="false" v-model="selectTimeData" type="datetimerange"
 				 range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
 				</el-date-picker>
@@ -21,12 +22,23 @@
 						<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 					</el-select>
 				</template>
-				<template>
-					<el-select style="width: 95px;margin-left: 12px;" v-model="status" placeholder="请选择状态">
-						<el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
-					</el-select>
-				</template>
-
+				<div style="display: inline-block;">
+					<span>完成状态</span>
+					<template>
+						<el-select style="width: 95px;margin-left: 12px;" v-model="status" placeholder="请选择状态">
+							<el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
+						</el-select>
+					</template>
+				</div>
+				<div style="display: inline-block;">
+					<span>项目状态(管理)</span>
+					<template>
+						<el-select style="width: 95px;margin-left: 12px;" v-model="projectStatus" placeholder="请选择状态">
+							<el-option v-for="item in projectStatusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
+						</el-select>
+					</template>
+				</div>
+				<div style="height: auto;width: 61%;display: inline-block;"></div>
 				<el-button type="primary" icon="search" @click="search">搜索</el-button>
 				<el-button type="primary" icon="add" @click="addPjc">新增</el-button>
 				<el-button type="success" icon="search" @click="reset">重置</el-button>
@@ -34,9 +46,10 @@
 			<!-- 信息展示 -->
 			<el-table max-height="550px" :data="tableData" border class="table" ref="multipleTable">
 				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
-				<el-table-column fixed="left" :show-overflow-tooltip="true"  width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
+				<el-table-column fixed="left" :show-overflow-tooltip="true" width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"
 				 label="公司"></el-table-column>
+				<el-table-column :show-overflow-tooltip="true" width="140" prop="projectType" align="center" label="项目类型"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="staffId" align="center"
 				 label="总负责人"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="bauort" align="center"
@@ -57,6 +70,8 @@
 				</el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="accomplishStatus" align="center"
 				 label="完成状态"></el-table-column>
+				 <el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="projectStatus" align="center"
+				  label="项目状态(管理)"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" align="center" width="140" prop="predictEndTime"
 				 label="预计结束时间"></el-table-column>
 				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" width="180" prop="startTime"
@@ -107,7 +122,7 @@
 				<el-form-item label-width="100px" label="附件名称" prop="name" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="fileForm.name"></el-input>
 				</el-form-item>
-				
+
 				<el-form-item label-width="100px" label="详细照片" prop="path">
 					<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="imgsuccess2" :onUpLoadRemove="imgRemove2"
 					 :onUpLoadError="onUpLoadError" :multiple="true" :drag="true" :show-file-list="true" accept="*" :fileList="formfilelist"
@@ -122,7 +137,7 @@
 				<el-button @click="addFileVisible = false">取 消</el-button>
 			</span>
 		</el-dialog>
-		
+
 		<el-dialog title="新增/编辑项目附件" :visible.sync="fileVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
 			<el-button type="primary" icon="add" @click="addFiles">添加附件</el-button>
 			<el-table max-height="550px" :data="tableFileData" border class="table" ref="multipleTable">
@@ -143,17 +158,17 @@
 				<el-button @click="fileVisible = false">关 闭</el-button>
 			</span>
 		</el-dialog>
-		
+
 		<!-- 多个管理员 -->
 		<el-dialog title="新增/编辑管理员" :visible.sync="adminVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
-		
+
 			<template>
 				<el-select @focus="getAdminInfo" v-model="upAdminList" value-key="id" multiple placeholder="请选择">
 					<el-option v-for="item in adminInfo" :key="item.id" :label="item.name+''+item.phoneNumber" :value="item.id">
 					</el-option>
 				</el-select>
 			</template>
-		
+
 			<span slot="footer" class="dialog-footer">
 				<!-- saveProjectEdit('form') -->
 				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveAdminEdit()">确
@@ -212,11 +227,15 @@
 						</el-select>
 					</template>
 				</el-form-item>
-
+				
 				<el-form-item label-width="100px" label="项目施工地址" prop="bauort">
 					<el-input v-model="form.bauort"></el-input>
 				</el-form-item>
-				
+
+				<el-form-item label-width="100px" label="项目类型" prop="projectType">
+					<el-input v-model="form.projectType"></el-input>
+				</el-form-item>
+
 				<el-form-item label-width="120px" label="开始时间" prop="startTime" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
 					<div class="block">
 						<el-date-picker v-model="form.startTime" align="right" type="date" placeholder="选择日期" format="yyyy/MM/dd">
@@ -235,11 +254,19 @@
 						</el-date-picker>
 					</div>
 				</el-form-item>
-				
+
 				<el-form-item label-width="120px" label="完成状态" prop="accomplishStatus" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
 					<template>
 						<el-select v-model="form.accomplishStatus" placeholder="请选择状态">
 							<el-option v-for="item in statusOptions1" :key="item.id" :label="item.name" :value="item.ename"></el-option>
+						</el-select>
+					</template>
+				</el-form-item>
+				
+				<el-form-item label-width="120px" label="项目进行状态(管理)" prop="projectStatus" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
+					<template>
+						<el-select v-model="form.projectStatus" placeholder="请选择状态">
+							<el-option v-for="item in projectStatusOptions1" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 						</el-select>
 					</template>
 				</el-form-item>
@@ -310,12 +337,14 @@
 		data() {
 			return {
 				tableFileData: [],
-				
-				formfilelist:[],
+				projectStatus: null,
+				formfilelist: [],
 				fileVisible: false,
 				
+				projectType: null,
+
 				addFileVisible: false,
-				adminVisible:false,
+				adminVisible: false,
 				staffFrom: {},
 				status: null,
 				statusOptions: [{
@@ -334,6 +363,28 @@
 						ename: "finished"
 					}
 				],
+				projectStatusOptions: [{
+						id: 0,
+						name: "全部",
+						ename: null
+					},
+					{
+						id: 1,
+						name: "进行中",
+						ename: "having"
+					},
+					{
+						id: 2,
+						name: "已结束",
+						ename: "finished"
+					},
+					{
+						id: 3,
+						name: "已暂停",
+						ename: "stopping"
+					}
+				],
+
 				statusOptions1: [{
 						id: 1,
 						name: "进行中",
@@ -345,20 +396,37 @@
 						ename: "finished"
 					}
 				],
+				projectStatusOptions1: [{
+						id: 1,
+						name: "进行中",
+						ename: "having"
+					},
+					{
+						id: 2,
+						name: "已结束",
+						ename: "finished"
+					},
+					{
+						id: 3,
+						name: "已暂停",
+						ename: "stopping"
+					}
+				],
+
 				organInfoId: "",
 				staffInfoId: "",
-				
-				pId:"",
-				
-				fileForm:{},
+
+				pId: "",
+
+				fileForm: {},
 
 				pjcName: "",
 
 				organInfo: [],
 
 				staffInfo: [],
-				
-				adminInfo:[],
+
+				adminInfo: [],
 
 				editorOption: { //富文本参数
 					placeholder: '开始编辑...'
@@ -402,8 +470,8 @@
 				allStaffList: [],
 
 				upStaffList: [],
-				
-				upAdminList:[],
+
+				upAdminList: [],
 
 				pjcId: "",
 				tempId: "",
@@ -433,7 +501,7 @@
 					this.tempInfo = res.data;
 				});
 			},
-			
+
 			saveAdminEdit() {
 				let fd = {
 					projectId: this.pjcId,
@@ -485,7 +553,7 @@
 				})
 				this.principalVisible = true;
 			},
-			
+
 			getAdmin(row) {
 				this.$axios.post(
 					'/projectAdmin/selectAdminByProjectId', {
@@ -517,8 +585,8 @@
 				this.getFile(row.id);
 				this.fileVisible = true;
 			},
-			
-			saveFileEdit(){
+
+			saveFileEdit() {
 				let fd = {
 					name: this.fileForm.name,
 					path: this.fileForm.path,
@@ -571,7 +639,7 @@
 					this.organInfo = res.data;
 				})
 			},
-			
+
 			getAdminInfo() {
 				this.$axios.post(
 					'/admin/getAdminSelect', {}
@@ -621,7 +689,7 @@
 					}
 				})
 			},
-			
+
 			saveProjectEdit() {
 				this.loading = true;
 				this.$refs.projectform.validate(valid => {
@@ -755,6 +823,23 @@
 								break;
 						}
 						break;
+						
+					case "projectStatus":
+						switch (row.projectStatus) {
+							case "notStart":
+								returnData = "未开始";
+								break;
+							case "having":
+								returnData = "进行中";
+								break;
+							case "finished":
+								returnData = "已完成";
+								break;
+							case "stopping":
+								returnData = "暂停中";
+								break;
+						}
+						break;
 					case "percentage":
 						returnData = row.percentage + "%";
 						break;
@@ -852,6 +937,8 @@
 						staffId: this.staffInfoId,
 						startTime: startTime,
 						endTime: endTime,
+						projectType: this.projectType,
+						projectStatus: this.projectStatus
 					})
 					.then(res => {
 						this.tableData = res.data.records;
@@ -870,6 +957,8 @@
 				this.userInfoId = "";
 				this.staffInfoId = "";
 				this.organInfoId = "";
+				this.projectStatus = null;
+				this.projectType = null;
 				this.status = null;
 				this.search();
 			},
@@ -915,12 +1004,12 @@
 				this.$message.success('图片上传成功');
 				this.imgx = url;
 			},
-			
+
 			imgsuccess2(url) {
 				this.$message.success('附件上传成功');
 				this.fileForm.path = url;
 			},
-			
+
 			filesuccess(url) {
 				this.$message.success("文件上传成功");
 				this.filex = url;
@@ -930,12 +1019,12 @@
 				this.$message.success('图片删除成功');
 				this.imgx = "";
 			},
-			
+
 			imgRemove2() {
 				this.$message.success('文件删除成功');
 				this.fileForm.path = "";
 			},
-			
+
 			fileRemove() {
 				this.$message.success('文件删除成功');
 				this.filex = "无";
