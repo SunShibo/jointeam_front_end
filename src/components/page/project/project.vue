@@ -17,12 +17,14 @@
 						<el-option v-for="item in organInfo" :key="item.id" :label="item.unitName" :value="item.id"></el-option>
 					</el-select>
 				</template>
+				<br />
+				<div  style="margin-top: 1%;">
 				<template>
 					<el-select @focus="getStaffInfo" style="margin-left: 12px;" filterable v-model="staffInfoId" placeholder="请选择总负责人">
 						<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 					</el-select>
 				</template>
-				<div style="display: inline-block;">
+				<div style="display: inline-block;margin-left: 1%;">
 					<span>完成状态</span>
 					<template>
 						<el-select style="width: 95px;margin-left: 12px;" v-model="status" placeholder="请选择状态">
@@ -30,7 +32,7 @@
 						</el-select>
 					</template>
 				</div>
-				<div style="display: inline-block;">
+				<div style="display: inline-block;margin-left: 1%;">
 					<span>项目状态(管理)</span>
 					<template>
 						<el-select style="width: 95px;margin-left: 12px;" v-model="projectStatus" placeholder="请选择状态">
@@ -38,10 +40,11 @@
 						</el-select>
 					</template>
 				</div>
-				<div style="height: auto;width: 61%;display: inline-block;"></div>
-				<el-button type="primary" icon="search" @click="search">搜索</el-button>
+			
+				<el-button type="primary" icon="search" style="margin-left: 2%;" @click="search">搜索</el-button>
 				<el-button type="primary" icon="add" @click="addPjc">新增</el-button>
 				<el-button type="success" icon="search" @click="reset">重置</el-button>
+				</div>
 			</div>
 			<!-- 信息展示 -->
 			<el-table max-height="550px" :data="tableData" border class="table" ref="multipleTable">
