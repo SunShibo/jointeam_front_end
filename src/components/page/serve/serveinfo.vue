@@ -43,10 +43,10 @@
                 </el-table-column>
                 <el-table-column :show-overflow-tooltip="true" align="center" prop="typeName"
                                  label="服务分类"></el-table-column>
-                <el-table-column :show-overflow-tooltip="true" align="center" prop="serveExplain"
+                <!-- <el-table-column :show-overflow-tooltip="true" align="center" prop="serveExplain"
                                  label="服务说明"></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" align="center" prop="caseExplain"
-                                 label="案例说明"></el-table-column>
+                                 label="案例说明"></el-table-column> -->
                 <el-table-column :show-overflow-tooltip="true" align="center" prop="serveUnit"
                                  label="服务单位"></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" align="center" prop="sort"

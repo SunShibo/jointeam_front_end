@@ -34,7 +34,7 @@
 			<!-- 信息展示 -->
 			<el-table max-height="550px" :data="tableData" border class="table" ref="multipleTable">
 				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
-				<el-table-column :show-overflow-tooltip="true" width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
+				<el-table-column fixed="left" :show-overflow-tooltip="true"  width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"
 				 label="公司"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="staffId" align="center"

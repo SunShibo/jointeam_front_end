@@ -16,7 +16,7 @@
 
 					<div v-else style="width: 100%;height:400px;text-align: left!important;overflow:auto;">
 						<el-row>
-							<el-col :span="12" v-for="(item,index) in taskToday" :key="index">
+							<el-col :span="15" v-for="(item,index) in taskToday" :key="index">
 								<div class="grid-content grid-left">
 									<el-button type="text">
 										<span class="firm-name">
@@ -32,7 +32,10 @@
 										<span>负责人:{{item.staffName}}</span>
 									</el-button>
 									<br />
-									<span class="step-info">{{item.content}}</span>
+									<el-tooltip class="item" effect="dark" placement="top-start">
+										<div slot="content">{{item.content}}</div>
+										<span class="step-info">{{item.content | sliceStr}}</span>
+									</el-tooltip>
 								</div>
 							</el-col>
 						</el-row>
@@ -49,7 +52,7 @@
 					</div>
 					<div v-else style="width: 100%;height:400px;text-align: left!important;overflow:auto;">
 						<el-row>
-							<el-col :span="12" v-for="(item,index) in taskFuture" :key="index">
+							<el-col :span="15" v-for="(item,index) in taskFuture" :key="index">
 								<div class="grid-content grid-left">
 									<el-button type="text">
 										<span class="firm-name">
@@ -65,7 +68,10 @@
 										<span>负责人:{{item.staffName}}</span>
 									</el-button>
 									<br />
-									<span class="step-info">{{item.content}}</span>
+									<el-tooltip class="item" effect="dark" placement="top-start">
+										<div slot="content">{{item.content}}</div>
+										<span class="step-info">{{item.content | sliceStr}}</span>
+									</el-tooltip>
 								</div>
 							</el-col>
 						</el-row>
@@ -98,6 +104,18 @@
 		filters: {
 			format: (date) => {
 				return new Date(date).format("yyyy年MM月dd日 hh:mm:ss");
+			},
+			
+			sliceStr: (data) => {
+				var returnData = "";
+				
+				if(data.length>12){
+					returnData = data.slice(0,12);
+					returnData+="...";
+				}else{
+					returnData = data;
+				}
+				return returnData;
 			}
 		},
 		methods: {
