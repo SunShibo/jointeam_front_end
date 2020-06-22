@@ -33,7 +33,7 @@
 									</el-button>
 									<br />
 									<el-tooltip class="item" effect="dark" placement="top-start">
-										<div slot="content">{{item.content}}</div>
+										<div slot="content">{{item.content | sliceString}}</div>
 										<span class="step-info">{{item.content | sliceStr}}</span>
 									</el-tooltip>
 								</div>
@@ -69,7 +69,7 @@
 									</el-button>
 									<br />
 									<el-tooltip class="item" effect="dark" placement="top-start">
-										<div slot="content">{{item.content}}</div>
+										<div slot="content">{{item.content | sliceString}}</div>
 										<span class="step-info">{{item.content | sliceStr}}</span>
 									</el-tooltip>
 								</div>
@@ -106,8 +106,17 @@
 				return new Date(date).format("yyyy年MM月dd日 hh:mm:ss");
 			},
 			
+			sliceString:(data)=>{
+				
+				data = data.replace(/<[^>]*>|<\/[^>]*>/gm, "");
+				
+				return data;
+			},
+			
 			sliceStr: (data) => {
 				var returnData = "";
+				
+				data = data.replace(/<[^>]*>|<\/[^>]*>/gm, "");
 				
 				if(data.length>12){
 					returnData = data.slice(0,12);
