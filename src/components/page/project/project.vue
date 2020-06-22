@@ -18,32 +18,32 @@
 					</el-select>
 				</template>
 				<br />
-				<div  style="margin-top: 1%;">
-				<template>
-					<el-select @focus="getStaffInfo" style="margin-left: 12px;" filterable v-model="staffInfoId" placeholder="请选择总负责人">
-						<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
-					</el-select>
-				</template>
-				<div style="display: inline-block;margin-left: 1%;">
-					<span>完成状态</span>
+				<div style="margin-top: 1%;">
 					<template>
-						<el-select style="width: 95px;margin-left: 12px;" v-model="status" placeholder="请选择状态">
-							<el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
+						<el-select @focus="getStaffInfo" style="margin-left: 12px;" filterable v-model="staffInfoId" placeholder="请选择总负责人">
+							<el-option v-for="item in staffInfo" :key="item.id" :label="item.name+''+item.phone" :value="item.id"></el-option>
 						</el-select>
 					</template>
-				</div>
-				<div style="display: inline-block;margin-left: 1%;">
-					<span>项目状态(管理)</span>
-					<template>
-						<el-select style="width: 95px;margin-left: 12px;" v-model="projectStatus" placeholder="请选择状态">
-							<el-option v-for="item in projectStatusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
-						</el-select>
-					</template>
-				</div>
-			
-				<el-button type="primary" icon="search" style="margin-left: 2%;" @click="search">搜索</el-button>
-				<el-button type="primary" icon="add" @click="addPjc">新增</el-button>
-				<el-button type="success" icon="search" @click="reset">重置</el-button>
+					<div style="display: inline-block;margin-left: 1%;">
+						<span>完成状态</span>
+						<template>
+							<el-select style="width: 95px;margin-left: 12px;" v-model="status" placeholder="请选择状态">
+								<el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
+							</el-select>
+						</template>
+					</div>
+					<div style="display: inline-block;margin-left: 1%;">
+						<span>项目状态(管理)</span>
+						<template>
+							<el-select style="width: 95px;margin-left: 12px;" v-model="projectStatus" placeholder="请选择状态">
+								<el-option v-for="item in projectStatusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
+							</el-select>
+						</template>
+					</div>
+
+					<el-button type="primary" icon="search" style="margin-left: 2%;" @click="search">搜索</el-button>
+					<el-button type="primary" icon="add" @click="addPjc">新增</el-button>
+					<el-button type="success" icon="search" @click="reset">重置</el-button>
 				</div>
 			</div>
 			<!-- 信息展示 -->
@@ -73,8 +73,8 @@
 				</el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="accomplishStatus" align="center"
 				 label="完成状态"></el-table-column>
-				 <el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="projectStatus" align="center"
-				  label="项目状态(管理)"></el-table-column>
+				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="projectStatus" align="center"
+				 label="项目状态(管理)"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" align="center" width="140" prop="predictEndTime"
 				 label="预计结束时间"></el-table-column>
 				<el-table-column :formatter="formatRowData" align="center" :show-overflow-tooltip="true" width="180" prop="startTime"
@@ -230,7 +230,7 @@
 						</el-select>
 					</template>
 				</el-form-item>
-				
+
 				<el-form-item label-width="100px" label="项目施工地址" prop="bauort">
 					<el-input v-model="form.bauort"></el-input>
 				</el-form-item>
@@ -265,7 +265,7 @@
 						</el-select>
 					</template>
 				</el-form-item>
-				
+
 				<el-form-item label-width="120px" label="项目进行状态(管理)" prop="projectStatus" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'}]">
 					<template>
 						<el-select v-model="form.projectStatus" placeholder="请选择状态">
@@ -343,7 +343,7 @@
 				projectStatus: null,
 				formfilelist: [],
 				fileVisible: false,
-				
+
 				projectType: null,
 
 				addFileVisible: false,
@@ -373,16 +373,22 @@
 					},
 					{
 						id: 1,
+						name: "未开始",
+						ename: "notStart"
+					},
+
+					{
+						id: 2,
 						name: "进行中",
 						ename: "having"
 					},
 					{
-						id: 2,
+						id: 3,
 						name: "已结束",
 						ename: "finished"
 					},
 					{
-						id: 3,
+						id: 4,
 						name: "已暂停",
 						ename: "stopping"
 					}
@@ -399,7 +405,13 @@
 						ename: "finished"
 					}
 				],
-				projectStatusOptions1: [{
+				projectStatusOptions1: [
+					{
+						id: 0,
+						name: "未开始",
+						ename: "notStart"
+					},
+					{
 						id: 1,
 						name: "进行中",
 						ename: "having"
@@ -826,7 +838,7 @@
 								break;
 						}
 						break;
-						
+
 					case "projectStatus":
 						switch (row.projectStatus) {
 							case "notStart":
