@@ -78,12 +78,11 @@ export default new Router({
 					}
 				},
 				{
-					path: '/home/proinfo',
+					path: '/home/:id',
 					name: 'proinfo',
 					component: resolve => require(['../components/page/project/proinfo.vue'], resolve),
 					meta: {
 						title: '项目详情',
-						permission: true,
 						index: 'proinfo'
 					}
 				},

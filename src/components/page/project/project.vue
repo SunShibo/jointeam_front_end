@@ -587,13 +587,12 @@
 				})
 				this.adminVisible = true;
 			},
-
+			
 
 			gotoProInfo(index, row) {
 				this.$router.push({
-					name: 'proinfo'
+					name: 'proinfo',params: {id: row.id}
 				});
-
 			},
 			openFile(index, row) {
 				this.pId = row.id;

@@ -15,7 +15,7 @@
 							<el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.ename"></el-option>
 						</el-select>
 					</template>
-					
+
 					<template>
 						<span>&nbsp;&nbsp;&nbsp;&nbsp; 选择项目:&nbsp;&nbsp;&nbsp;</span>
 						<el-select @focus="getPjcInfo" filterable v-model="pjcId" placeholder="请选择项目" style="width: 300px;">
@@ -23,7 +23,7 @@
 						</el-select>
 					</template>
 				</div>
-				
+
 				<div class="crumbs">
 					<el-breadcrumb separator="/">
 						<el-breadcrumb-item><i class="el-icon-lx-cascades">项目详情</i></el-breadcrumb-item>
@@ -53,13 +53,11 @@
 						<el-table-column sortable :formatter="formatRowData" :show-overflow-tooltip="true" prop="date" align="center"
 						 label="日期"></el-table-column>
 						<el-table-column :show-overflow-tooltip="true" prop="title" align="center" label="标题"></el-table-column>
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="staffId" align="center"
-						 label="负责人"></el-table-column>
-						<el-table-column :formatter="formatRowData" sortable :show-overflow-tooltip="true" prop="completionStatus"
-						 align="center" label="完成状态"></el-table-column>
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="staffId" align="center" label="负责人"></el-table-column>
+						<el-table-column :formatter="formatRowData" sortable :show-overflow-tooltip="true" prop="completionStatus" align="center"
+						 label="完成状态"></el-table-column>
 						<el-table-column :show-overflow-tooltip="true" prop="content" align="center" label="内容"></el-table-column>
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="remark" align="center"
-						 label="备注"></el-table-column>
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="remark" align="center" label="备注"></el-table-column>
 						<el-table-column width="120" height="60" align="center" pro0o-pp="image" label="封面图">
 							<template slot-scope="scope">
 								<el-popover placement="top-start" trigger="click">
@@ -72,10 +70,8 @@
 							</template>
 						</el-table-column>
 
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="createTime" align="center"
-						 label="创建时间"></el-table-column>
-						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true"  prop="updateTime" align="center"
-						 label="修改时间"></el-table-column>
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="createTime" align="center" label="创建时间"></el-table-column>
+						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="updateTime" align="center" label="修改时间"></el-table-column>
 						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="createUserId" align="center"
 						 label="创建人"></el-table-column>
 						<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" prop="updateUserId" align="center"
@@ -131,13 +127,13 @@
 
 			</el-card>
 		</div>
-		
+
 		<el-dialog title="新增项目附件" :visible.sync="addFileVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
 			<el-form ref="projectform" :model="fileForm" label-width="50px">
 				<el-form-item label-width="100px" label="附件名称" prop="name" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="fileForm.name"></el-input>
 				</el-form-item>
-				
+
 				<el-form-item label-width="100px" label="详细照片" prop="path">
 					<upload class="upload" drag="true" idName="dateId" :onUpLoadSuccess="filesuccess2" :onUpLoadRemove="fileRemove2"
 					 :onUpLoadError="onUpLoadError" :multiple="true" :drag="true" :show-file-list="true" accept="*" :fileList="formfilelist"
@@ -152,7 +148,7 @@
 				<el-button @click="addFileVisible = false">取 消</el-button>
 			</span>
 		</el-dialog>
-		
+
 		<el-dialog title="新增/编辑项目附件" :visible.sync="fileVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
 			<el-button type="primary" icon="add" @click="addFiles">添加附件</el-button>
 			<el-table max-height="550px" :data="tableFileData" border class="table" ref="multipleTable">
@@ -173,9 +169,9 @@
 				<el-button @click="fileVisible = false">关 闭</el-button>
 			</span>
 		</el-dialog>
-		
+
 		<!-- 添加/编辑项目流程 -->
-		<el-dialog  @open="init" title="新增/编辑项目流程" :visible.sync="editPjcInfoVisible" width="75%" :close-on-click-modal="closeOnClickModal">
+		<el-dialog @open="init" title="新增/编辑项目流程" :visible.sync="editPjcInfoVisible" width="75%" :close-on-click-modal="closeOnClickModal">
 			<el-form ref="pjcInfoform" :model="form" label-width="50px">
 				<el-form-item label-width="100px" label="标题" prop="title" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' },{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="form.title"></el-input>
@@ -184,11 +180,11 @@
 				<el-form-item label="文章内容" :rules="[{required: true, message: '该项不能为空', trigger: 'change'}]" prop="content">
 					<!--富文本-->
 					<!-- 文件上传input 将它隐藏-->
-				
+
 					<upload v-show="false" :onUpLoadSuccess="newEditorSuccess" :onUpLoadError="onUpLoadError" :multiple="false"
 					 :showFileList="false" :drag="false" accept="image/*" :fileList="editorsList" refUpLoad="uniqueId" idName="uniqueId"
 					 :filesNumber="999" :isClear="true" listType="picture"></upload>
-				
+
 					<upload class="videoUpload" v-show="false" :onUpLoadSuccess="newEditorVideoSuccess" :onUpLoadError="onUpLoadError"
 					 :multiple="false" :showFileList="false" :drag="false" accept="video/*" :fileList="editorsVideoList" refUpLoad="uniqueId"
 					 idName="uniqueId" :filesNumber="999" :isClear="true"></upload>
@@ -328,16 +324,15 @@
 		},
 		data() {
 			return {
-				editorsVideoList:[],
-				editorsList:[],
+				editorsVideoList: [],
+				editorsList: [],
 				tableFileData: [],
-				
-				formfilelist:[],
+
+				formfilelist: [],
 				fileVisible: false,
-				
+
 				addFileVisible: false,
-				
-				
+
 				infoimgVisible: false,
 
 				pickerOptions0: {
@@ -357,10 +352,10 @@
 				startDay: "",
 
 				pjcId: "",
-				
-				pId:"",
-				fileForm:{},
-				
+
+				pId: "",
+				fileForm: {},
+
 				filedatelist: [],
 
 
@@ -409,9 +404,9 @@
 						ename: "finished"
 					},
 					{
-						id:4,
-						name:"已暂停",
-						ename:"stopping"
+						id: 4,
+						name: "已暂停",
+						ename: "stopping"
 					}
 				],
 
@@ -431,9 +426,9 @@
 						ename: "finished"
 					},
 					{
-						id:3,
-						name:"已暂停",
-						ename:"stopping"
+						id: 3,
+						name: "已暂停",
+						ename: "stopping"
 					}
 				],
 				adminInfo: [],
@@ -493,6 +488,10 @@
 		},
 
 		watch: {
+			'$route'(val, oldVal) {
+				this.pjcId = parseInt(val.params.id)
+				this.getData()
+			},
 			status(vel) {
 				this.getPjcInfo();
 			},
@@ -532,7 +531,7 @@
 					this.$refs.newEditor.quill
 						.getModule("toolbar")
 						.addHandler("image", imgHandler); //将点击事件绑定到工具栏上的图片上传按钮上
-					
+
 					let videoHandler = async function(state) {
 						//异步触发element ui的上传图片按钮
 						if (state) {
@@ -558,7 +557,7 @@
 				// 调整光标到最后
 				this.$refs.newEditor.quill.setSelection(this.addImgRange.index + 1);
 			},
-			
+
 			newEditorVideoSuccess(response, file) {
 				this.$message.success("上传成功！");
 				this.addVideoRange = this.$refs.newEditor.quill.getSelection();
@@ -571,14 +570,14 @@
 				// 调整光标到最后
 				this.$refs.newEditor.quill.setSelection(this.addVideoRange.index + 1);
 			},
-			
+
 			openFile(index, row) {
 				this.pId = row.id;
 				this.getFile(row.id);
 				this.fileVisible = true;
 			},
-			
-			saveFileEdit(){
+
+			saveFileEdit() {
 				let fd = {
 					name: this.fileForm.name,
 					path: this.fileForm.path,
@@ -595,8 +594,8 @@
 					this.addFileVisible = false;
 				});
 			},
-			
-			
+
+
 			downloadFile(index, row) {
 				if (row.path == "" || row.path == null || row.path == "无") {
 					this.$message.error("所选项目未上传附件");
@@ -605,7 +604,7 @@
 					window.open(row.path, "_blank")
 				}
 			},
-			
+
 			getFile(id) {
 				this.$axios.post(
 					'/accessory/queryAll', {
@@ -620,7 +619,7 @@
 					this.tableFileData = res.data;
 				})
 			},
-			
+
 			handleDeleteFile(index, row) {
 				this.$axios.post(
 					'/accessory/delById', {
@@ -633,20 +632,20 @@
 					}
 				})
 			},
-			
-			
-			
+
+
+
 			addFiles() {
 				this.fileForm = {};
 				this.formfilelist = [];
 				this.addFileVisible = true;
 			},
-			
+
 			imgsuccess2(url) {
 				this.$message.success('附件上传成功');
 				this.fileForm.path = url;
 			},
-			
+
 			imgRemove2() {
 				this.$message.success('文件删除成功');
 				this.fileForm.path = "";
@@ -751,8 +750,8 @@
 			},
 
 			saveInfoEdit() {
-				
-				
+
+
 				this.loading = true;
 				let subData = { ...this.form
 				};
@@ -772,7 +771,7 @@
 				subData.content = subData.content.replace(
 					/<img/g,
 					'<img style="width:100%;"'
-				);	
+				);
 
 				this.$refs.pjcInfoform.validate(valid => {
 					if (valid) {
@@ -847,7 +846,7 @@
 						url: row.file
 					});
 				}
-				
+
 				row.content = row.content
 					.replace(/video/g, "iframe")
 					.replace(
@@ -1064,12 +1063,12 @@
 				this.$message.success('附件上传成功');
 				this.fileForm.path = url;
 			},
-			
+
 			fileRemove2() {
 				this.$message.success('文件删除成功');
 				this.fileForm.path = "";
 			},
-			
+
 			imgRemove1() {
 				this.$message.success('图片删除成功');
 				this.imgx = "";
