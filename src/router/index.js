@@ -78,7 +78,7 @@ export default new Router({
 					}
 				},
 				{
-					path: '/home/:id',
+					path: '/home/proinfo',
 					name: 'proinfo',
 					component: resolve => require(['../components/page/project/proinfo.vue'], resolve),
 					meta: {
