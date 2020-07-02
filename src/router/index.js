@@ -111,7 +111,7 @@ export default new Router({
 					name: 'client',
 					component: resolve => require(['../components/page/serve/client.vue'], resolve),
 					meta: {
-						title: '客户成功',
+						title: '典型案例',
 						permission: true,
 						index: 'client'
 					}
