@@ -308,6 +308,7 @@
                     });
             },
             search() {
+				this.currentPage = 1;
                 this.getData();
             },
             // 每页显示的条数

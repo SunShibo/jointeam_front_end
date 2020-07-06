@@ -19,7 +19,7 @@
                             :value="item.id">
                     </el-option>
                 </el-select>
-                <el-button type="primary" icon="search" @click="getData">搜索</el-button>
+                <el-button type="primary" icon="search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="el-icon-upload" @click="add" class="handle-input-search">
                     添加模板
                 </el-button>
@@ -179,6 +179,10 @@
                 });
                 this.loading = false;
             },
+			search(){
+				this.currentPage = 1;
+				this.getData();
+			},
             getType() {
                 this.$axios.post("/templateType/query", {
                     pageNo: 1,

@@ -423,6 +423,7 @@
 			},
 
 			search() {
+				this.currentPage = 1;
 				this.getData();
 			},
 
