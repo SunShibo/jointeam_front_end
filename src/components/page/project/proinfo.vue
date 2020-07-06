@@ -488,9 +488,12 @@
 		},
 
 		watch: {
-			'$route'(val, oldVal) {
-				this.pjcId = parseInt(val.params.id)
-				this.getData()
+			'$route.params'(val, oldVal) {
+				console.log(val);
+				if(val.id!="" && val.id!= null && val.id!=NaN && val.id!={}){
+					console.log(val);
+					this.pjcId = parseInt(val.id)
+				}
 			},
 			status(vel) {
 				this.getPjcInfo();
@@ -507,6 +510,7 @@
 			this.getPjcInfo();
 			this.getStaffInfo();
 			this.getAdminInfo();
+			this.pjcId = parseInt(this.$route.params.id)
 			this.getData();
 		},
 
