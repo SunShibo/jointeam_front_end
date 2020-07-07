@@ -50,8 +50,8 @@
 			<el-table max-height="550px" :data="tableData" border class="table" ref="multipleTable">
 				<el-table-column :show-overflow-tooltip="true" type="index" label="序号" align="center" sortable width="50"></el-table-column>
 				<el-table-column fixed="left" :show-overflow-tooltip="true" width="140" prop="projectName" align="center" label="项目名称"></el-table-column>
-				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"
-				 label="公司"></el-table-column>
+				<!-- <el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="userId" align="center"
+				 label="公司"></el-table-column> -->
 				<el-table-column :show-overflow-tooltip="true" width="140" prop="projectType" align="center" label="项目类型"></el-table-column>
 				<el-table-column :formatter="formatRowData" :show-overflow-tooltip="true" width="140" prop="staffId" align="center"
 				 label="总负责人"></el-table-column>
@@ -104,6 +104,7 @@
 						<el-button type="text" icon="el-icon-edit" @click="handleEdit(scp.$index, scp.row)">修改项目</el-button>
 						<el-button type="text" icon="el-icon-user-solid" @click="getStaff(scp.row)">项目团队</el-button>
 						<el-button type="text" icon="el-icon-user-solid" @click="getAdmin(scp.row)">项目管理员</el-button>
+						<el-button type="text" icon="el-icon-user-solid" @click="getUser(scp.row)">项目用户</el-button>
 						<el-button type="text" icon="el-icon-edit" @click="gotoProInfo(scp.$index, scp.row)">查看项目详情</el-button>
 						<el-button type="text" icon="el-icon-download" @click="openFile(scp.$index, scp.row)">查看附件</el-button>
 
@@ -180,6 +181,24 @@
 			</span>
 		</el-dialog>
 
+		<!-- 多个用户 -->
+		<el-dialog title="新增/编辑用户" :visible.sync="userVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
+			<template>
+				<el-select v-model="value" multiple placeholder="请选择">
+					<el-option-group v-for="group in options" :key="group.lable" :label="group.lable">
+						<el-option v-for="item in group.options" :key="item.value" :label="item.lable" :value="item.value">
+						</el-option>
+					</el-option-group>
+				</el-select>
+			</template>
+			<span slot="footer" class="dialog-footer">
+				<!-- saveProjectEdit('form') -->
+				<el-button type="primary" :loading="$store.state.requestLoading" @click="saveUserEdit()">确
+					定</el-button>
+				<el-button @click="userVisible = false">取 消</el-button>
+			</span>
+		</el-dialog>
+
 		<!-- 多个负责人 -->
 		<el-dialog title="新增/编辑项目团队" :visible.sync="principalVisible" width="75%" height="700px" :close-on-click-modal="closeOnClickModal">
 
@@ -215,13 +234,13 @@
 				<el-form-item label-width="100px" label="项目名称" prop="projectName" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<el-input v-model="form.projectName"></el-input>
 				</el-form-item>
-				<el-form-item label-width="100px" label="公司名称" prop="userId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
+			<!-- 	<el-form-item label-width="100px" label="用户" prop="value" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
-						<el-select @focus="getOrgan" filterable v-model="form.userId" placeholder="请选择公司">
+							<el-select @focus="getOrgan" filterable v-model="form.userId" placeholder="请选择公司">
 							<el-option v-for="item in organInfo" :key="item.id" :label="item.unitName" :value="item.id"></el-option>
-						</el-select>
+						</el-select> 
 					</template>
-				</el-form-item>
+				</el-form-item> -->
 
 				<el-form-item label-width="120px" label="总负责人" prop="staffId" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur'},{ required: true, message: '该项不能为空', trigger: 'change' }]">
 					<template>
@@ -343,7 +362,7 @@
 				projectStatus: null,
 				formfilelist: [],
 				fileVisible: false,
-
+				userVisible: false,
 				projectType: null,
 
 				addFileVisible: false,
@@ -405,8 +424,7 @@
 						ename: "finished"
 					}
 				],
-				projectStatusOptions1: [
-					{
+				projectStatusOptions1: [{
 						id: 0,
 						name: "未开始",
 						ename: "notStart"
@@ -479,7 +497,6 @@
 				form: {},
 				count: 0,
 				subData: {},
-
 				imgx: '',
 				filex: '',
 				allStaffList: [],
@@ -492,6 +509,9 @@
 				tempId: "",
 				tempInfo: "",
 				isShow: false,
+				options: [],
+				value: [],
+
 			};
 		},
 
@@ -501,6 +521,7 @@
 			this.getAllTemp();
 			this.getStaffInfo();
 			this.getAdminInfo();
+			this.getUsers();
 		},
 		computed: {
 			data() {
@@ -516,7 +537,11 @@
 					this.tempInfo = res.data;
 				});
 			},
-
+			getUsers() {
+				this.$axios.post('/backUser/queryUserSelect', {}).then(res => {
+					this.options = res.data;
+				});
+			},
 			saveAdminEdit() {
 				let fd = {
 					projectId: this.pjcId,
@@ -588,10 +613,46 @@
 				this.adminVisible = true;
 			},
 			
-
+			getUser(row) {
+				this.$axios.post(
+					'/projectUser/selectUserByProjectId', {
+						projectId: row.id
+					}
+				).then(res => {
+					if (!res.success) {
+						this.$message.error("获取用户信息失败")
+						return;
+					}
+					this.value=[];
+					this.pjcId = row.id;
+					(res.data).forEach((item, index, value) => {
+						this.value.push(item+"");
+					});
+				})
+				this.userVisible = true;
+			},
+			saveUserEdit(){
+				this.$axios.post(
+					'/projectUser/updateProjectByUser', {
+						projectId:this.pjcId,
+						userId:this.value.join(",")
+					}
+				).then(res => {
+					if (!res.success) {
+						this.$message.error(res.msg)
+						return;
+					}
+					this.$message.success(res.msg)
+					this.userVisible = false;
+				})
+				
+			},
 			gotoProInfo(index, row) {
 				this.$router.push({
-					name: 'proinfo',params: {id: row.id}
+					name: 'proinfo',
+					params: {
+						id: row.id
+					}
 				});
 			},
 			openFile(index, row) {
