@@ -303,11 +303,11 @@
 				</div>
 
 				<el-form-item label-width="100px" label="总额" prop="rental" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
-					<el-input v-model="form.rental"></el-input>
+					<el-input v-model="form.rental" ></el-input>
 				</el-form-item>
 
 				<el-form-item label-width="100px" label="已付金额" prop="paid" :rules="[{ required: true, message: '该项不能为空', trigger: 'blur' }]">
-					<el-input v-model="form.paid"></el-input>
+					<el-input v-model="form.paid" ></el-input>
 				</el-form-item>
 
 				<div class="grid-content bg-purple">
@@ -978,9 +978,10 @@
 			},
 
 			addPjc() {
-				this.form = {};
-				this.form["rental"] = 0;
-				this.form["paid"] = 0;
+				this.form = {
+					'rental':0,
+					'paid':0,
+				};
 				this.isShow = true;
 				this.imagedatelist = [];
 				this.filedatelist = [];
